@@ -71,7 +71,14 @@
 <br><br>
 
 
+  <div class="row">
+ <div class="col-9">
 
+    </div>
+    <div class="col-3">
+ <h3 class="panel-title pull-right">عدد المطالبات : <Strong id="count_claims"></Strong></h3>
+  </div>
+</div> <br>
 		<!-- row -->
 				<div class="row">
                 			<!--div-->

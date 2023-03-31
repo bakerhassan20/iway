@@ -71,7 +71,19 @@
                                         @endforeach
                                         </select>
                                     </td>
+
                                 </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="text" value="{{old("from_1_h")}}"class="form-control text-input fc-datepicker" id="from_1_h" name="from_1_h" placeholder="من....">
+                                        </td>
+                                        <td>
+                                            <input type="text" value="{{old("to_1_h")}}"class="form-control text-input fc-datepicker" id="to_1_h" name="to_1_h" placeholder="الي...">
+                                        </td>
+                                        <td>
+                                        <a class="btn btn-primary" id="search_1_h" name="search_1_h">بحث</a>
+                                        </td>
+                                    </tr>
                             </tbody>
                         </table>
                     </div>
@@ -133,6 +145,20 @@
 @endsection
 @section('js')
 
+<!--Internal  Datepicker js -->
+<script src="{{URL::asset('assets/plugins/jquery-ui/ui/widgets/datepicker.js')}}"></script>
+<!--Internal  jquery.maskedinput js -->
+<script src="{{URL::asset('assets/plugins/jquery.maskedinput/jquery.maskedinput.js')}}"></script>
+<!--Internal  spectrum-colorpicker js -->
+<script src="{{URL::asset('assets/plugins/spectrum-colorpicker/spectrum.js')}}"></script>
+<!-- Internal Select2.min js -->
+<script src="{{URL::asset('assets/plugins/select2/js/select2.min.js')}}"></script>
+<!-- Internal form-elements js -->
+<script src="{{URL::asset('assets/js/form-elements.js')}}"></script>
+<!-- Internal Select2.min js -->
+<script src="{{URL::asset('assets/js/form-validation.js')}}"></script>
+
+
    <script>
         $(function() {
             var sTable = $('#student-courses-table').DataTable({
@@ -157,6 +183,8 @@
                         d.statusId = $('select[name=status_h]').val();
                         d.userId = $('select[name=user_1_h]').val();
                         d.moneyId = $('select[name=money_id]').val();
+                         d.fromId = $('#from_1_h').val();
+                        d.toId = $('#to_1_h').val();
                     }
                 },
                 columns: [
@@ -167,7 +195,7 @@
                     { data: 'pay', name: 'pay',orderable: true },
                     { data: 'm_year', name: 'm_year',orderable: true },
                     { data: 'created_at', name: 'created_at',orderable: true },
-                      { data: 'created_by', name: 'created_by',orderable: true },
+                    { data: 'created_by', name: 'created_by',orderable: true },
                     { data: 'status', name: 'status',orderable: true },
                     {"mRender": function ( data, type, row ) {
                             var withdraw = '<a class="btn btn-sm btn-danger" href="/CMS/add/Withdrawal/'+row.id+'">انسحاب</a>';
@@ -229,12 +257,13 @@
             $('#money_id').change(function() {
                 sTable.draw();
             });
+           $('#search_1_h').click(function(e) {
+                e.preventDefault();
+                sTable.draw();
+
+        });
                 sTable.on( 'xhr', function () {
                 var json = sTable.ajax.json();
-
-
-
-
      var pay=json.all_pay;
     var price=json.all_price;
     var deductions = parseFloat(price) - parseFloat(pay);

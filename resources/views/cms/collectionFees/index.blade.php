@@ -1,7 +1,12 @@
 @extends('layouts.master')
 @section('css')
 
+<style>
 
+.fees_owed{
+    color:red;
+}
+</style>
 @section('title')
  Iwayc System
 
@@ -74,8 +79,15 @@
             </div>
         </div>
     </div>
-<br><br>
+<br>
+<div class="row">
+ <div class="col-7">
 
+    </div>
+    <div class="col-5">
+    <h3 class="panel-title">مجموع المبالغ المطلوبة: (<strong id="sumId">0</strong> دينار)</h3>
+  </div>
+</div> <br>
 
 
 		<!-- row -->
@@ -172,7 +184,7 @@
                     { data: 'phone', name: 'phone' },
                     { data: 'fees', name: 'fees' },
                     { data: 'fees_pay', name: 'fees_pay' },
-                    { data: 'fees_owed', name: 'fees_owed' },
+                    { data: 'fees_owed', name: 'fees_owed',class: 'fees_owed'},
                     {"mRender": function ( data, type, row ) {
                             var cbAct = '<input type="checkbox" value="0" class="form-control form-control-sm" id="'+row.id+'" onclick="fAct(this)" />';
                             if(row.warranty==1){
@@ -206,7 +218,7 @@
                     { data: 'notes', name: 'notes' },
                     {"mRender": function ( data, type, row ) {
                             var show ='<a class="btn btn-sm btn-success" href="/CMS/CollectionFees/'+row.id+'">عرض</a>';
-                            var edit ='<a class="btn btn-sm btn-info" href="/CMS/CollectionFees/'+row.id+'/edit">تعديل</a>';
+                            var edit ='<a class="btn btn-sm btn-info" href="/CMS/CollectionFees/'+row.id+'/edit">تهرب</a>';
                             var ress ='';
                             @can('عرض متابعة طلاب')
                                 ress=ress+' '+show;

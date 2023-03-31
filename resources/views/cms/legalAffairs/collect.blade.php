@@ -16,7 +16,7 @@
                             </div>
                              <div class="col">
                                 <label class="control-label">المبلغ:* </label>
-                                    <input type="text" value="{{$item->collect_amount}}" class="form-control" id="sender" name="collect_amount">
+                                    <input type="text" value="" class="form-control" id="sender" name="collect_amount">
 
                             </div>
                         </div>

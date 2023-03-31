@@ -129,6 +129,14 @@
                                     </select>
                                 </td>
                                 <td>
+                                    <select name="year_h" id="year_h" class="form-control">
+                                        <option value=""> اختر السنه الماليه .... </option>
+                                        @foreach($years as $year)
+                                            <option {{old("year_h")==$year->id?"selected":""}} value="{{$year->year}}"> {{$year->year}} </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
                                     <select name="user_h" id="user_h" class="form-control">
                                         <option value=""> اختر اسم المستخدم.... </option>
                                         @foreach($users as $user)
@@ -163,7 +171,7 @@
                         <span class="tag"><strong id="sum_teacher_fees"> 0 </strong> <span> دينار </div>
                         <div class="col-md-4 control-label">المبالغ المحصلة: <span class="tag"><strong id="receipt_teacher"> 0 </strong> <span>  دينار </div>
                         <div class="col-md-4 control-label">المبالغ المتبقية: <span class="tag"><strong id="remaind_teacher"> 0 </strong><span>  دينار </div>
-                    </div>
+                    </div><br>
                     <div class="row ls_divider">
                         <div class="col-md-4 control-label">عدد الطلاب : <span class="tag"><strong id="num">0</strong><span></div>
                         <div class="col-md-4 control-label">عدد مرات المطالبة: <span class="tag"><strong id="count_claim">0</strong><span></div>
@@ -268,6 +276,7 @@
                         d.moneyId = $('select[name=money_id]').val();
                         d.studentId = $('select[name=student_h]').val();
                         d.userId = $('select[name=user_h]').val();
+                        d.yearId = $('select[name=year_h]').val();
                         d.activeId = $('select[name=active_h]').val();
                     }
                 },
@@ -300,7 +309,7 @@
                     { data: 'count', name: 'count' },
                     { data: 'count_warning', name: 'count_warning' },
                     {"mRender": function ( data, type, row ) {
-                            var cc = '<a disabled class="btn btn-sm btn-primary" href="/CMS/add/CountWarning/'+row.id+'"><i class="fa fa-plus"></i></a>';
+                            var cc = '<a disabled class="btn btn-sm btn-primary disable" href="/CMS/add/CountWarning/'+row.id+'"><i class="fa fa-plus"></i></a>';
                             if (row.hour12>0) {
                                 cc = '<a class="btn btn-sm btn-primary" href="/CMS/add/CountWarning/'+row.id+'"><i class="fa fa-plus"></i></a>';
                             }
@@ -325,6 +334,9 @@
                 cTable.draw();
             });
             $('#user_h').change(function() {
+                cTable.draw();
+            });
+              $('#year_h').change(function() {
                 cTable.draw();
             });
             $('#active_h').change(function() {

@@ -19,7 +19,7 @@ Iwayc System
 
 @endsection
 @section('button2')
-<a class="btn btn-primary btn-md" href="{{ route('AbsenceT.index') }}">رجوع</a>
+<a class="btn btn-primary btn-md" href="/CMS/Withdrawal">رجوع</a>
 @stop
 @endsection
 @section('content')

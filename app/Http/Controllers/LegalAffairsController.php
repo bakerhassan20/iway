@@ -41,8 +41,8 @@ class LegalAffairsController extends CMSBaseController
         $s = array_unique($ss);
         $users=User::where("isdelete",0)->where("Status","مفعل")->orderBy('name')->get();
         $status=Option::where("parent_id",265)->where("isdelete",0)->where("active",1)->orderBy('title')->get();
-
-        return view("cms.legalAffairs.index",compact("title","subtitle","s","users","status"));
+        $years=Money_year::where("isdelete",0)->orderBy('year')->get();
+        return view("cms.legalAffairs.index",compact("title","subtitle","s","users","status",'years'));
     }
 
     public function getEnd()
@@ -243,7 +243,7 @@ class LegalAffairsController extends CMSBaseController
         $returnHTML =  view("cms.legalAffairs.collect",compact("item"))->render();
         return response()->json(['html'=>$returnHTML]);
     }
-    public function postCollectMoney(Request $request,$id)
+    public function postCollectMoney(Request $request,$id,FlasherInterface $flasher)
     {
         $this->validate($request,
             [

@@ -155,7 +155,7 @@ Iwayc System
                                 <label class=" control-label"></label>
                                 <div class="col-sm-12">
                                     <button class="submit btn-primary btn" type="submit" name="submit">حفظ</button>
-                                    <a href="/CMS/LegalAffairs/" class="btn btn-danger"> إلغاء</a>
+                                    <a href="/CMS/CollectionFees" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>

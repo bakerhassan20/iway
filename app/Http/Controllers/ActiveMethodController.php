@@ -609,6 +609,11 @@ class ActiveMethodController  extends CMSBaseController
                 if ($request->has('howId') and $request->get('howId') != "") {
                     $tasks->where('students.how_listen', '=', "{$request->get('howId')}");
                 }
+
+
+                if ($request->has('fromId') and $request->has('toId') and $request->get('fromId') != "" and $request->get('toId') != "") {
+                    $from=$request->get('fromId');
+                    $to=$request->get('toId');
                 // if ($request->has('fromId') and $request->has('toId') and $request->get('fromId') != "" and $request->get('toId') != "") {
                 //     $arrStart = explode("-", $request->get('fromId'));
                 //     $arrEnd = explode("-", $request->get('toId'));
@@ -616,8 +621,8 @@ class ActiveMethodController  extends CMSBaseController
                 //     $to = Carbon::create( $arrEnd[0], $arrEnd[1], $arrEnd[2],23, 59, 59);
                 //     // $tasks ->where('students.created_at', '<=', $request->get('toId') )
                 //     //         ->where('students.created_at', '>=',  $request->get('fromId'));
-                //     $tasks->whereBetween('students.created_at',[$from,$to]);
-                // }
+                    $tasks->whereBetween('students.created_at',[$from,$to]);
+                 }
 
 
             })
@@ -792,6 +797,9 @@ class ActiveMethodController  extends CMSBaseController
             }
             if ($request->has('userId') and $request->get('userId') != "") {
                 $tasks->where('users.id', '=', "{$request->get('userId')}");
+            }
+            if ($request->has('yearId') and $request->get('yearId') != "") {
+                $tasks->where('legal_affairs.m_year', '=', "{$request->get('yearId')}");
             }
             if ($request->has('activeId') and $request->get('activeId') != "") {
                 $tasks->where('options.id', '=', "{$request->get('activeId')}");
@@ -3998,7 +4006,7 @@ return $html;
                 return $tasks->count('absences_t.id');
              }  ,'delay_time'=> function($tasks){
                  $time=$tasks->sum('absences_t.delay_time')/60 ;
-                 $minite=$tasks->sum('absences_s.delay_time')%60 ;
+                 $minite=$tasks->sum('absences_t.delay_time')%60 ;
                  return number_format($time,0) . ':' .$minite;
                  return number_format($time,0);
              } ,'count_abs'=> function($tasks){
@@ -4057,6 +4065,11 @@ return $html;
                 if ($request->has('moneyId') and $request->get('moneyId') != "") {
                     $tasks->where('student_course.m_year', '=', "{$request->get('moneyId')}");
                 }
+                if ($request->has('fromId') and $request->has('toId') and $request->get('fromId') != "" and $request->get('toId') != "") {
+                    $from=$request->get('fromId');
+                    $to=$request->get('toId');
+                    $tasks->whereBetween('student_course.created_at',[$from,$to]);
+                 }
                 if ($request->has('statusId') and $request->get('statusId') != "") {
                     if ($request->get('statusId') == 1){
                         $tasks->where('student_course.iswithdrawal', '=', "1")

@@ -51,6 +51,7 @@ class WithdrawalController extends CMSBaseController
         $title="الماليه";
         $students=Student::where('isdelete',0)->where('m_year',$this->getMoneyYear())->where('active',1)->get();
         $courses=Course::where('isdelete',0)->where('m_year',$this->getMoneyYear())->where('active',1)->get();
+
         return view("cms.withdrawal.add",compact("title","parentTitle","students","courses"));
     }
 
@@ -254,6 +255,7 @@ class WithdrawalController extends CMSBaseController
         $item = Student_course::find($id);
         $parentTitle="اضافة طلب انسحاب جديد";
         $title="ادارة طلبات الانسحاب";
+   
         return view("cms.withdrawal.add",compact("title","parentTitle","item","id"));
     }
     public function getYearFilter()
