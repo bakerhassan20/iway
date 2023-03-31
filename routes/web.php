@@ -126,6 +126,7 @@ Route::get('datatables/YearStudent','ActiveMethodController@anyYearStudent');
 Route::get('datatables/StudentRep', 'ActiveMethodController@anyStudentRep');
 Route::get('student/StudentRep/{id}', 'ActiveMethodController@getStudentRep');
 Route::resource('Student', 'StudentController');
+Route::resource('YearStudent', 'YearStudentController');
 Route::get('Student/active/{id}', 'ActiveMethodController@getActiveStudent');
 Route::get('delete/Student/{id}', 'StudentController@getDelete');
 Route::get('student/Student', 'StudentController@getStudent');
@@ -138,7 +139,7 @@ Route::get('Rep/Course', 'CourseController@getCourseReport');
 Route::get('datatables/Course', 'ActiveMethodController@anyCourse');
 Route::get('datatables/TeacherC', 'ActiveMethodController@anyTeacherC');
 Route::get('datatables/CourseReg', 'ActiveMethodController@anyCourseReg');
-
+Route::get('CourseReg', 'StudentCourseController@CourseReg');
 
 
 // teacher controller
@@ -420,6 +421,7 @@ Route::get('LegalAffairs/active/{id}', 'ActiveMethodController@getActiveLegalAff
 
 Route::get('datatables/Box', 'ActiveMethodController@anyBox');
 Route::get('datatables/BoxPer', 'ActiveMethodController@anyBoxPer');
+Route::get('datatables/BoxAccount', 'ActiveMethodController@anyBoxAccount');
 Route::resource('Box', 'BoxController');
 Route::get('Box/active/{id}', 'ActiveMethodController@getActiveBox');
 Route::get('delete/Box/{id}', 'BoxController@getDelete');
@@ -428,6 +430,7 @@ Route::get('BoxPer', 'BoxController@getIndex');
 Route::get('BoxPer/{id}', 'BoxController@getAdd');
 Route::post('BoxPer/{id}', 'BoxController@postAdd');
 Route::post('Box/{id}', 'BoxController@show');
+Route::get('BoxAccount', 'BoxController@getAccount');
 
 Route::get('datatables/BoxIncome/{id}', 'ActiveMethodController@anyBoxIncome');
 Route::resource('BoxIncome', 'BoxIncomeController');

@@ -90,7 +90,7 @@
                                         <select name="course_1_h" id="course_1_h" class="form-control select2" data-parsley-class-handler="#slWrapper2" data-parsley-errors-container="#slErrorContainer2">
                                         <option value="all"> اختر اسم الدورة.... </option>
                                         @foreach($courses as $course)
-                                        <option {{old("course_1_h")==$course->id?"selected":""}} value="{{$course->id}}"> {{$course->courseAR}} </option>
+                                        <option  value="{{$course->id}}"> {{$course->courseAR}} </option>
                                         @endforeach
                                         </select>
                                     </td>
@@ -98,7 +98,7 @@
                                         <select name="user_1_h" id="user_1_h" class="form-control">
                                         <option value=""> اختر اسم المستخدم.... </option>
                                         @foreach($users as $user)
-                                        <option {{old("user_1_h")==$user->id?"selected":""}} value="{{$user->id}}"> {{$user->name}} </option>
+                                        <option  value="{{$user->id}}"> {{$user->name}} </option>
                                         @endforeach
                                         </select>
                                     </td>

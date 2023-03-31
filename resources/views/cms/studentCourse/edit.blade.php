@@ -97,7 +97,7 @@ Iwayc System
 
                                 <div class="col-sm-10">
                                     <button class="submit btn-primary btn" type="submit" name="submit">حفظ</button>
-                                    <a href="/CMS/StudentCourse/" class="btn btn-danger"> إلغاء</a>
+                                    <a href="/CMS/CourseReg" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div>

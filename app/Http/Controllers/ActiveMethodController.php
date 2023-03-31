@@ -1370,8 +1370,8 @@ return $html;
             ->leftJoin('options as opn', 'opn.id','=','employees.nationality')
             ->leftJoin('options as optee', 'optee.id','=','employees.status')
             ->leftJoin('options as opteee', 'opteee.id','=','employees.level')
-             ->leftJoin('skills as sk', 'sk.employee_id','=','employees.id')
-            ->select(['employees.id', 'employees.name', 'opt.title as job', 'employees.birthday','employees.status', 'employees.status', 'op.title as address', 'opn.title as nationality','sk.name as skills', 'employees.phone1', 'opteee.title as level', 'employees.phone2', 'employees.email', 'employees.salary_down', 'employees.smoke', 'employees.updated_at', 'employees.notes', 'employees.active', 'employees.isdelete', 'employees.created_at'])
+  /*           ->leftJoin('skills as sk', 'sk.employee_id','=','employees.id') */
+            ->select(['employees.id', 'employees.name', 'opt.title as job', 'employees.birthday','employees.status', 'employees.status', 'op.title as address', 'opn.title as nationality',/* 'sk.name as skills', */ 'employees.phone1', 'opteee.title as level', 'employees.phone2', 'employees.email', 'employees.salary_down', 'employees.smoke', 'employees.updated_at', 'employees.notes', 'employees.active', 'employees.isdelete', 'employees.created_at'])
 
             ->where('employees.isdelete','=','0');
         return Datatables::of($tasks)
@@ -1381,14 +1381,14 @@ return $html;
               ->addColumn('skills', function ($tasks) {
                $emp_skill = Skill::where('employee_id',$tasks->id)->where('isdelete',0)->get();
                     $skil="";
-                foreach($emp_skill as $emp_s){
+                 foreach($emp_skill as $emp_s){
                     if($emp_s){
                         $skil .= Option::find($emp_s->name)->title;
                         $skil .=",";
-                        $tasks->skills = $skil;
                     }
 
                 }
+                $tasks->skills = $skil;
 
                 return $tasks->skills;
             })
@@ -2249,6 +2249,134 @@ return $html;
                 }
                 return $ppppp;
             })
+            ->make(true);
+    }
+
+
+
+    public function anyBoxAccount(Request $request)
+    {
+        $tasks = Box::leftJoin('options', 'options.id','=','boxes.type')
+            ->leftJoin('boxes as b', 'b.id','=','boxes.parent_id')
+            ->leftJoin('repositories as rep', 'rep.id','=','boxes.repository_id')
+            ->leftJoin('box_per as per', 'per.box_id','=','boxes.id')
+            ->select([ 'boxes.id', 'boxes.m_year', 'boxes.name', 'rep.name as repository_id', 'options.title as type', 'boxes.calculator_first','b.name as parent_id','boxes.income','boxes.expense','boxes.type as btype','boxes.active', 'boxes.created_at', 'boxes.isdelete'])
+            ->where('boxes.isdelete','=','0')
+            ->where('per.user_id','=',Auth::user()->id);
+        return Datatables::of($tasks)
+            ->editColumn('calculator_first', function ($tasks) {
+                if($tasks->id ==1){
+                    $money_year = Money_year::where('year',$this->getMoneyYear())->first();
+                    if($money_year->first_time_balance !=0){
+                    return $tasks->calculator_first = $money_year->first_time_balance + $tasks->calculator_first;
+                    }else{
+                return $tasks->calculator_first;
+                }
+                }else{
+                return $tasks->calculator_first;
+                }
+            })
+            ->editColumn('income', function ($tasks) {
+
+                if($tasks->id==3){
+                    $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('amount');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',$this->getMoneyYear())->update(array('income' => $courses_receipt));
+                    $tasks->income=$courses_receipt;
+                }
+                if($tasks->id==4){
+                    $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('advance_payment');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',$this->getMoneyYear())->update(array('income' => $advance_receipt));
+                    $tasks->income=$advance_receipt;
+                }
+                if($tasks->repository_id >0){
+                    $tasks->income = Repository_in::where('repository_id','=',$tasks->repository_id)->where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('total');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',$this->getMoneyYear())->update(array('income' => $tasks->income));
+                }
+                if($tasks->type=="مستقل"){
+                    $tasks->income = Catch_receipt_box::where('box_id','=',$tasks->id)->where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('amount');
+
+                }
+
+                return number_format($tasks->income,2);
+            })
+            ->editColumn('expense', function ($tasks) {
+                if($tasks->id==3){
+                    $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('amount');
+                    $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('amount');
+
+                    $tasks->expense=$teacher_salaries + $receipt_students;
+                }
+                if($tasks->id==4){
+                    $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('amount');
+                    $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('amount');
+                    $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('advance_payment');
+                    $tasks->expense=$salaries+$warranties+$advances;
+
+
+                }
+                if($tasks->repository_id >0){
+                    $tasks->expense = Repository_out::where('repository_id','=',$tasks->repository_id)->where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('total');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',$this->getMoneyYear())->update(array('income' => $tasks->income));
+                }
+                if($tasks->type=="مستقل"){
+                    $tasks->expense = Receipt_box::where('box_id','=',$tasks->id)->where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('amount');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',$this->getMoneyYear())->update(array('income' => $tasks->income));
+                }
+                return number_format($tasks->expense,2);
+            })
+            ->editColumn('activeI', function ($tasks) {
+                return $tasks->active;
+            })
+            ->editColumn('parent_id', function ($tasks) {
+                return $tasks->parent_id!=null ? $tasks->parent_id:'بلا';
+            })
+
+            ->addColumn('repository_id', function ($tasks) {
+                return $tasks->repository_id!=null?$tasks->repository_id:'بلا' ;
+            })
+          /*   ->addColumn('per', function ($tasks) {
+                $isPer=BoxPer::where('box_id',$tasks->id)->count();
+                $ppppp=[];
+                if ($isPer>0){
+                    $per=BoxPer::where('box_id',$tasks->id)->get();
+                    foreach ($per as $p){
+                        $user=User::find($p->user_id)->id;
+                        array_push($ppppp,$user);
+                    }
+                }
+                return $ppppp;
+            }) */
+            ->addColumn('lock', function ($tasks) {
+                $isPer=Box_year::where('box_id',$tasks->id)->where('m_year',$this->getMoneyYear())->count();
+                $lock=0;
+                if ($isPer>0){
+                    $per=Box_year::where('box_id',$tasks->id)->where('m_year',$this->getMoneyYear())->first();
+                    $lock=$per->islock;
+                }
+                return $lock;
+            })
+            ->filter(function ($tasks) use ($request) {
+                if ($request->has('searchBox') && $request->get('searchBox') != "") {
+                    $tasks->where('boxes.isdelete','=','0')
+                        ->where(function ($tasks) use ($request){
+                            $tasks->where('options.title', 'like', "%{$request->get('searchBox')}%")
+                                ->orWhere('boxes.name', 'like', "%{$request->get('searchBox')}%")
+                                ->orWhere('b.name', 'like', "%{$request->get('searchBox')}%");
+                        });
+                }
+                if ($request->has('moneyId') and $request->get('moneyId') != "") {
+                    $tasks->leftJoin('box_year', 'box_year.box_id','=','boxes.id')
+                        ->select([ 'boxes.id', 'boxes.m_year', 'boxes.name', 'rep.name as repository_id', 'options.title as type', 'box_year.calculator_first','b.name as parent_id','box_year.income','box_year.expense','boxes.active', 'boxes.created_at', 'boxes.isdelete'])
+                        ->where('box_year.m_year','=',"{$request->get('moneyId')}");
+                }
+                // if ($this->getId()!=null) {
+                //     $tasks->leftJoin('box_per', 'box_per.box_id','=','boxes.id')
+                //         ->select([ 'boxes.id', 'boxes.m_year', 'boxes.name', 'rep.name as repository_id', 'options.title as type', 'box_year.calculator_first','b.name as parent_id','box_year.income','box_year.expense','boxes.active', 'boxes.created_at', 'boxes.isdelete'])
+                //         ->where('box_per.user_id','=',"{$this->getId()}");
+                // }
+            })
+
+
             ->make(true);
     }
 
@@ -3883,8 +4011,9 @@ return $html;
     {
         $tasks = Student_course::leftJoin('students', 'students.id','=','student_course.student_id')
             ->leftJoin('courses', 'courses.id','=','student_course.course_id')
+            ->leftJoin('users as us', 'us.id','=','student_course.created_by')
             ->leftJoin('withdrawals', 'withdrawals.student_course_id','=','student_course.id')
-            ->select(['student_course.id','withdrawals.refund','student_course.m_year', 'courses.courseAR', 'students.nameAR', 'student_course.price', 'student_course.payment', 'student_course.isdelete', 'student_course.iswithdrawal', 'student_course.created_at'])
+            ->select(['student_course.id','withdrawals.refund','student_course.m_year', 'courses.courseAR', 'students.nameAR', 'student_course.price', 'student_course.payment', 'student_course.isdelete', 'student_course.iswithdrawal', 'student_course.created_at', 'us.name as created_by'])
             ->where('student_course.m_year', '=', $this->getMoneyYear());
         return Datatables::of($tasks)
             ->addColumn('pay', function ($tasks) {
@@ -3922,6 +4051,9 @@ return $html;
                 if ($request->has('courseId') and $request->get('courseId') != "") {
                     $tasks->where('courses.id', '=', "{$request->get('courseId')}");
                 }
+                if ($request->has('userId') and $request->get('userId') != "") {
+                    $tasks->where('us.id', '=', "{$request->get('userId')}");
+                }
                 if ($request->has('moneyId') and $request->get('moneyId') != "") {
                     $tasks->where('student_course.m_year', '=', "{$request->get('moneyId')}");
                 }
@@ -3936,7 +4068,50 @@ return $html;
                             ->where('student_course.iswithdrawal', '=', "0");
                     }
                 }
-            })
+            })->with(['all_price'=> function($tasks){
+                return $tasks->sum('student_course.price');
+             },'all_pay'=> function($tasks) use($request){
+
+                $amount= Catch_receipt::leftJoin('student_course as sc', 'sc.id','=','catch_receipts.student_course_id')
+                ->leftJoin('students', 'students.id','=','sc.student_id')
+                 ->leftJoin('courses', 'courses.id','=','sc.course_id')
+                 ->leftJoin('users as us', 'us.id','=','sc.created_by')
+                ->where('catch_receipts.isdelete','=','0')->where('sc.m_year', '=', $this->getMoneyYear());
+
+                if ($request->has('courseId') and $request->get('courseId') != "") {
+                    $amount->where('courses.id', '=', "{$request->get('courseId')}");
+                }
+                if ($request->has('studentId') and $request->get('studentId') != "") {
+                    $amount->where('students.id', '=', "{$request->get('studentId')}");
+                }
+                if ($request->has('userId') and $request->get('userId') != "") {
+                    $amount->where('us.id', '=', "{$request->get('userId')}");
+                }
+                if ($request->has('statusId') and $request->get('statusId') != "") {
+                     if ($request->get('statusId') == 1){
+                        $amount->where('sc.iswithdrawal', '=', 1);
+                    }elseif ($request->get('statusId') == 2){
+                        $amount->where('sc.isdelete', '=', 1);
+                    }else{
+                        $amount->where('sc.isdelete', '=', "0")
+                            ->where('sc.iswithdrawal', '=', 0);
+                    }
+
+                }
+
+
+        $amount=$amount->get();
+        $result=0;
+       foreach($amount as $am){
+        $sc=Student_course::where('student_id',$am->student_id)->where('course_id',$am->course_id)->where('isdelete',0)->first();
+       // if($sc->iswithdrawal !=1){
+            $amounts =$am->amount;
+            $result += $amounts;
+       // }
+       }
+
+        return $result;
+             } ])
             ->make(true);
     }
 
@@ -4457,11 +4632,12 @@ return $response;
                         ->orWhere('begin', 'like', "%{$request->get('searchStudent')}%");
                 }
                 if ($request->has('courseId') and $request->get('courseId') != "all") {
-                    $tasks->where('courses.id', '=', "{$request->get('courseId')}");
+                    $tasks->where('courses.category_id', '=', "{$request->get('courseId')}");
                 }
                 if ($request->has('studentId') and $request->get('studentId') != "all") {
                     $tasks->where('students.id', '=', "{$request->get('studentId')}");
                 }
+
                 if ($request->has('yearId') and $request->get('yearId') != "") {
                     $tasks->where('student_course.m_year','=',"{$request->get('yearId')}");
                 }
@@ -4496,8 +4672,8 @@ return $response;
                                 ;
                         });
                 }
-                if ($request->has('courseId') and $request->get('courseId') != "") {
-                    $amount->where('courses.id', '=', "{$request->get('courseId')}");
+                if ($request->has('courseId') and $request->get('courseId') != "all") {
+                    $amount->where('courses.category_id', '=', "{$request->get('courseId')}");
                 }
                 if ($request->has('teacherId') and $request->get('teacherId') != "") {
                     $amount->where('teachers.id', '=', "{$request->get('teacherId')}");
@@ -4505,7 +4681,7 @@ return $response;
                 if ($request->has('yearId') and $request->get('yearId') != "") {
                     $amount->where('sc.m_year', '=', "{$request->get('yearId')}");
                 }
-                if ($request->has('studentId') and $request->get('studentId') != "") {
+                if ($request->has('studentId') and $request->get('studentId') != "all") {
                     $amount->where('students.id', '=', "{$request->get('studentId')}");
                 }
                 if ($request->has('statusId') and $request->get('statusId') != "") {
@@ -4546,8 +4722,8 @@ return $response;
                                 ;
                         });
                 }
-                if ($request->has('courseId') and $request->get('courseId') != "") {
-                    $amount->where('courses.id', '=', "{$request->get('courseId')}");
+                if ($request->has('courseId') and $request->get('courseId') != "all") {
+                    $amount->where('courses.category_id', '=', "{$request->get('courseId')}");
                 }
                 if ($request->has('teacherId') and $request->get('teacherId') != "") {
                     $amount->where('teachers.id', '=', "{$request->get('teacherId')}");
@@ -4555,7 +4731,7 @@ return $response;
                 if ($request->has('yearId') and $request->get('yearId') != "") {
                     $amount->where('sc.m_year', '=', "{$request->get('yearId')}");
                 }
-                if ($request->has('studentId') and $request->get('studentId') != "") {
+                if ($request->has('studentId') and $request->get('studentId') != "all") {
                     $amount->where('students.id', '=', "{$request->get('studentId')}");
                 }
                 if ($request->has('statusId') and $request->get('statusId') != "") {

@@ -109,6 +109,7 @@
                                 <th>المستوي التعليمي</th>
                                 <th>تصنيف الطالب</th>
                                 <th>تاريخ الطلب</th>
+                                <th></th>
 
 
                             </tr>
@@ -185,7 +186,20 @@
                     { data: 'level', name: 'level' },
                     { data: 'classification', name: 'classification' },
                     { data: 'created_at', name: 'created_at' },
+                     {"mRender": function ( data, type, row ) {
+                            var show ='<a class="btn btn-sm btn-success" href="/CMS/YearStudent/'+row.id+'">عرض</a>';
+                            var edit ='<a class="btn btn-sm btn-primary" href="/CMS/YearStudent/'+row.id+'/edit">تعديل</a>';
 
+                            var ress ='';
+                            @can('عرض طالب')
+                                ress=ress+' '+show;
+                            @endcan
+                                    @can('تعديل طالب')
+                                ress=ress+' '+edit;
+                            @endcan
+
+                            return ress;}
+                             }
                 ]
             });
             //filtering

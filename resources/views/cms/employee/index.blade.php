@@ -241,15 +241,15 @@
             });
               $('#nationality_h').change(function() {
                 eTable.draw();
-
+              });
             $('#status_h').change(function() {
-                tTable.draw();
-            });
+                eTable.draw();
+              });
             $('#level_h').change(function() {
-                sTable.draw();
+                eTable.draw();
             });
 
-            });
+           
             $('#active_h').change(function() {
                 eTable.draw();
             });

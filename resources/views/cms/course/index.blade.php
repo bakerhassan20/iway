@@ -269,6 +269,7 @@
             });
             cTable.on( 'xhr', function () {
                 var json = cTable.ajax.json();
+
                 $("#ratios").replaceWith('<Strong id="ratios">'+json.ratios+'</Strong>');
                 $("#all_registered").replaceWith('<Strong id="all_registered">'+json.all_registered+'</Strong>');
                 $("#all_withdrawn").replaceWith('<Strong id="all_withdrawn">'+json.all_withdrawn+'</Strong>');

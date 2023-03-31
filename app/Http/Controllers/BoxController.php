@@ -175,7 +175,7 @@ class BoxController extends CMSBaseController
         $box_year= Box_year::where('box_id',$item->id)->where('m_year',$this->getMoneyYear())->first();
 
         if ($item->type==168){
-            Session::flash("msg","لا يمكن التعديل علي هذا السجل يرجي مراجعة المسؤول");
+            flash()->addError("لا يمكن التعديل علي هذا السجل يرجي مراجعة المسؤول");
             return redirect("/CMS/Box/");
         }
         $parentTitle="تعديل الصناديق ";
@@ -210,7 +210,7 @@ class BoxController extends CMSBaseController
             ]);
 
         if ($id==1 or $id==2 or $id==3){
-            Session::flash("msg","لا يمكن التعديل علي هذا الصندوق يرجي مراجعة المسؤول");
+            flash()->addError("لا يمكن التعديل علي هذا السجل يرجي مراجعة المسؤول");
             return redirect("/CMS/Box/");
         }
 
@@ -270,5 +270,15 @@ class BoxController extends CMSBaseController
         }
         return redirect("/CMS/Box/");
     }
+
+
+    public function getAccount(FlasherInterface $flasher)
+    {
+
+        $subtitle="رصيد الصناديق";
+        $title="الماليه";
+        return view('cms.box.account',compact("title","subtitle"));
+    }
+
 
 }

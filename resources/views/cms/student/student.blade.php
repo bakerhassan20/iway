@@ -47,8 +47,8 @@
                             <div class="col"                            >
                                 <select name="course_h" id="course_h"class="form-control select2" data-parsley-class-handler="#slWrapper2" data-parsley-errors-container="#slErrorContainer2">
                                     <option value="all"> اختر اسم الدورة.... </option>
-                                    @foreach($c as $co)
-                                        <option {{old("course_h")==$co?"selected":""}} value="{{$co}}"> {{\App\Models\Course::find($co)->courseAR}}</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{$category->id}}"> {{$category->title}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -203,9 +203,15 @@
             });
             sTable.on( 'xhr', function () {
                 var json = sTable.ajax.json();
+
+
+                     var pay=json.allrec;
+                     var price=json.allprice;
+                     var deductions = parseFloat(price) - parseFloat(pay);
+
                 $('#totalSum').replaceWith('<strong id="totalSum">'+json.allprice+'</strong>');
                             $('#receiptSum').replaceWith('<strong id="receiptSum">'+json.allrec+'</strong>');
-                            $('#remaindSum').replaceWith('<strong id="remaindSum">'+json.allpayment+'</strong>');
+                            $('#remaindSum').replaceWith('<strong id="remaindSum">'+deductions+'</strong>');
             });
         });
 

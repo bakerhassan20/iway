@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Course;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
@@ -280,6 +281,46 @@ class StudentCourseController extends CMSBaseController
 
 
         return view("cms.studentCourse.course",compact("title","subtitle","teachers","courses"));
+    }
+
+    public function CourseReg(){
+
+        $title="شؤون الطلبه";
+        $subtitle="الدورات المسجله";
+        $students=Student_course::leftJoin('students', 'students.id','=','student_course.student_id')
+            ->leftJoin('students_year', 'students_year.student_id','=','students.id')
+            ->select(['students.id', 'students.nameAR'])
+            ->where('students_year.m_year','=',$this->getMoneyYear())
+            ->where('students_year.active','=',1)->where('students.isdelete','=',0)->orderBy('students.nameAR')->distinct('students.id')->get();
+
+        $courses=Course::where("isdelete",0)->where('m_year',$this->getMoneyYear())->where("active",1)->orderBy('courseAR')->get();
+        $student_courses=Student_course::get();
+        $ss = [];
+        foreach ($students as $student){
+            foreach ($student_courses as $student_course) {
+                if ($student->id == $student_course->student_id) {
+                    array_push($ss, $student->id);
+                }
+            }
+        }
+        $s = array_unique($ss);
+        $cc = [];
+        foreach ($courses as $course){
+            foreach ($student_courses as $student_course) {
+                if ($course->id == $student_course->course_id) {
+                    array_push($cc, $course->id);
+                }
+            }
+        }
+        $c = array_unique($cc);
+
+        $teachers=Teacher::leftJoin('teachers_year', 'teachers_year.teacher_id','=','teachers.id')
+            ->select(['teachers.id', 'teachers.name'])
+            ->where('teachers_year.m_year','=',$this->getMoneyYear())
+            ->where('teachers_year.active','=',1)->where('teachers.isdelete','=',0)
+            ->orderBy('teachers.name')->get();
+        $users=User::where("isdelete",0)->where("Status","مفعل")->orderBy('name')->get();
+        return view("cms.studentCourse.registerCourse",compact("title","subtitle","students","courses","s","c","teachers",'users'));
     }
 
 }

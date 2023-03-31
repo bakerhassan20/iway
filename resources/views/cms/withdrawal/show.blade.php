@@ -115,7 +115,7 @@ Iwayc System
                                     @can('تعديل انسحاب')
                                     <a href="/CMS/Withdrawal/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
-                                    <a href="/CMS/Withdrawal/" class="btn btn-danger"> إلغاء</a>
+                                    <a href="/CMS/Withdrawal" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>

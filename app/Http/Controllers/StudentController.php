@@ -279,7 +279,9 @@ class StudentController extends CMSBaseController
         }
         $c = array_unique($cc);
         $year=Money_year::where("isdelete",0)->orderBy('year')->get();
-        return view("cms.student.student",compact("title","subtitle","s","c","year"));
+
+        $categories=Option::where('parent_id',276)->where('isdelete',0)->where('active',1)->orderBy('title','asc')->get();
+        return view("cms.student.student",compact("title","subtitle","s","c","year",'categories'));
     }
 
     public function getYearStudents()
