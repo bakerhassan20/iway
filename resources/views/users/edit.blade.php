@@ -89,6 +89,17 @@ Iwayc System
 
                 <div class="row row-sm mg-b-20">
                     <div class="col-lg-6">
+                        <label class="form-label">المستخدم المسؤول</label>
+                        <select name="responsible_id" id="" class="form-control">
+                      <option value=""> اختر من القائمة.... </option>
+                      @foreach ($users  as $us)
+                       <option value="{{ $us->id }}"{{$user->responsible_id==$us->id ?"selected":""}}>{{ $us->name }}</option>
+                      @endforeach
+
+
+                        </select>
+                    </div>
+                    <div class="col-lg-6">
                         <label class="form-label">حالة المستخدم</label>
                         <select name="Status" id="select-beast" class="form-control  nice-select  custom-select">
                             @if ($user->Status == 'مفعل')

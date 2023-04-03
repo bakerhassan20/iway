@@ -78,6 +78,7 @@ Iwayc System
                                 <th class="wd-10p border-bottom-0">#</th>
                                 <th class="wd-15p border-bottom-0">اسم المستخدم</th>
                                 <th class="wd-20p border-bottom-0">البريد الالكتروني</th>
+                                <th class="wd-20p border-bottom-0">المستخدم المسؤول</th>
                                 <th class="wd-15p border-bottom-0">حالة المستخدم</th>
                                 <th class="wd-15p border-bottom-0">نوع المستخدم</th>
                                 <th class="wd-10p border-bottom-0">العمليات</th>
@@ -89,6 +90,12 @@ Iwayc System
                                     <td>{{ ++$i }}</td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
+                                    @if ($user->responsible_id != 0)
+                            <td>{{\App\Models\User::find($user->responsible_id)->name  }}</td>
+                                   @else
+                                    <td class="tag tag-danger">لم يتم اضافه مسؤول </td>
+                                    @endif
+
 
                                     <td>
                                         @if ($user->Status == 'مفعل')
@@ -106,7 +113,7 @@ Iwayc System
                                         @endif
                                     </td>
 
-                                    <td>
+                                    <td td width="15%">
                                         @can('صلاحيات المستخدم')
                                       <a title="صلاحيات المستخدم - {{$user->name}}" class="btn btn-sm IFrame btn-warning-gradient" href="/CMS/User/perm/{{$user->id}}"><i class="fa fa-lock"></i></a>
                                       @endcan

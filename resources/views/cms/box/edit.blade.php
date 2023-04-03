@@ -41,12 +41,13 @@ Iwayc System
                                 </div>
                         <div class="col">
                                 <label class="control-label">السنة المالية:* </label>
-                                    <select name="m_year" id="m_year" class="form-control">
+                            <input type="text" value="{{$year}}" class="form-control validate[required] text-input disable" id="m_year" name="m_year" >
+                                 {{--    <select name="m_year" id="m_year" class="form-control">
                                         @foreach($moneyYears as $moneyYear)
                                             <option {{$item->m_year==$moneyYear->year?"selected":""}} value="{{$moneyYear->year}}"> {{$moneyYear->year}} </option>
                                         @endforeach
 
-                                    </select>
+                                    </select> --}}
                                     <div class="text-danger">{{$errors->first('m_year')}}</div>
                                 </div>
 

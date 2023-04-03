@@ -74,6 +74,7 @@
 
 
                     <div class="row ls_divider">
+                    <div class="col-md-3 control-label">عدد الدورات:  <span class="tag"><strong id="total_reg_course"></strong></span> دوره</div>
                         <div class="col-md-3 control-label">عدد المسجلين:  <span class="tag"><strong id="total_reg_student"></strong></span> طالب</div>
                         <div class="col-md-3 control-label"></span>عدد المنسحبين:  <span class="tag"><strong id="total_withdrawn_student"></strong></span> طالب</div>
                         <div class="col-md-3 control-label">مرتجعات الانسحابات : <span class="tag"><strong id="refunds"></strong> </span>دينار
@@ -253,6 +254,9 @@
                     // var total_rteacher = json.total_rteacher.replace(',','');
 
                     // var net = parseFloat(total_rcourse) - parseFloat(total_rteacher);
+
+
+                    $('#total_reg_course').replaceWith('<strong id="total_reg_course">'+json.all_total_course+'</strong>');
 
                     $('#total_reg_student').replaceWith('<strong id="total_reg_student">'+json.all_total_reg+'</strong>');
 

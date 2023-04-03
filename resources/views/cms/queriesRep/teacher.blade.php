@@ -62,16 +62,6 @@
                         </table>
 
 
-                    <div class="row ls_divider col-md-12">
-                        <div class="col-md-4 control-label">عدد المسجلين : <span class="tag"><strong id="all_registered"></strong></span></div>
-                        <div class="col-md-4 control-label">عدد المنسحبين : <span class="tag"><strong id="all_withdrawn"></strong></span></div>
-                        <div class="col-md-4 control-label"> عدد الخريجين :
-                        <span class="tag"><strong id="all_graduate"></strong></span></div>
-                    </div><br/>
-                   <div class="row ls_divider col-md-12">
-                        <div class="col-md-4 control-label" style="color:#d43f3a;">التقييم العام : <span class="tag"><strong id="ratios"></strong></span></div>
-                        </div>
-                        <br/>
 
                 </div>
             </div>
@@ -82,6 +72,19 @@
 
 <br><br>
 
+                    <div class="row ls_divider col-md-12">
+                        <div class="col-md-4 control-label">عدد المسجلين : <span class="tag"><strong id="all_registered"></strong></span></div>
+                        <div class="col-md-4 control-label">عدد المنسحبين : <span class="tag"><strong id="all_withdrawn"></strong></span></div>
+                        <div class="col-md-4 control-label"> عدد الخريجين :
+                        <span class="tag"><strong id="all_graduate"></strong></span></div>
+                    </div><br/>
+                   <div class="row ls_divider col-md-12">
+                        <div class="col-md-4 control-label"> عدد الدورات :
+                        <span class="tag"><strong id="all_courses"></strong></span></div>
+                        <div class="col-md-4 control-label" style="color:#d43f3a;">التقييم العام : <span class="tag"><strong id="ratios"></strong></span></div>
+                        </div>
+                        <br/>
+                        
 		<!-- row -->
 				<div class="row">
                 			<!--div-->
@@ -171,6 +174,7 @@
             });
             qTable.on( 'xhr', function () {
                 var json = qTable.ajax.json();
+                $("#all_courses").replaceWith('<Strong id="all_courses">'+json.all_courses+'</Strong>');
                 $("#ratios").replaceWith('<Strong id="ratios">'+json.ratios+'</Strong>');
                 $("#all_registered").replaceWith('<Strong id="all_registered">'+json.all_registered+'</Strong>');
                 $("#all_withdrawn").replaceWith('<Strong id="all_withdrawn">'+json.all_withdrawn+'</Strong>');

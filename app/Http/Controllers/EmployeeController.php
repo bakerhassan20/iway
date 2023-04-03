@@ -64,6 +64,8 @@ class EmployeeController extends CMSBaseController
     public function store(Request $request,FlasherInterface $flasher)
     {
 
+
+
         $this->validate($request,
             [
                 'name' => 'required|unique:employees',
@@ -109,8 +111,19 @@ class EmployeeController extends CMSBaseController
             'notes' => $request->input("notes"),
             'created_by' => $this->getId()
         ]);
+        $ski = "";
+        foreach($request->input('skills') as $skill1){
+            $opt = Option::where('id',$skill1)->first();
+
+            $ski = $ski . $opt->title . " ";
+        }
+
+         $employee->update([
+            'skills'=>  $ski,
+        ]);
 
         $skills = $request->input('skills');
+
         foreach($skills as $skill){
             $ss = new Skill();
             $ss->name = $skill;
@@ -211,6 +224,13 @@ class EmployeeController extends CMSBaseController
             }
         }
 
+
+        $ski = "";
+        foreach($request->input('skills') as $skill1){
+            $opt = Option::where('id',$skill1)->first();
+            $ski = $ski . $opt->title . " ";
+        }
+
         $item->name=$request->input("name");
         $item->address=$request->input("address");
         $item->job_title=$request->input("job_title");
@@ -224,8 +244,10 @@ class EmployeeController extends CMSBaseController
         $item->smoke=$request->input("smoke")?1:0;
         $item->active=$request->input("active")?1:0;
         $item->notes=$request->input("notes");
+        $item->skills=$ski;
         $item->updated_by=$this->getId();
         $item->save();
+
 
         if($request->input("skills")){
 

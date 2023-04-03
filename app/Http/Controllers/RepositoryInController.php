@@ -51,7 +51,12 @@ class RepositoryInController extends CMSBaseController
         $title="المستودع";
         $parentTitle="قبض مستودع";
         $last_rep_in=Repository_in::latest()->first();
-        $id_comp=($last_rep_in->id_comp + 1);
+        if($last_rep_in){
+            $id_comp=($last_rep_in->id_comp + 1);
+        }else{
+            $id_comp=1;
+        }
+
         $linkApp="/CMS/RepositoryIn/";
         $repositories=Repository::leftJoin('repositories_year as rp', 'rp.repository_id','=','repositories.id')
         ->leftJoin('repository_view', 'repository_view.repository_id','=','repositories.id')
@@ -275,7 +280,7 @@ class RepositoryInController extends CMSBaseController
         }else{
             $data=1;
         }
-       
+
         return response()->json($data);
     }
 }

@@ -146,6 +146,7 @@
 
    <script>
         $(function() {
+            var subtitle ="<?= $subtitle ?>";
             var sTable = $('#users-table').DataTable({
                 dom: 'Bfrtip',
                 order: [[0, 'desc']],
@@ -153,7 +154,17 @@
                 serverSide: true,
                 buttons: [
                     {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            '<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
+                        );
+
+                    $(win.document.body).find( 'table' )
+                        .addClass( 'compact' )
+                        .css( 'font-size', 'inherit' );
+                }},
                     {'extend':'pdf','text':'pdf','exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
                     }},
                     {'extend':'pageLength','text':'حجم العرض'},

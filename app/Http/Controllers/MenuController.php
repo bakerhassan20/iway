@@ -90,8 +90,8 @@ class MenuController  extends CMSBaseController
         }
 
         $ordered=Link::where('isdelete',0)->where('parent_id',$parent_id)->orderBy("ordered")->get();
-        $items=$items->orderBy("ordered");
-        $items=$items->paginate(10);
+        $items=$items->orderBy("title");
+        $items=$items->paginate(15);
 
         return view("cms.menu.index",compact("title","subtitle","itemstitle","parent_id","items","ordered"));
     }

@@ -191,7 +191,7 @@
                         d.searchStudent = $('#student-courses-table_filter input[type=search]').val();
                        d.courseId = $('select[name=course_h]').val();
                         d.teacherId = $('select[name=teacher_h]').val();
-                        d.yearId = $('select[name=year_h]').val();
+                        d.yearId = $('select[name=money_id]').val();
                     }
                 },
                 columns: [
@@ -214,7 +214,7 @@
             $('#teacher_h').change(function() {
                 sTable.draw();
             });
-            $('#year_h').change(function() {
+            $('#money_id').change(function() {
                 sTable.draw();
             });
         });

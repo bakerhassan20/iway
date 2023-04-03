@@ -65,7 +65,7 @@ Iwayc System
 
                              <div class="col">
                                     <label class="control-label">رقم الورقي:* </label>
-                                        <input type="number" min="0" value="" class="form-control validate[required] text-input" id="id_comp"placeholder="اختر المستودع اولا"
+                                        <input type="number" min="0" value="{{ $id_comp }}" class="form-control validate[required] text-input" id="id_comp"placeholder="اختر المستودع اولا"
                                                name="id_comp" autocomplete="off">
                                         <div class="text-danger">{{$errors->first('id_comp')}}</div>
                                 </div>
@@ -144,11 +144,11 @@ Iwayc System
 <!-- main-content closed -->
 @endsection
 @section('js') <script>
- 
- 
-     
+
+
+
         $(document).ready(function(){
-         
+
              $('#repository_id').change(function(){
                 id_comp();
             });
@@ -158,9 +158,9 @@ Iwayc System
                 $.get("/CMS/id_comp2/" + id,
                     function(data) {
                          $('#id_comp').val(data);
-                        
+
                         });
-                
+
             }
     </script>
 @endsection

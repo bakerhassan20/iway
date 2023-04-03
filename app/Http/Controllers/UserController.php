@@ -78,6 +78,7 @@ return redirect()->route('users.index')
 public function show($id)
 {
 $user = User::find($id);
+
 return view('users.show',compact('user'));
 }
 /**
@@ -91,7 +92,8 @@ public function edit($id)
 $user = User::find($id);
 $roles = Role::pluck('name','name')->all();
 $userRole = $user->roles->pluck('name','name')->all();
-return view('users.edit',compact('user','roles','userRole'));
+$users = User::all();
+return view('users.edit',compact('user','roles','userRole','users'));
 }
 /**
 * Update the specified resource in storage.

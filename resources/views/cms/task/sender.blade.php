@@ -261,7 +261,7 @@
                                     bOut = '<button class="btn btn-sm btn-primary pos" id="'+row.id+'" onclick="fOut(this)">تفعيل المهمة</button>';
 
                             }else {
-                                bOut = '<button disabled class="btn btn-sm btn-primary pos" id="'+row.id+'" onclick="fOut(this)">تفعيل المهمة</button>';
+                                bOut = '<button disabled class="btn btn-sm btn-primary pos disable" id="'+row.id+'" onclick="fOut(this)">تفعيل المهمة</button>';
                             }
                             }else{
                                 bOut = row.start_date;
@@ -272,7 +272,7 @@
                         }
                         ,orderable: false},
                     {"mRender": function ( data, type, row ) {
-                               var bIn = '<button name="btnIn'+row.id+'" class="btn btn-sm btn-primary pos2" id="'+row.id+'" onclick="fIn(this)" disabled>انهاء المهمة</button>';
+                               var bIn = '<button name="btnIn'+row.id+'" class="btn btn-sm btn-primary pos2 disable" id="'+row.id+'" onclick="fIn(this)" disabled>انهاء المهمة</button>';
                             if (row.receiver_id==row.usr) {
                                 if(row.end_date==null && row.start_date!=null){
                                     bIn = '<button name="btnIn'+row.id+'" class="btn btn-sm btn-primary pos2" id="'+row.id+'" onclick="fIn(this)">انهاء المهمة</button>';

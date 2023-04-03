@@ -187,7 +187,10 @@ class BoxController extends CMSBaseController
             return redirect("/CMS/Box/");
         }
 
-        return view("cms.box.edit",compact("title","item","id","parentTitle","linkApp","types","box_year"));
+        $year= $this->getMoneyYear();
+
+
+        return view("cms.box.edit",compact("title","item","id","parentTitle","linkApp","types","box_year",'year'));
     }
 
     /**

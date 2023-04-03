@@ -1024,7 +1024,9 @@ class QueryRepController  extends CMSBaseController
                 if ($request->has('yearId') and $request->get('yearId') != "") {
                     $tasks->where('courses.m_year','=',"{$request->get('yearId')}");
                 }
-            })->with(['all_registered'=>function($tasks){
+            })->with(['all_courses'=>function($tasks){
+                return $tasks->count('courses.id');
+            },'all_registered'=>function($tasks){
                 return $tasks->sum('courses.total_reg_student');
             },'all_withdrawn'=>function($tasks){
                 return $tasks->sum('courses.total_withdrawn_student');
@@ -1032,7 +1034,7 @@ class QueryRepController  extends CMSBaseController
                 return $tasks->sum('courses.total_reg_student')-$tasks->sum('courses.total_withdrawn_student');
             },'ratios'=>function($tasks){
                 $summ= $tasks->sum('courses.ratio');
-                $cou = $tasks->count('courses.id');
+                $cou = $tasks->where('courses.ratio','!=',null)->count('courses.id');
               //  return number_format($summ/$cou,'1')."%";
                    return $cou == 0 ? 0 : (number_format($summ/$cou,'1')."%");
             }])

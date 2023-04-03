@@ -49,6 +49,7 @@ class RepositoryOutController extends CMSBaseController
         $title="المستودع";
         $linkApp="/CMS/RepositoryOut/";
         $repositories=Repository::where('isdelete',0)
+
                 ->leftJoin('repositories_year as rp', 'rp.repository_id','=','repositories.id')
                 ->leftJoin('repository_view', 'repository_view.repository_id','=','repositories.id')
                 ->select([ 'repositories.id',  'repositories.name', 'rp.active'])
@@ -56,7 +57,13 @@ class RepositoryOutController extends CMSBaseController
                         ->where('rp.m_year','=',$this->getMoneyYear())
                         ->where('repository_view.user_id','=',Auth::user()->id)
                         ->get();
-        return view("cms.repositoryOut.add",compact("title","parentTitle","linkApp","repositories"));
+         $last_rep_in=Repository_out::latest()->first();
+               if($last_rep_in){
+                            $id_comp=($last_rep_in->id_comp + 1);
+                }else{
+                            $id_comp=1;
+                        }
+        return view("cms.repositoryOut.add",compact("title","parentTitle",'id_comp',"linkApp","repositories"));
     }
 
     /**
@@ -269,7 +276,7 @@ $repositories=Repository::where('isdelete',0)
         }else{
             $data=1;
         }
-       
+
         return response()->json($data);
     }
 }

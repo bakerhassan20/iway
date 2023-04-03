@@ -152,9 +152,17 @@ aria-labelledby="favoritesModalLabel">
             </div>
         </div>
     </div>
+
 <br><br>
-
-
+<div class="row">
+<div class="col-9">
+<h3 class="panel-title pull-right">عدد المهمات  : (<Strong id="num_tasks"></Strong>)</h3>
+</div>
+<div class="col">
+<h3 class="panel-title pull-left"> التقييم  : (<Strong id="evaluation"></Strong>)</h3>
+</div>
+</div>
+<br>
 
 
 		<!-- row -->

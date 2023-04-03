@@ -259,8 +259,8 @@ class StudentCourseController extends CMSBaseController
 
     public function getStudent()
     {
-        $title="ادارة الدورات";
-        $subtitle="";
+        $subtitle="ادارة الدورات";
+        $title="الماليه";
         $courses=Course::where("isdelete",0)->where('m_year',$this->getMoneyYear())->where("active",1)->orderBy('courseAR')->get();
         $teachers=Teacher::leftJoin('teachers_year', 'teachers_year.teacher_id','=','teachers.id')
             ->select(['teachers.id', 'teachers.name'])

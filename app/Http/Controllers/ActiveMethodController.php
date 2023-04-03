@@ -1378,8 +1378,7 @@ return $html;
             ->leftJoin('options as opn', 'opn.id','=','employees.nationality')
             ->leftJoin('options as optee', 'optee.id','=','employees.status')
             ->leftJoin('options as opteee', 'opteee.id','=','employees.level')
-  /*           ->leftJoin('skills as sk', 'sk.employee_id','=','employees.id') */
-            ->select(['employees.id', 'employees.name', 'opt.title as job', 'employees.birthday','employees.status', 'employees.status', 'op.title as address', 'opn.title as nationality',/* 'sk.name as skills', */ 'employees.phone1', 'opteee.title as level', 'employees.phone2', 'employees.email', 'employees.salary_down', 'employees.smoke', 'employees.updated_at', 'employees.notes', 'employees.active', 'employees.isdelete', 'employees.created_at'])
+            ->select(['employees.id', 'employees.name', 'opt.title as job', 'employees.birthday','employees.status', 'employees.status', 'op.title as address', 'opn.title as nationality',  'employees.phone1', 'opteee.title as level', 'employees.phone2', 'employees.email', 'employees.salary_down', 'employees.skills', 'employees.smoke', 'employees.updated_at', 'employees.notes', 'employees.active', 'employees.isdelete', 'employees.created_at'])
 
             ->where('employees.isdelete','=','0');
         return Datatables::of($tasks)
@@ -1394,7 +1393,6 @@ return $html;
                         $skil .= Option::find($emp_s->name)->title;
                         $skil .=",";
                     }
-
                 }
                 $tasks->skills = $skil;
 
@@ -1416,6 +1414,8 @@ return $html;
                                 ->orWhere('op.title', 'like', "%{$request->get('searchEmployee')}%")
                                 ->orWhere('opn.title', 'like', "%{$request->get('searchEmployee')}%")
                                 ->orWhere('birthday', 'like', "%{$request->get('searchEmployee')}%")
+                                ->orWhere('skills', 'like', "%{$request->get('searchEmployee')}%")
+                                ->orWhere('notes', 'like', "%{$request->get('searchEmployee')}%")
                                 ->orWhere('phone1', 'like', "%{$request->get('searchEmployee')}%");
                         });
                 }
@@ -4504,7 +4504,9 @@ return $response;
                     $tasks->where('courses.category_id', '=', "{$request->get('categoryId')}");
                 }
             })
-           ->with(['all_total_reg'=>function($tasks) {
+           ->with(['all_total_course'=>function($tasks) {
+                return $tasks->count('courses.id');
+           },'all_total_reg'=>function($tasks) {
                 return $tasks->sum('courses.total_reg_student');
            },'all_total_withdrawan'=>function($tasks) {
                 return $tasks->sum('courses.total_withdrawn_student');
@@ -4807,6 +4809,10 @@ return $response;
                     }else{
                         //payed
                         $studentpay=Catch_receipt::where('student_course_id',$tasks->id)->where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('amount');
+                        $tfees=$tasks->teacher_fees;
+                        if($studentpay > $tfees){
+                            $studentpay=$tfees;
+                        }
                         $per= $studentpay * $tasks->percentage / 100;
                     }
                 }elseif ($tasks->ratio_type==18){
@@ -5438,7 +5444,13 @@ $value_sum=$course->value_sum;
                         $center_fees +=$swithdrawal->center_fees;
                     }else{
                         if ($course->ratio_type==29){
-                        $tfees= $studentpay * $course->percentage / 100;
+                            $tf=$course->teacher_fees;
+                            if($studentpay > $tf){
+                                $tfees= $tf * $course->percentage / 100;
+                            }else{
+                                $tfees= $studentpay * $course->percentage / 100;
+                            }
+
                         $center_fees +=$studentpay-$tfees;
                         $teacher_fees +=$tfees;
                         }
@@ -5449,7 +5461,7 @@ $value_sum=$course->value_sum;
         $teacher_catch=Receipt_course::where('course_id',$id)->where('isdelete','=','0')->where('m_year',$this->getMoneyYear())->sum('amount');
 
         if ($course->ratio_type==29){
-            $teacher_remain=$teacher_fees-$teacher_catch;
+        $teacher_remain=$teacher_fees-$teacher_catch;
         $all_t_fees=$agreed_tfees*$courseStu;
         $all_teacher_fees=$all_t_fees*$percentage /100;
         }else if($course->ratio_type==18){
