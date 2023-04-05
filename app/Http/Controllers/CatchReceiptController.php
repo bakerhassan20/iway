@@ -6,6 +6,7 @@ use App\Models\Box;
 use App\Models\User;
 use App\Models\Course;
 use App\Models\Student;
+use App\Events\MakeTask;
 use App\Models\Box_year;
 use Illuminate\Http\Request;
 use App\Models\Catch_receipt;
@@ -13,6 +14,7 @@ use App\Models\Student_course;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Notifications\NewLessonNotification;
 
 class CatchReceiptController extends CMSBaseController
 {
@@ -161,6 +163,16 @@ class CatchReceiptController extends CMSBaseController
         }
 
 
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+
+         if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('CatchReceipt',$catchReceipt->created_by,'انشاء قبض دوره','catchReceipt'));
+        MakeTask::dispatch($user->id);
+
+         }
+
+        }
         $flasher->addSuccess($msg);
         return Redirect::back();
     }
@@ -254,7 +266,20 @@ class CatchReceiptController extends CMSBaseController
             $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
             $primary->income -= $amount - $request->input("amount");
             $primary->save();
+
+            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+            foreach($users as $user){
+
+             if($user->hasRole('owner') && $user->id != $this->getId()){
+            \Notification::send($user,new NewLessonNotification('CatchReceipt',$this->getId(),'تعديل قبض دوره','catchReceipt'));
+            MakeTask::dispatch($user->id);
+
+             }
+
+            }
         }
+
+
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");
         return Redirect::back();

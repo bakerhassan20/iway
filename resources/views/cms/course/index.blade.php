@@ -180,23 +180,35 @@
 
     <script>
         $(function() {
+             var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var cTable = $('#users-table').DataTable({
                 dom: 'Bfrtip',
                 order: [[0, 'desc']],
                 processing: true,
                 serverSide: true,
                 buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf','exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
-                    }},
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                         var json = cTable.ajax.json();
+                    $(win.document.body)
+                        .css( 'font-size', '16pt' )
+                        .prepend(
+                            '<br><div class="row ls_divider col-md-12"><div class="col-md-4 control-label">عدد المسجلين : <strong id="all_registered">'+json.all_registered+'</strong></div><div class="col-md-4 control-label">عدد المنسحبين : (<strong id="all_withdrawn">'+json.all_withdrawn+'</strong>)</div><div class="col-md-4 control-label"> عدد الخريجين :(<strong id="all_graduate">'+json.all_graduate+'</strong>)</div></div><div class="row ls_divider "><div class="col-md-6 control-label">متوسط تقييم المعلمين : <strong id="ratios">'+json.ratios+'</strong></div><div class="col-md-6 control-label">  عدد الدورات الفعاله : <strong id="all_active">'+json.all_active+'</strong></div></div><br/>'
+                        );
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
                     columnDefs: [{
                         targets: '_all',
                         render: function(data, type, row) {
                             if (type === 'PDF') {
-                                return String(data).split(' ').reverse().join('  ');
+                                return String(data).split(' ').reverse().join(' ');
                             }  return data;} }
                    ],
 

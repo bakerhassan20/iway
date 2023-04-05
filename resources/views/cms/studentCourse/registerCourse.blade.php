@@ -96,14 +96,14 @@
 <div class="row">
 
   <div class="col">
-       <h3 class="panel-title"> مجموع الرسوم :<span class="tag">
-        <strong id="total_6_reward_filter"></strong> </span> دينار</h3>
+       <h3 class="panel-title"> مجموع الرسوم :
+        <strong id="total_6_reward_filter"></strong>  دينار</h3>
  </div>
   <div class="col">
-   <h3 class="panel-title">مجموع المدفوع:<span class="tag"><Strong id="total_6_receipt_filter"></Strong></span> دينار</h3>
+   <h3 class="panel-title">مجموع المدفوع:<Strong id="total_6_receipt_filter"></Strong> دينار</h3>
  </div>
   <div class="col">
-          <h3 class="panel-title">المتبقي : <span class="tag"><Strong id="total_6_safi_filter"></Strong></span> دينار</h3>
+          <h3 class="panel-title">المتبقي : <Strong id="total_6_safi_filter"></Strong> دينار</h3>
  </div>
  </div>
 
@@ -161,16 +161,39 @@
 
    <script>
         $(function() {
+                    var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var sTable = $('#student-courses-table').DataTable({
                 dom: 'Bfrtip',
                 processing: true,
                 serverSide: true,
-                buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf'},
+                 buttons: [
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                                var json = sTable.ajax.json();
+     var pay=json.all_pay;
+    var price=json.all_price;
+    var deductions = parseFloat(price) - parseFloat(pay);
+                    $(win.document.body)
+                        .css( 'font-size', '16pt' )
+                        .prepend(
+                            '<br><br><div class="row"><div class="col"><h3 class="panel-title"> مجموع الرسوم :<strong id="total_6_reward_filter">'+json.all_price+'</strong>  دينار</h3></div><div class="col"><h3 class="panel-title">مجموع المدفوع:<Strong id="total_6_receipt_filter">'+json.all_pay+'</Strong> دينار</h3></div><div class="col"><h3 class="panel-title">المتبقي : <Strong id="total_6_safi_filter">'+deductions.toFixed(2)+'</Strong> دينار</h3></div></div><br/>');
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
+                    columnDefs: [{
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'PDF') {
+                                return String(data).split(' ').reverse().join(' ');
+                            }  return data;} }
+                   ],
+
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
                 },

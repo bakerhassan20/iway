@@ -362,8 +362,9 @@ class TaskController extends CMSBaseController
         $item->start_date=date("Y-m-d h:i");
         $item->save();
         $date = Task::where('id',$id)->first(['start_date']);
+        
         $user = User::where('id','=',$item->receiver)->first();
-        \Notification::send($user,new NewLessonNotification($item->id,$item->sender,$item->title));
+        \Notification::send($user,new NewLessonNotification($item->id,$item->sender,$item->title,'task'));
          MakeTask::dispatch($item->receiver);
         return Response::json($date);
     }

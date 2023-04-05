@@ -40,8 +40,9 @@
   ?>
                 @foreach($links as $link)
                     <?php $sublinks = DB::table("links")->whereRaw("links.id in (select link_id from user_link where user_id=$adminid) ")
-                        ->where("parent_id", $link->id)->where("show_menu", 1)->where("active", 1)->where("isdelete", 0)->orderBy('ordered')->get();;
+                        ->where("parent_id", $link->id)->where("show_menu", 1)->where("active", 1)->where("isdelete", 0)->orderBy('ordered')->get();
                     $subSlug = '';?>
+                @if(count($sublinks)>0)
 					<li class="slide">
 						<a class="side-menu__item iconelinke" data-toggle="slide" href="{{ url('/' . $page='#') }}">
 
@@ -64,7 +65,7 @@
 						</ul>
                     @endif()
 					</li>
-
+                @endif()
 
                 @endforeach()
 

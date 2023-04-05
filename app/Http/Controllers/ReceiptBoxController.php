@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Box;
 use App\Models\User;
+use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Receipt_box;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Notifications\NewLessonNotification;
 
 class ReceiptBoxController extends CMSBaseController
 {
@@ -131,6 +133,13 @@ class ReceiptBoxController extends CMSBaseController
             }
         }
 
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('ReceiptBox/'.$receipt_box->id,$this->getId(),'تعديل صرف صندوق مستقل','ReceiptBox'));
+        MakeTask::dispatch($user->id);
+        } }
+
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
     }
@@ -218,6 +227,13 @@ class ReceiptBoxController extends CMSBaseController
             $primary->expense -= $amount - $request->input("amount");
             $primary->save();
         }
+
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('ReceiptBox/'.$item->id,$this->getId(),' تعديل صرف صندوق مستقل','ReceiptBox'));
+        MakeTask::dispatch($user->id);
+        } }
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");
         return Redirect::back();

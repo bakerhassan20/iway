@@ -130,6 +130,8 @@
 							@foreach(auth()->user()->unreadNotifications as $notification)
 
 
+ @if ($notification->data['type'] == 'task')
+
 
 <a class="d-flex p-3 border-bottom showModal" href="/CMS/ShowMy/Task/{{ $notification->data['task_id'] }}">
 		<div class="notifyimg bg-warning" style="height: 60px !important;">
@@ -175,11 +177,36 @@
 		</div>
 	</a>
 
+
+ @else
+
+
+
+<a class="d-flex p-3 border-bottom showModal" href="/CMS/{{ $notification->data['task_id'] }}">
+		<div class="notifyimg bg-warning" style="height: 60px !important;">
+			<img src='{{ asset("storage/users-avatar/". \App\Models\User::find($notification->data['sender'])->avatar)}}' alt="">
+		</div>
+		<div class="mr-3">
+         <h5 class="notification-label mb-1">قام <span class="tag tag-orange">{{\App\Models\User::find($notification->data['sender'])->name}}</span> </h5>
+
+		    <h5 class="notification-label mb-2">{{ $notification->data['title'] }}</h5>
+		    <div class="notification-subtext mb-2"><h5 class="notification-label mb-1">{{ $notification->created_at->format('Y-m-d h:i') }}</h5>
+
+          </div>
+	    </div>
+		<div class="mr-auto" >
+		    <i class="las la-angle-left text-left text-muted"></i>
+		</div>
+	</a>
+
+
+    @endif
+
 @endforeach
 									</div>
-									<div class="text-center dropdown-footer">
+								{{-- 	<div class="text-center dropdown-footer">
 										<a class="text-center" href="/CMS/My/Task">مشاهده الكل</a>
-									</div>
+									</div> --}}
 								</div>
 							</div>
 
@@ -207,7 +234,7 @@
                                 <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bx bx-cog"></i> تعديل الملف الشخصي</a>
                                 <a class="dropdown-item" href="/CMS/My/Task"><i class="bx bxs-inbox"></i>مهماتي</a>
                                 <a class="dropdown-item" href="{{ route('chatify') }}"><i class="bx bx-envelope"></i>الرسائل</a>
-                               
+
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i
                                         class="bx bx-log-out"></i>تسجيل خروج</a>

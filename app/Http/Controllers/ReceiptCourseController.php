@@ -12,6 +12,7 @@ use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\CMSBaseController;
+use App\Notifications\NewLessonNotification;
 
 class ReceiptCourseController extends CMSBaseController
 {
@@ -119,6 +120,15 @@ class ReceiptCourseController extends CMSBaseController
         $primary->save();
     }
 
+    $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+    foreach($users as $user){
+
+    if($user->hasRole('owner') && $user->id != $this->getId()){
+    \Notification::send($user,new NewLessonNotification('ReceiptCourse/'.$receipt_course->id,$this->getId(),'انشاء صرف اجور معلم','ReceiptCourse'));
+    MakeTask::dispatch($user->id);
+    }
+    }
+
     $flasher->addSuccess("تمت عملية الاضافة بنجاح");
     return Redirect::back();
     }
@@ -206,6 +216,16 @@ class ReceiptCourseController extends CMSBaseController
         $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
         $primary->expense -= $amount - $request->input("amount");
         $primary->save();
+
+
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('ReceiptCourse/'.$item->id,$this->getId(),'تعديل صرف اجور معلم ','ReceiptCourse'));
+        MakeTask::dispatch($user->id);
+        }
+
+        }
     }
 
     $flasher->addSuccess("تمت عملية الحفظ بنجاح");

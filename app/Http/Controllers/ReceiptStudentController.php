@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Course;
+use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\CMSBaseController;
+use App\Notifications\NewLessonNotification;
 
 class ReceiptStudentController extends CMSBaseController
 {
@@ -122,7 +124,7 @@ class ReceiptStudentController extends CMSBaseController
             $Receipt_student = Receipt_student::latest()->first();
             $add = new Approval_record();
             $add->row_id=$Receipt_student->id;
-            $add->model_id='App\Models\Receipt_student';
+            $add->model_id='Receipt_student';
             $add->slug='Receipt_student';
             $add->section='انسحاب طالب';
             $add->user_id=$Receipt_student->created_by;
@@ -131,6 +133,14 @@ class ReceiptStudentController extends CMSBaseController
             $add->save();
         }
     }
+
+    $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+    foreach($users as $user){
+    if($user->hasRole('owner') && $user->id != $this->getId()){
+    \Notification::send($user,new NewLessonNotification('ReceiptStudent/'.$receipt_student->id,$this->getId(),'صرف مخالصة','ReceiptStudent'));
+    MakeTask::dispatch($user->id);
+    } }
+
 
     $flasher->addSuccess("تمت عملية الاضافة بنجاح");
     return Redirect::back();
@@ -214,6 +224,13 @@ class ReceiptStudentController extends CMSBaseController
         $primary->expense -= $amount - $request->input("amount");
         $primary->save();
     }
+
+    $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+    foreach($users as $user){
+    if($user->hasRole('owner') && $user->id != $this->getId()){
+    \Notification::send($user,new NewLessonNotification('ReceiptStudent/'.$item->id,$this->getId(),'تعديل صرف مخالصة','ReceiptStudent'));
+    MakeTask::dispatch($user->id);
+    } }
 
     $flasher->addSuccess("تمت عملية الحفظ بنجاح");
     return Redirect::back();

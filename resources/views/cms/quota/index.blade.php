@@ -164,6 +164,7 @@
         jQuery(document).ready(function($){
 
             $('#type_h').change(function(){
+
                 var id=$(this).val();
                 $.get("/CMS/Section/" + id,
                     function(data) {
@@ -183,15 +184,17 @@
         });
 
         $(function() {
+             var subtitle ="ادارة جدول الحصص";
+             var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var abTable = $('#users-table').DataTable({
                 dom: 'Bfrtip',
                 order: [[0, 'desc']],
                 processing: true,
                 serverSide: true,
                 buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf' ,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,},
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
                     }
                     },
                     {'extend':'pageLength','text':'حجم العرض'},

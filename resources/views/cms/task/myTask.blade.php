@@ -112,7 +112,7 @@
 
 </div>
 <div class="col">
-<h3 class="panel-title"> عدد المهمات <span class="tag tag-gray"style="font-size:16px"><Strong id="num_tasks"></Strong></span></h3>
+<h3 class="panel-title"> عدد المهمات <Strong id="num_tasks"></Strong></h3>
 </div>
 </div>
 
@@ -171,16 +171,38 @@
     <script>
 
         $(function() {
+
+            var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var tTable = $('#users-table').DataTable({
                 dom: 'Bfrtip',
                 processing: true,
                 serverSide: true,
+                serverSide: true,
                 buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf'},
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                     var json = tTable.ajax.json();
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            ' <br><h3 class="panel-title"> عدد المهمات <Strong id="num_tasks">'+json.total+'</Strong>h3><br>'
+                        );
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
+                    columnDefs: [{
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'PDF') {
+                                return String(data).split(' ').reverse().join(' ');
+                            }  return data;} }
+                   ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
                 },

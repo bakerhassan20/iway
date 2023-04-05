@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Box;
 use App\Models\User;
+use App\Events\MakeTask;
 use App\Models\Box_year;
 use Illuminate\Http\Request;
 use App\Models\Catch_receipt_box;
@@ -11,6 +12,7 @@ use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\CMSBaseController;
+use App\Notifications\NewLessonNotification;
 
 class CatchReceiptBoxController extends CMSBaseController
 {
@@ -118,6 +120,12 @@ class CatchReceiptBoxController extends CMSBaseController
             $primary->save();
         }
 
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('CatchReceiptBox/'.$catchReceiptBox->id,$this->getId(),'قبض صندوق مستقل','CatchReceiptBox'));
+        MakeTask::dispatch($user->id);
+        } }
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
     }
@@ -209,6 +217,13 @@ class CatchReceiptBoxController extends CMSBaseController
             $primary = Box_year::where('box_id','1')->where('m_year',$this->getMoneyYear())->first();
             $primary->income -= $amount - $request->input("amount");
             $primary->save();
+
+            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+            foreach($users as $user){
+            if($user->hasRole('owner') && $user->id != $this->getId()){
+            \Notification::send($user,new NewLessonNotification('CatchReceiptBox/'.$item->id,$this->getId(),'تعديل قبض صندوق مستقل','CatchReceiptBox'));
+            MakeTask::dispatch($user->id);
+            } }
         }
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");

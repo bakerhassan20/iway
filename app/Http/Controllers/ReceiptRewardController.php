@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Box;
 use App\Models\User;
 use App\Models\Option;
+use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Notifications\NewLessonNotification;
 
 class ReceiptRewardController extends CMSBaseController
 {
@@ -144,6 +146,17 @@ class ReceiptRewardController extends CMSBaseController
     }
 
 }
+             if( $request->input("type") == 0){
+                $title ='صرف مكافأة';
+             }else{
+                $title ='صرف خصم';
+             }
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('ReceiptReward/'.$receipt_salary->id,$this->getId(), $title,'ReceiptReward'));
+        MakeTask::dispatch($user->id);
+        } }
 
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
@@ -241,6 +254,21 @@ class ReceiptRewardController extends CMSBaseController
                 $primary->income -= $amount - $request->input("amount");
                 $primary->save();
             }
+
+
+            if( $item->type == 0){
+                $title ='تعديل مكافأة';
+             }else{
+                $title ='تعديل خصم';
+             }
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('ReceiptReward/'.$item->id,$this->getId(), $title,'ReceiptReward'));
+        MakeTask::dispatch($user->id);
+        } }
+
+
         }
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");

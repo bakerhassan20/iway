@@ -164,22 +164,27 @@
 <script src="{{URL::asset('assets/js/form-validation.js')}}"></script>
     <script>
         $(function() {
+             var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var sTable = $('#student-courses-table').DataTable({
                 dom: 'Bfrtip',
                 processing: true,
                 serverSide: true,
-                buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf','exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
-                    }},
+                 buttons: [
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
-                 columnDefs: [{
+
+                   ],
+                    columnDefs: [{
                         targets: '_all',
                         render: function(data, type, row) {
                             if (type === 'PDF') {
-                                return String(data).split(' ').reverse().join('  ');
+                                return String(data).split(' ').reverse().join(' ');
                             }  return data;} }
                    ],
                 language: {

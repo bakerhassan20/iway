@@ -95,6 +95,7 @@
                                                 <th>المستوى3</th>
                                                 <th>المستوى4</th>
                                                 <th>المستوى5</th>
+                                                <th>نسبه الانجاز</th>
                                                 <th>الحالة</th>
                                                 <th width="15%"></th>
                                             </tr>
@@ -122,6 +123,8 @@
 @section("js")
     <script>
         $(function() {
+                   var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var eTable = $('#users-table').DataTable({
                 dom: 'Bfrtip',
                 order: [[0, 'desc']],
@@ -129,12 +132,23 @@
                 serverSide: true,
                 searching: false,
                 lengthChange: false,
-                buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf'},
+                 buttons: [
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
+                    columnDefs: [{
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'PDF') {
+                                return String(data).split(' ').reverse().join(' ');
+                            }  return data;} }
+                   ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
                 },
@@ -157,6 +171,7 @@
                     { data: 'level3', name: 'level3' },
                     { data: 'level4', name: 'level4' },
                     { data: 'level5', name: 'level5' },
+                    { data: 'achievement', name: 'achievement' },
 
                     {"mRender": function ( data, type, row ) {
                             var cbWork = '<input onclick="fAct(this)" type="radio" value="'+row.id+'" id="'+row.id+'" name="cbWorked" class="form-control">';

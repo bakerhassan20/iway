@@ -74,35 +74,35 @@
 
 
                     <div class="row ls_divider">
-                    <div class="col-md-3 control-label">عدد الدورات:  <span class="tag"><strong id="total_reg_course"></strong></span> دوره</div>
-                        <div class="col-md-3 control-label">عدد المسجلين:  <span class="tag"><strong id="total_reg_student"></strong></span> طالب</div>
-                        <div class="col-md-3 control-label"></span>عدد المنسحبين:  <span class="tag"><strong id="total_withdrawn_student"></strong></span> طالب</div>
-                        <div class="col-md-3 control-label">مرتجعات الانسحابات : <span class="tag"><strong id="refunds"></strong> </span>دينار
+                    <div class="col-md-3 control-label">عدد الدورات:  <strong id="total_reg_course"></strong> دوره</div>
+                        <div class="col-md-3 control-label">عدد المسجلين:  <strong id="total_reg_student"></strong> طالب</div>
+                        <div class="col-md-3 control-label">عدد المنسحبين:  <strong id="total_withdrawn_student"></strong> طالب</div>
+                        <div class="col-md-3 control-label">مرتجعات الانسحابات : <strong id="refunds"></strong> دينار
 
                     </div>  </div><br>
                     <div class="row ls_divider">
-                        <div class="col-md-3 control-label">رسوم التسجيل:  <span class="tag"><strong id="regFees"></strong></span> دينار</div>
-                        <div class="col-md-3 control-label">رسوم المقررات:  <span class="tag"><strong id="docsFees"></strong></span> دينار</div>
-                        <div class="col-md-3 control-label">رسوم الدورة:  <span class="tag"><strong id="courseFees"></strong></span> دينار</div>
-                        <div class="col-md-3 control-label">الرسوم النهائية :  <span class="tag"><strong id="totalFees"></strong> </span>دينار</div>
+                        <div class="col-md-3 control-label">رسوم التسجيل:  <strong id="regFees"></strong> دينار</div>
+                        <div class="col-md-3 control-label">رسوم المقررات:  <strong id="docsFees"></strong> دينار</div>
+                        <div class="col-md-3 control-label">رسوم الدورة:  <strong id="courseFees"></strong> دينار</div>
+                        <div class="col-md-3 control-label">الرسوم النهائية :  <strong id="totalFees"></strong> دينار</div>
                     </div><br>
                     <div class="row ls_divider">
-                        <div class="col-md-3 control-label">الرسوم الكلية :  <span class="tag"><strong id="allFees"></strong></span> دينار</div>
-                        <div class="col-md-3 control-label">مدفوعات الطلاب :  <span class="tag"><strong id="spayed"></strong></span> دينار</div>
-                        <div class="col-md-3 control-label">ذمم الطلاب :  <span class="tag"><strong id="sremains"></strong></span> دينار</div>
+                        <div class="col-md-3 control-label">الرسوم الكلية :  <strong id="allFees"></strong> دينار</div>
+                        <div class="col-md-3 control-label">مدفوعات الطلاب :  <strong id="spayed"></strong> دينار</div>
+                        <div class="col-md-3 control-label">ذمم الطلاب :  <strong id="sremains"></strong> دينار</div>
 
                     </div><br>
 
 
                      <div class="row ls_divider">
-                        <div class="col-md-3 control-label"> نصيب المعلم : <span class="tag"><strong id="teacher_fees"></strong></span> دينار</div>
-                        <div class="col-md-3 control-label">مقبوضات المعلم  :  <span class="tag"><strong id="teacher_catches"></strong></span> دينار</div>
-                        <div class="col-md-3 control-label">باقى نصيب المعلم  :  <span class="tag"><strong id="teacher_remains"></strong></span> دينار</div>
+                        <div class="col-md-3 control-label"> نصيب المعلم : <strong id="teacher_fees"></strong> دينار</div>
+                        <div class="col-md-3 control-label">مقبوضات المعلم  :  <strong id="teacher_catches"></strong> دينار</div>
+                        <div class="col-md-3 control-label">باقى نصيب المعلم  :  <strong id="teacher_remains"></strong> دينار</div>
 
                     </div><br>
                      <div class="row ls_divider">
-                        <div class="col-md-3 control-label"> نصيب المركز من التحصيل :  <span class="tag"><strong id="center_fees"></strong></span> دينار</div>
-                        <div class="col-md-4 control-label"> نصيب المركز فى حالة التحصيل التام  :  <span class="tag"><strong id="all_center_fees"></strong></span> دينار</div>
+                        <div class="col-md-3 control-label"> نصيب المركز من التحصيل :  <strong id="center_fees"></strong> دينار</div>
+                        <div class="col-md-4 control-label"> نصيب المركز فى حالة التحصيل التام  :  <strong id="all_center_fees"></strong> دينار</div>
 
 
                     </div>
@@ -177,22 +177,33 @@
 
    <script>
         $(function() {
+            var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var sTable = $('#student-courses-table').DataTable({
                 dom: 'Bfrtip',
                 processing: true,
                 serverSide: true,
                 buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf','exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
-                    }},
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                       var json = sTable.ajax.json();
+                    $(win.document.body)
+                        .css( 'font-size', '18pt' )
+                        .prepend(
+                            '<br><div class="row ls_divider"><div class="col-md-3 control-label">عدد الدورات:  <strong id="total_reg_course">'+json.all_total_course+'</strong> دوره</div><div class="col-md-3 control-label">عدد المسجلين:  <strong id="total_reg_student">'+json.all_total_reg+'</strong> طالب</div><div class="col-md-3 control-label">عدد المنسحبين:  <strong id="total_withdrawn_student">'+json.all_total_withdrawan+'</strong> طالب</div><div class="col-md-3 control-label">مرتجعات الانسحابات : <strong id="refunds">'+json.all_calcs.refunds+'</strong> دينا</div>  </div><br><div class="row ls_divider"><div class="col-md-3 control-label">رسوم التسجيل:  <strong id="regFees"></strong> دينار</div><div class="col-md-3 control-label">رسوم المقررات:  <strong id="docsFees"></strong> دينار</div><div class="col-md-3 control-label">رسوم الدورة:  <strong id="courseFees"></strong> دينار</div><div class="col-md-3 control-label">الرسوم النهائية :  <strong id="totalFees"></strong> دينار</div></div><br><div class="row ls_divider"><div class="col-md-3 control-label">الرسوم الكلية :  <strong id="allFees">'+json.all_calcs.all_prices+'</strong> دينار</div><div class="col-md-3 control-label">مدفوعات الطلاب :  <strong id="spayed">'+json.all_calcs.all_spays+'</strong> دينار</div><div class="col-md-3 control-label">ذمم الطلاب :  <strong id="sremains">'+json.all_calcs.all_sremain+'</strong> دينار</div></div><br><div class="row ls_divider"><div class="col-md-3 control-label"> نصيب المعلم : <strong id="teacher_fees">'+json.all_calcs.teacher_fees+'</strong> دينار</div><div class="col-md-3 control-label">مقبوضات المعلم  :  <strong id="teacher_catches">'+json.all_calcs.teacher_catches+'</strong> دينار</div><div class="col-md-3 control-label">باقى نصيب المعلم  :  <strong id="teacher_remains">'+json.all_calcs.teacher_remains+'</strong> دينار</div></div><br><div class="row ls_divider"><div class="col-md-3 control-label"> نصيب المركز من التحصيل :  <strong id="center_fees">'+json.all_calcs.center_fees+'</strong> دينار</div><div class="col-md-4 control-label"> نصيب المركز فى حالة التحصيل التام  :  <strong id="all_center_fees">'+json.all_calcs.all_center_fees+'</strong> دينار</div></div>');
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
-                   columnDefs: [{
+
+                   ],
+                    columnDefs: [{
                         targets: '_all',
                         render: function(data, type, row) {
                             if (type === 'PDF') {
-                                return String(data).split(' ').reverse().join('  ');
+                                return String(data).split(' ').reverse().join(' ');
                             }  return data;} }
                    ],
                 language: {

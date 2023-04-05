@@ -13,17 +13,19 @@ class NewLessonNotification extends Notification
     protected $task_id;
     protected $sender;
     protected $title;
+    protected $type;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($task_id,$sender,$title)
+    public function __construct($task_id,$sender,$title,$type)
     {
         $this->task_id=$task_id;
         $this->sender=$sender;
         $this->title=$title;
+        $this->type=$type;
     }
 
     /**
@@ -43,6 +45,7 @@ class NewLessonNotification extends Notification
             'task_id' => $this->task_id,
             'sender' => $this->sender,
             'title' => $this->title,
+            'type' => $this->type,
         ];
     }
 

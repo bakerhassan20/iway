@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Box;
 use App\Models\User;
+use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Repository;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Notifications\NewLessonNotification;
 
 class RepositoryOutController extends CMSBaseController
 {
@@ -63,6 +65,8 @@ class RepositoryOutController extends CMSBaseController
                 }else{
                             $id_comp=1;
                         }
+
+
         return view("cms.repositoryOut.add",compact("title","parentTitle",'id_comp',"linkApp","repositories"));
     }
 
@@ -133,6 +137,14 @@ class RepositoryOutController extends CMSBaseController
         $add->save();
         }
     }
+
+
+    $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+    foreach($users as $user){
+    if($user->hasRole('owner') && $user->id != $this->getId()){
+    \Notification::send($user,new NewLessonNotification('RepositoryOut/'.$repository_out->id,$this->getId(),'صرف مستودع','RepositoryOut'));
+    MakeTask::dispatch($user->id);
+    } }
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
     }
@@ -180,6 +192,10 @@ $repositories=Repository::where('isdelete',0)
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
             return redirect("/CMS/RepositoryOut/");
         }
+
+
+
+
         return view("cms.repositoryOut.edit",compact("title","item","id","repositories","parentTitle","linkApp"));
     }
 
@@ -226,6 +242,15 @@ $repositories=Repository::where('isdelete',0)
                 $primary->expense -= $total-$request->input("total");
                 $primary->save();
             }
+
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('RepositoryOut/'.$item->id,$this->getId(),'تعديل صرف مستودع','RepositoryOut'));
+        MakeTask::dispatch($user->id);
+        } }
+
+
         }
 
 

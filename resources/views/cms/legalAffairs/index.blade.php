@@ -242,17 +242,37 @@
 @section('js')
 <script>
         $(function() {
+                var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var cTable = $('#users-table').DataTable({
                 dom: 'Bfrtip',
                 order: [[0, 'desc']],
                 processing: true,
                 serverSide: true,
-                buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf'},
+                 buttons: [
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                       var json = cTable.ajax.json();
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            '<br><div class="row spantag"><div class="col-md-12"><div class="panel panel-default"><div class="panel-body"><div class="row ls_divider"><div class="col-md-4 control-label">مجموع المبالغ المطلوبة:<strong id="sum_teacher_fees"> '+json.sum_teacher_fees+' </strong>  دينار </div><div class="col-md-4 control-label">المبالغ المحصلة: <strong id="receipt_teacher">'+json.receipt_teacher+' </strong>   دينار </div><div class="col-md-4 control-label">المبالغ المتبقية: <strong id="remaind_teacher"> '+json.remaind_teacher+' </strong>  دينار </div></div><br><div class="row ls_divider"><div class="col-md-4 control-label">عدد الطلاب : <strong id="num">'+json.num+'</strong></div><div class="col-md-4 control-label">عدد مرات المطالبة: <strong id="count_claim">'+json.count_claim+'</strong></div><div class="col-md-4 control-label">عدد مرات التحذيرات: <strong id="count_warning">'+json.count_warning+'</strong></div></div></div></div></div></div><br>'
+                        );
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
+                    columnDefs: [{
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'PDF') {
+                                return String(data).split(' ').reverse().join(' ');
+                            }  return data;} }
+                   ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
                 },

@@ -46,7 +46,7 @@
 
                             <div class="col"                            >
                                 <select name="course_h" id="course_h"class="form-control select2" data-parsley-class-handler="#slWrapper2" data-parsley-errors-container="#slErrorContainer2">
-                                    <option value="all"> اختر اسم الدورة.... </option>
+                                    <option value="all"> اختر اسم تصنيف الدوره.... </option>
                                     @foreach($categories as $category)
                                         <option value="{{$category->id}}"> {{$category->title}}</option>
                                     @endforeach
@@ -73,14 +73,14 @@
 
 
                     <div class="row ls_divider">
-                        <div class="col-md-4 control-label">اسم الطالب: <span class="tag"><strong id="studentName"></strong></span></div>
-                        <div class="col-md-4 control-label">الهواتف المتوفرة: <span class="tag"><strong id="studentPhone"></strong></span></div>
-                        <div class="col-md-4 control-label">تصنيف الطالب: <span class="tag"><strong id="studentType"></strong></span></div>
+                        <div class="col-md-4 control-label">اسم الطالب: <strong id="studentName"></strong></div>
+                        <div class="col-md-4 control-label">الهواتف المتوفرة: <strong id="studentPhone"></strong></div>
+                        <div class="col-md-4 control-label">تصنيف الطالب: <strong id="studentType"></strong></div>
                     </div><br>
                     <div class="row ls_divider">
-                        <div class="col-md-4 control-label">مجموع الرسوم الكلي: <span class="tag"><strong id="totalSum"></strong></span> دينار</div>
-                        <div class="col-md-4 control-label">مجموع المدفوع: <span class="tag"><strong id="receiptSum"></strong></span> دينار</div>
-                        <div class="col-md-4 control-label">مجموع الذمم: <span class="tag"><strong id="remaindSum"></strong></span> دينار</div>
+                        <div class="col-md-4 control-label">مجموع الرسوم الكلي: <strong id="totalSum"></strong> دينار</div>
+                        <div class="col-md-4 control-label">مجموع المدفوع: <strong id="receiptSum"></strong> دينار</div>
+                        <div class="col-md-4 control-label">مجموع الذمم: <strong id="remaindSum"></strong> دينار</div>
                     </div><br>
 
                 </div>
@@ -145,17 +145,42 @@
 <script src="{{URL::asset('assets/js/form-validation.js')}}"></script>
 <script>
         $(function() {
+                         var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var sTable = $('#student-courses-table').DataTable({
                 dom: 'Bfrtip',
                 order: [[0, 'desc']],
                 processing: true,
                 serverSide: true,
                 buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf'},
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                     var json = sTable.ajax.json();
+
+
+                     var pay=json.allrec;
+                     var price=json.allprice;
+                     var deductions = parseFloat(price) - parseFloat(pay);
+                    $(win.document.body)
+                        .css( 'font-size', '17pt' )
+                        .prepend(
+                            '<br><div class="row ls_divider"><div class="col-md-4 control-label">مجموع الرسوم الكلي: <strong id="totalSum">'+json.allprice+'</strong> دينار</div><div class="col-md-4 control-label">مجموع المدفوع: <strong id="receiptSum">'+json.allrec+'</strong> دينار</div><div class="col-md-4 control-label">مجموع الذمم: <strong id="remaindSum">'+deductions+'</strong> دينار</div></div><br>'
+                        );
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
+                    columnDefs: [{
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'PDF') {
+                                return String(data).split(' ').reverse().join(' ');
+                            }  return data;} }
+                   ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
                 },

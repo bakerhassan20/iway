@@ -147,16 +147,37 @@
 
    <script>
          setTimeout(function() {
+                 var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var rsaTable = $('#receipt-salary-table').DataTable({
                 dom: 'Bfrtip',
                 processing: true,
                 serverSide: true,
                 buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf'},
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                        var json = rsaTable.ajax.json();
+                var all = parseInt(json.tot2) + parseInt(json.tot);
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            '<br><div class="row"><div class="col-5"><h3 class="">مجموع مستردات السلف: <span class="tag"><strong id="tot2_filter">'+json.tot2+'</strong></span> دينار  </h3></div><div class="col"><h3 class="" style=""> مجموع الرواتب :<span class="tag"><strong id="tot3_filter">'+json.tot+'</strong> </span> دينار</h3></div><div class="col"><h3 class="">المجموع الكلى:<span class="tag"><Strong id="total_4_filter">'+all+'</Strong> </span>دينار</h3></div></div>'
+                        );
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
+                    columnDefs: [{
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'PDF') {
+                                return String(data).split(' ').reverse().join(' ');
+                            }  return data;} }
+                   ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
                 },

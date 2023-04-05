@@ -95,14 +95,14 @@
 <div class="row">
 
   <div class="col">
-       <h3 class="panel-title"> مجموع المكافات :<span class="tag">
-        <strong id="total_6_reward_filter"></strong> </span> دينار</h3>
+       <h3 class="panel-title"> مجموع المكافات :
+        <strong id="total_6_reward_filter"></strong> دينار</h3>
  </div>
   <div class="col">
-   <h3 class="panel-title">مجموع الخصومات:<span class="tag"><Strong id="total_6_receipt_filter"></Strong></span> دينار</h3>
+   <h3 class="panel-title"> مجموع الخصومات :    <Strong id="total_6_receipt_filter"></Strong>دينار</h3>
  </div>
   <div class="col">
-          <h3 class="panel-title">الصافى : <span class="tag"><Strong id="total_6_safi_filter"></Strong></span> دينار</h3>
+          <h3 class="panel-title">الصافى : <Strong id="total_6_safi_filter"></Strong> دينار</h3>
  </div>
  </div>
                 <div class="row">
@@ -153,16 +153,40 @@
 @section("js")
     <script>
       setTimeout(function() {
+               var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var rrTable = $('#receipt-reward-table').DataTable({
                 dom: 'Bfrtip',
                 processing: true,
                 serverSide: true,
-                buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf'},
+                 buttons: [
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                        var json = rrTable.ajax.json();
+                        var rewards=json.rewards.replace(',','');
+                        var all=json.all.replace(',','');
+                        var deductions = parseFloat(all) - parseFloat(rewards);
+                        var safi = parseFloat(rewards) - parseFloat(deductions);
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            '<br><div class="row"><div class="col"><h3 class="panel-title"> مجموع المكافات :<strong id="total_6_reward_filter">'+json.rewards+'</strong>دينار</h3></div><div class="col"><h3 class="panel-title">مجموع الخصومات:<Strong id="total_6_receipt_filter">'+deductions.toFixed(2)+'</Strong> دينار</h3></div><div class="col"><h3 class="panel-title">الصافى :<Strong id="total_6_safi_filter">'+safi.toFixed(2)+'</Strong> دينار</h3></div></div>'
+                        );
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
+                    columnDefs: [{
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'PDF') {
+                                return String(data).split(' ').reverse().join(' ');
+                            }  return data;} }
+                   ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
                 },

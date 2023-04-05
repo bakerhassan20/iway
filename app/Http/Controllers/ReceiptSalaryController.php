@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Box;
 use App\Models\User;
 use App\Models\Salary;
+use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Notifications\NewLessonNotification;
 
 class ReceiptSalaryController extends CMSBaseController
 {
@@ -152,7 +154,19 @@ class ReceiptSalaryController extends CMSBaseController
         $add->date=$Receipt_salary->created_at;
         $add->save();
     }
-}
+
+ }
+
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('ReceiptSalary/'.$receipt_salary->id,$this->getId(),'انشاء صرف راتب ','ReceiptSalary'));
+        MakeTask::dispatch($user->id);
+
+        }
+
+        }
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
     }
@@ -257,6 +271,16 @@ class ReceiptSalaryController extends CMSBaseController
                 $rr=$salary->remaind;
                 $salary->remaind = $rr-$request->input("amount");
                 $salary->save();
+            }
+
+            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+            foreach($users as $user){
+
+            if($user->hasRole('owner') && $user->id != $this->getId()){
+            \Notification::send($user,new NewLessonNotification('ReceiptSalary/'.$item->id,$this->getId(),'تعديل صرف راتب ','ReceiptSalary'));
+            MakeTask::dispatch($user->id);
+            }
+
             }
         }
 

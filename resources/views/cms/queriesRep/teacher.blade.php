@@ -73,18 +73,18 @@
 <br><br>
 
                     <div class="row ls_divider col-md-12">
-                        <div class="col-md-4 control-label">عدد المسجلين : <span class="tag"><strong id="all_registered"></strong></span></div>
-                        <div class="col-md-4 control-label">عدد المنسحبين : <span class="tag"><strong id="all_withdrawn"></strong></span></div>
+                        <div class="col-md-4 control-label">عدد المسجلين : <strong id="all_registered"></strong></div>
+                        <div class="col-md-4 control-label">عدد المنسحبين : <strong id="all_withdrawn"></strong></div>
                         <div class="col-md-4 control-label"> عدد الخريجين :
-                        <span class="tag"><strong id="all_graduate"></strong></span></div>
+                        <strong id="all_graduate"></strong></div>
                     </div><br/>
                    <div class="row ls_divider col-md-12">
                         <div class="col-md-4 control-label"> عدد الدورات :
-                        <span class="tag"><strong id="all_courses"></strong></span></div>
-                        <div class="col-md-4 control-label" style="color:#d43f3a;">التقييم العام : <span class="tag"><strong id="ratios"></strong></span></div>
+                        <strong id="all_courses"></strong></div>
+                        <div class="col-md-4 control-label" style="color:#d43f3a;">التقييم العام : <strong id="ratios"></strong></div>
                         </div>
                         <br/>
-                        
+
 		<!-- row -->
 				<div class="row">
                 			<!--div-->
@@ -131,17 +131,38 @@
     <script>
 
         $(function() {
+            var subtitle ="<?= $parentTitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var qTable = $('#users-table').DataTable({
                 dom: 'Bfrtip',
                 order: [[0, 'desc']],
                 processing: true,
                 serverSide: true,
-                buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf'},
+                 buttons: [
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                        var json = qTable.ajax.json();
+
+                    $(win.document.body)
+                        .css( 'font-size', '16pt' )
+                        .prepend(
+                            '<br><br><div class="row ls_divider col-md-12"><div class="col-md-4 control-label">عدد المسجلين : <strong id="all_registered">'+json.all_registered+'</strong></div><div class="col-md-4 control-label">عدد المنسحبين : <strong id="all_withdrawn">'+json.all_withdrawn+'</strong></div><div class="col-md-4 control-label"> عدد الخريجين :<strong id="all_graduate">'+json.all_graduate+'</strong></div></div><br/><div class="row ls_divider col-md-12"><div class="col-md-4 control-label"> عدد الدورات :<strong id="all_courses">'+json.all_courses+'</strong></div><div class="col-md-4 control-label" style="color:#d43f3a;">التقييم العام : <strong id="ratios">'+json.ratios+'</strong></div></div><br/>'
+                        );
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
+                    columnDefs: [{
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'PDF') {
+                                return String(data).split(' ').reverse().join(' ');
+                            }  return data;} }
+                   ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
                 },

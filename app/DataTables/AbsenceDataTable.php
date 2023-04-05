@@ -177,11 +177,11 @@ class AbsenceDataTable extends DataTable
                     ])*/
                     ->parameters(array_merge($this->getBuilderParameters(),[
 
-                        
+
                         'buttons' => [
-                            ['extend'=>'excel','text'=>' أكسيل'],
-                            ['extend'=>'print','text'=>' طباعة '],
-                            ['extend'=>'pdf','text'=>' ملف pdf '],
+                            ['extend'=>'excel','text'=>' أكسيل','title'=>' حضور الموظفيين'],
+                            ['extend'=>'print','text'=>' طباعة ','title'=>' حضور الموظفيين',],
+                            ['extend'=>'pdf','text'=>' ملف pdf ','title'=>' حضور الموظفيين'],
                             ['extend'=>'pageLength','text'=>' حجم العرض ']
                         ],
                         'language' => [

@@ -140,24 +140,29 @@ font-size:14px !important;
 
     <script>
         $(function() {
+            var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var cTable = $('#users-table').DataTable({
                 dom: 'Bfrtip',
                 order: [[0, 'desc']],
                 processing: true,
                 serverSide: true,
                 order: [ [8, 'asc'] ],
-                buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf','exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
-                    }},
+  buttons: [
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
-                 columnDefs: [{
+
+                   ],
+                    columnDefs: [{
                         targets: '_all',
                         render: function(data, type, row) {
                             if (type === 'PDF') {
-                                return String(data).split(' ').reverse().join('  ');
+                                return String(data).split(' ').reverse().join(' ');
                             }  return data;} }
                    ],
                 language: {

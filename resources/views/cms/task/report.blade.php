@@ -134,23 +134,80 @@
 @endsection
 @section('js')
  <script>
+ $(document).ready(function() {
+    id=0;
+                $.ajax({
+                    url: "/CMS/Report/Task/" + id,
+                    success: function (data) {
+                        if (data.status==1){
+                   $('#taskRatio').replaceWith('<strong id="taskRatio">'+data.taskRatio+' %</strong>');
+                            $('#taskName').replaceWith('<strong id="taskName">'+data.taskName+'</strong>');
+                            $('#taskDone').replaceWith('<strong id="taskDone">'+data.taskDone+'</strong>');
+                            $('#taskRun').replaceWith('<strong id="taskRun">'+data.taskRun+'</strong>');
+                        }
+                        else{alert('حدث خطأ اثناء تنفيذ العملية');}
+                    }
+
+                })
+});
+
+
+  $('#user_h').change(function(id) {
+
+            var id = $('select[name=user_h]').val();
+            if(id === ''){
+                id=0;
+            }
+
+
+                $.ajax({
+                    url: "/CMS/Report/Task/" + id,
+                    success: function (data) {
+                        if (data.status==1){
+
+                            $('#taskRatio').replaceWith('<strong id="taskRatio">'+data.taskRatio+' %</strong>');
+                            $('#taskName').replaceWith('<strong id="taskName">'+data.taskName+'</strong>');
+                            $('#taskDone').replaceWith('<strong id="taskDone">'+data.taskDone+'</strong>');
+                            $('#taskRun').replaceWith('<strong id="taskRun">'+data.taskRun+'</strong>');
+                            var taskNamew=data.taskName;
+
+                        }
+                        else{alert('حدث خطأ اثناء تنفيذ العملية');}
+                    }
+
+                })
+
+
+        });
         $(function() {
+            var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var sTable = $('#task-table').DataTable({
                 dom: 'Bfrtip',
                 processing: true,
                 serverSide: true,
-                buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf','exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
-                    }},
+                   buttons: [
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                    var json = sTable.ajax.json();
+
+                    $(win.document.body)
+                        .css( 'font-size', '18pt' )
+                        .prepend(
+                    '<br><div class="row"><div class="col-md-4 control-label">تقييم مهام المستخدم :<span class="tag"><strong id="taskName"></strong></span></div><div class="col-md-4 control-label">عدد المهام المنجزة :<span class="tag"><strong id="taskDone"></strong></span></div><div class="col-md-4 control-label">عدد المهام قيدة الانجاز :<span class="tag"><strong id="taskRun"></strong></span></div></div><br><div class="row"><div class="col-md-4 control-label" style="font-size:18px;color:#3ac6d4;">متوسط تقييم المهام المنجزة العام :<span class="tag"><strong id="taskRatio"></strong></span></div></div>');
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
-                columnDefs: [{
+
+                   ],
+                    columnDefs: [{
                         targets: '_all',
                         render: function(data, type, row) {
                             if (type === 'PDF') {
-                                return String(data).split(' ').reverse().join('  ');
+                                return String(data).split(' ').reverse().join(' ');
                             }  return data;} }
                    ],
                 language: {
@@ -185,45 +242,7 @@
 
         });
 
-        $('#user_h').change(function(id) {
 
-            var id = $('select[name=user_h]').val();
-            if(id === ''){
-                id=0;
-            }
-
-
-                $.ajax({
-                    url: "/CMS/Report/Task/" + id,
-                    success: function (data) {
-                        if (data.status==1){
-                             $('#taskRatio').replaceWith('<strong id="taskRatio">'+data.taskRatio+' %</strong>');
-                            $('#taskName').replaceWith('<strong id="taskName">'+data.taskName+'</strong>');
-                            $('#taskDone').replaceWith('<strong id="taskDone">'+data.taskDone+'</strong>');
-                            $('#taskRun').replaceWith('<strong id="taskRun">'+data.taskRun+'</strong>');
-                        }
-                        else{alert('حدث خطأ اثناء تنفيذ العملية');}
-                    }
-
-                })
-          window.onload = (event) => {
-                id=0;
-                $.ajax({
-                    url: "/CMS/Report/Task/" + id,
-                    success: function (data) {
-                        if (data.status==1){
-                   $('#taskRatio').replaceWith('<strong id="taskRatio">'+data.taskRatio+' %</strong>');
-                            $('#taskName').replaceWith('<strong id="taskName">'+data.taskName+'</strong>');
-                            $('#taskDone').replaceWith('<strong id="taskDone">'+data.taskDone+'</strong>');
-                            $('#taskRun').replaceWith('<strong id="taskRun">'+data.taskRun+'</strong>');
-                        }
-                        else{alert('حدث خطأ اثناء تنفيذ العملية');}
-                    }
-
-                })
-                };
-
-        });
 
     </script>
 @endsection

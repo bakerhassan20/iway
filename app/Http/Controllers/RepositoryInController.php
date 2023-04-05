@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Box;
 use App\Models\User;
 use App\Models\Option;
+use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Material;
 use App\Models\Repository;
@@ -16,8 +17,10 @@ use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Controllers\CMSBaseController;
 use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\CMSBaseController;
+use App\Notifications\NewLessonNotification;
+
 class RepositoryInController extends CMSBaseController
 {
     /**
@@ -133,6 +136,14 @@ class RepositoryInController extends CMSBaseController
             $matrial->save();
         }
 
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('RepositoryIn/'.$repository_in->id,$this->getId(),' قبض مستودع','RepositoryIn'));
+        MakeTask::dispatch($user->id);
+        } }
+
+
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
     }
@@ -233,6 +244,13 @@ class RepositoryInController extends CMSBaseController
                 $primary->income -= $total-$request->input("total_h");
                 $primary->save();
             }
+
+            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+            foreach($users as $user){
+            if($user->hasRole('owner') && $user->id != $this->getId()){
+            \Notification::send($user,new NewLessonNotification('RepositoryIn/'.$item->id,$this->getId(),' تعديل قبض مستودع','RepositoryIn'));
+            MakeTask::dispatch($user->id);
+            } }
         }
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");

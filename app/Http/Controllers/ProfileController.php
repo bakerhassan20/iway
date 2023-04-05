@@ -61,7 +61,7 @@ class ProfileController extends Controller
                 ]);
 
              }  */
-             
+
                       // if there is a [file]
         if ($request->hasFile('user_img')) {
             // allowed extensions
@@ -101,7 +101,7 @@ class ProfileController extends Controller
     public function update_email(Request $request){
 
         $request->validate([
-        'email_phone'=>"required",
+        //'email_phone'=>"required",
         'email'=>"required|email|confirmed|unique:users,email,".auth()->user()->id
 
         ]);

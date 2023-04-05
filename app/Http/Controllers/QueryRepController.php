@@ -512,41 +512,41 @@ class QueryRepController  extends CMSBaseController
 
       }
 
-      foreach($years as $year){
-                $result->addColumn('total'.$year->year, function ($tasks) use($year) {
+    //  foreach($years as $year){
+                $result->addColumn('total'.date('Y')-1, function ($tasks) {
                 if($tasks->id==1){
                     $boxes=Box::whereNotNull('parent_id')->get();
                     $expenses=0;
                     $incomes=0;
                     foreach($boxes as $box){
                         if($box->id==3){
-                        $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
+                        $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
 
                         $incomes+=$courses_receipt;
-                         $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                        $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
+                         $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                        $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
 
                         $expenses+=$teacher_salaries + $receipt_students;
 
                     }
                     if($box->id==4){
-                        $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',$year->year)->sum('advance_payment');
+                        $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('advance_payment');
 
                         $incomes+=$advance_receipt;
-                         $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                        $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                        $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',$year->year)->sum('advance_payment');
+                         $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                        $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                        $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('advance_payment');
                         $expenses+=$salaries+$warranties+$advances;
                     }
                     if($box->repository_id >0){
-                        $incomes+= Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('total');
+                        $incomes+= Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('total');
 
-                         $expenses+= Repository_out::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('total');
+                         $expenses+= Repository_out::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('total');
 
                     }
                     if($box->type=="147"){
-                        $incomes+= Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                         $expenses+= Receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
+                        $incomes+= Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                         $expenses+= Receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
 
                     }
                 }
@@ -559,33 +559,33 @@ class QueryRepController  extends CMSBaseController
                     $incomes=0;
                     foreach($boxes as $box){
                         if($box->id==3){
-                        $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
+                        $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
 
                         $incomes+=$courses_receipt;
-                         $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                        $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
+                         $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                        $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
 
                         $expenses+=$teacher_salaries + $receipt_students;
 
                     }
                     if($box->id==4){
-                        $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',$year->year)->sum('advance_payment');
+                        $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('advance_payment');
 
                         $incomes+=$advance_receipt;
-                         $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                        $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                        $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',$year->year)->sum('advance_payment');
+                         $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                        $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                        $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('advance_payment');
                         $expenses+=$salaries+$warranties+$advances;
                     }
                     if($box->repository_id >0){
-                        $incomes+= Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('total');
+                        $incomes+= Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('total');
 
-                         $expenses+= Repository_out::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('total');
+                         $expenses+= Repository_out::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('total');
 
                     }
                     if($box->type=="147"){
-                        $incomes+= Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                         $expenses+= Receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
+                        $incomes+= Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                         $expenses+= Receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
 
                     }
                 }
@@ -594,34 +594,34 @@ class QueryRepController  extends CMSBaseController
                 }
 
                 if($tasks->id==3){
-                    $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
+                    $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
 
                     $tasks->income=$courses_receipt;
-                     $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                    $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
+                     $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                    $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
 
                     $tasks->expense=$teacher_salaries + $receipt_students;
 
                 }
                 if($tasks->id==4){
-                    $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',$year->year)->sum('advance_payment');
-                    Box_year::where('box_id',$tasks->id)->where('m_year',$year->year)->update(array('income' => $advance_receipt));
+                    $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('advance_payment');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-1)->update(array('income' => $advance_receipt));
                     $tasks->income=$advance_receipt;
-                     $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                    $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                    $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',$year->year)->sum('advance_payment');
+                     $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                    $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                    $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('advance_payment');
                     $tasks->expense=$salaries+$warranties+$advances;
                 }
                 if($tasks->repository_id >0){
-                    $tasks->income = Repository_in::where('repository_id','=',$tasks->repository_id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('total');
-                    Box_year::where('box_id',$tasks->id)->where('m_year',$year->year)->update(array('income' => $tasks->income));
-                     $tasks->expense= Repository_out::where('repository_id','=',$tasks->repository_id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('total');
-                    Box_year::where('box_id',$tasks->id)->where('m_year',$year->year)->update(array('income' => $tasks->income));
+                    $tasks->income = Repository_in::where('repository_id','=',$tasks->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('total');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-1)->update(array('income' => $tasks->income));
+                     $tasks->expense= Repository_out::where('repository_id','=',$tasks->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('total');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-1)->update(array('income' => $tasks->income));
                 }
                 if($tasks->type=="147"){
-                    $tasks->income= Catch_receipt_box::where('box_id','=',$tasks->id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                     $tasks->expense= Receipt_box::where('box_id','=',$tasks->id)->where('isdelete','=','0')->where('m_year',$year->year)->sum('amount');
-                    Box_year::where('box_id',$tasks->id)->where('m_year',$year->year)->update(array('income' => $tasks->income));
+                    $tasks->income= Catch_receipt_box::where('box_id','=',$tasks->id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                     $tasks->expense= Receipt_box::where('box_id','=',$tasks->id)->where('isdelete','=','0')->where('m_year',date('Y')-1)->sum('amount');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-1)->update(array('income' => $tasks->income));
 
                 }
                $tot=$tasks->income-$tasks->expense;
@@ -640,7 +640,274 @@ class QueryRepController  extends CMSBaseController
 
             });
 
-      }
+
+            ////////////////////////////////////////////////////////////
+
+
+
+            $result->addColumn('total'.date('Y')-2, function ($tasks) {
+                if($tasks->id==1){
+                    $boxes=Box::whereNotNull('parent_id')->get();
+                    $expenses=0;
+                    $incomes=0;
+                    foreach($boxes as $box){
+                        if($box->id==3){
+                        $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+
+                        $incomes+=$courses_receipt;
+                         $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                        $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+
+                        $expenses+=$teacher_salaries + $receipt_students;
+
+                    }
+                    if($box->id==4){
+                        $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('advance_payment');
+
+                        $incomes+=$advance_receipt;
+                         $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                        $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                        $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('advance_payment');
+                        $expenses+=$salaries+$warranties+$advances;
+                    }
+                    if($box->repository_id >0){
+                        $incomes+= Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('total');
+
+                         $expenses+= Repository_out::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('total');
+
+                    }
+                    if($box->type=="147"){
+                        $incomes+= Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                         $expenses+= Receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+
+                    }
+                }
+                    $tasks->income=$incomes;
+                    $tasks->expense=$expenses;
+                }
+                if($tasks->id==2){
+                    $boxes=Box::where('parent_id',2)->get();
+                    $expenses=0;
+                    $incomes=0;
+                    foreach($boxes as $box){
+                        if($box->id==3){
+                        $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+
+                        $incomes+=$courses_receipt;
+                         $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                        $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+
+                        $expenses+=$teacher_salaries + $receipt_students;
+
+                    }
+                    if($box->id==4){
+                        $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('advance_payment');
+
+                        $incomes+=$advance_receipt;
+                         $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                        $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                        $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('advance_payment');
+                        $expenses+=$salaries+$warranties+$advances;
+                    }
+                    if($box->repository_id >0){
+                        $incomes+= Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('total');
+
+                         $expenses+= Repository_out::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('total');
+
+                    }
+                    if($box->type=="147"){
+                        $incomes+= Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                         $expenses+= Receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+
+                    }
+                }
+                    $tasks->income=$incomes;
+                    $tasks->expense=$expenses;
+                }
+
+                if($tasks->id==3){
+                    $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+
+                    $tasks->income=$courses_receipt;
+                     $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                    $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+
+                    $tasks->expense=$teacher_salaries + $receipt_students;
+
+                }
+                if($tasks->id==4){
+                    $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('advance_payment');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-2)->update(array('income' => $advance_receipt));
+                    $tasks->income=$advance_receipt;
+                     $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                    $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                    $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('advance_payment');
+                    $tasks->expense=$salaries+$warranties+$advances;
+                }
+                if($tasks->repository_id >0){
+                    $tasks->income = Repository_in::where('repository_id','=',$tasks->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('total');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-2)->update(array('income' => $tasks->income));
+                     $tasks->expense= Repository_out::where('repository_id','=',$tasks->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('total');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-2)->update(array('income' => $tasks->income));
+                }
+                if($tasks->type=="147"){
+                    $tasks->income= Catch_receipt_box::where('box_id','=',$tasks->id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                     $tasks->expense= Receipt_box::where('box_id','=',$tasks->id)->where('isdelete','=','0')->where('m_year',date('Y')-2)->sum('amount');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-2)->update(array('income' => $tasks->income));
+
+                }
+               $tot=$tasks->income-$tasks->expense;
+               if($tasks->id ==1){
+                    $money_year = Money_year::where('year',$this->getMoneyYear())->first();
+                    if($money_year->first_time_balance !=0){
+                    $calc= $tasks->calculator_first = $money_year->first_time_balance + $tasks->calculator_first;
+                    }else{
+                $calc= $tasks->calculator_first;
+                }
+                }else{
+                $calc= $tasks->calculator_first;
+                }
+
+                return number_format($tot+$calc,2);
+
+            });
+
+            //////////////////////////////////////////////////////////////////////////////
+
+
+
+            $result->addColumn('total'.date('Y')-3, function ($tasks) {
+                if($tasks->id==1){
+                    $boxes=Box::whereNotNull('parent_id')->get();
+                    $expenses=0;
+                    $incomes=0;
+                    foreach($boxes as $box){
+                        if($box->id==3){
+                        $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+
+                        $incomes+=$courses_receipt;
+                         $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                        $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+
+                        $expenses+=$teacher_salaries + $receipt_students;
+
+                    }
+                    if($box->id==4){
+                        $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('advance_payment');
+
+                        $incomes+=$advance_receipt;
+                         $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                        $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                        $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('advance_payment');
+                        $expenses+=$salaries+$warranties+$advances;
+                    }
+                    if($box->repository_id >0){
+                        $incomes+= Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('total');
+
+                         $expenses+= Repository_out::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('total');
+
+                    }
+                    if($box->type=="147"){
+                        $incomes+= Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                         $expenses+= Receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+
+                    }
+                }
+                    $tasks->income=$incomes;
+                    $tasks->expense=$expenses;
+                }
+                if($tasks->id==2){
+                    $boxes=Box::where('parent_id',2)->get();
+                    $expenses=0;
+                    $incomes=0;
+                    foreach($boxes as $box){
+                        if($box->id==3){
+                        $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+
+                        $incomes+=$courses_receipt;
+                         $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                        $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+
+                        $expenses+=$teacher_salaries + $receipt_students;
+
+                    }
+                    if($box->id==4){
+                        $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('advance_payment');
+
+                        $incomes+=$advance_receipt;
+                         $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                        $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                        $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('advance_payment');
+                        $expenses+=$salaries+$warranties+$advances;
+                    }
+                    if($box->repository_id >0){
+                        $incomes+= Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('total');
+
+                         $expenses+= Repository_out::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('total');
+
+                    }
+                    if($box->type=="147"){
+                        $incomes+= Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                         $expenses+= Receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+
+                    }
+                }
+                    $tasks->income=$incomes;
+                    $tasks->expense=$expenses;
+                }
+
+                if($tasks->id==3){
+                    $courses_receipt = Catch_receipt::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+
+                    $tasks->income=$courses_receipt;
+                     $teacher_salaries = Receipt_course::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                    $receipt_students = Receipt_student::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+
+                    $tasks->expense=$teacher_salaries + $receipt_students;
+
+                }
+                if($tasks->id==4){
+                    $advance_receipt = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('advance_payment');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-3)->update(array('income' => $advance_receipt));
+                    $tasks->income=$advance_receipt;
+                     $salaries = Receipt_salary::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                    $warranties = Receipt_warranty::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                    $advances = Receipt_advance::where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('advance_payment');
+                    $tasks->expense=$salaries+$warranties+$advances;
+                }
+                if($tasks->repository_id >0){
+                    $tasks->income = Repository_in::where('repository_id','=',$tasks->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('total');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-3)->update(array('income' => $tasks->income));
+                     $tasks->expense= Repository_out::where('repository_id','=',$tasks->repository_id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('total');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-3)->update(array('income' => $tasks->income));
+                }
+                if($tasks->type=="147"){
+                    $tasks->income= Catch_receipt_box::where('box_id','=',$tasks->id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                     $tasks->expense= Receipt_box::where('box_id','=',$tasks->id)->where('isdelete','=','0')->where('m_year',date('Y')-3)->sum('amount');
+                    Box_year::where('box_id',$tasks->id)->where('m_year',date('Y')-3)->update(array('income' => $tasks->income));
+
+                }
+               $tot=$tasks->income-$tasks->expense;
+               if($tasks->id ==1){
+                    $money_year = Money_year::where('year',$this->getMoneyYear())->first();
+                    if($money_year->first_time_balance !=0){
+                    $calc= $tasks->calculator_first = $money_year->first_time_balance + $tasks->calculator_first;
+                    }else{
+                $calc= $tasks->calculator_first;
+                }
+                }else{
+                $calc= $tasks->calculator_first;
+                }
+
+                return number_format($tot+$calc,2);
+
+            });
+
+
+
+
+
+     // }
 
            return $result->make(true);
     }
@@ -1051,7 +1318,7 @@ class QueryRepController  extends CMSBaseController
 
     public function getHowToHear()
     {
-        $parentTitle="كيف سمعت عنا؟";
+        $parentTitle="احصائيات كيف سمعت عنا";
         $title="التسويق";
         $this->getAllHear();
         $hows=Option::where('parent_id',51)->where('isdelete',0)->where('active',1)->orderBy('title')->get();

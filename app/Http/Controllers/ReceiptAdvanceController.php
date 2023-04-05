@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\User;
+use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Notifications\NewLessonNotification;
 
 class ReceiptAdvanceController extends CMSBaseController
 {
@@ -130,6 +132,13 @@ class ReceiptAdvanceController extends CMSBaseController
         $add->save();
     }
 }
+            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+            foreach($users as $user){
+            if($user->hasRole('owner') && $user->id != $this->getId()){
+            \Notification::send($user,new NewLessonNotification('ReceiptAdvance/'.$receipt_advance->id,$this->getId(),'انشاء صرف سلفة ','ReceiptAdvance'));
+            MakeTask::dispatch($user->id);
+            } }
+
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
     }
@@ -219,6 +228,14 @@ class ReceiptAdvanceController extends CMSBaseController
             $primary->expense -= $amount - $request->input("advance_payment");
             $primary->save();
         }
+
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('ReceiptAdvance/'.$item->id,$this->getId(),'تعديل صرف سلفة ','ReceiptAdvance'));
+        MakeTask::dispatch($user->id);
+        } }
+
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");
         return Redirect::back();

@@ -14,7 +14,7 @@ Route::prefix('profile')->name('profile.')->middleware('auth')->group(function (
     Route::get('/edit',[ProfileController::class,'edit'])->name('edit');
     Route::put('/update',[ProfileController::class,'update'])->name('update');
     Route::put('/update-password',[ProfileController::class,'update_password'])->name('update-password');
-    Route::put('/update-phone',[ProfileController::class,'update_phone'])->name('update-phone');
+    Route::put('/update_email',[ProfileController::class,'update_email'])->name('update_email');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
@@ -326,7 +326,9 @@ Route::get('delete/ReceiptStudent/{id}', 'ReceiptStudentController@getDelete');
 Route::get('add/ReceiptStudent/{id}', 'ReceiptStudentController@getCreate');
 Route::get('ReceiptStudentFilter', 'ReceiptStudentController@getYearFilter');
 
-
+//user query
+Route::get('datatables/UserQ', 'QueryUserController@anyUserQ');
+Route::get('UserQ', 'QueryUserController@getUserQ');
 //شؤون الموظفين
 // ReceiptSalary Controller
         Route::get('IncomeBox/{id}', 'ActiveMethodController@getIncomeBox');
@@ -361,7 +363,7 @@ Route::get('ReceiptStudentFilter', 'ReceiptStudentController@getYearFilter');
 
 //Static
         Route::get('datatables/Static', 'ActiveMethodController@anyStatic');
-        Route::get('Static', 'ActiveMethodController@getStatic');
+        //Route::get('Static', 'ActiveMethodController@getStatic');
         Route::get('datatables/CatchReceiptBox', 'ActiveMethodController@anyCatchReceiptBox');
         Route::resource('CatchReceiptBox', 'CatchReceiptBoxController');
         Route::get('delete/CatchReceiptBox/{id}', 'CatchReceiptBoxController@getDelete');

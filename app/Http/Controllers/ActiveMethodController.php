@@ -484,9 +484,17 @@ class ActiveMethodController  extends CMSBaseController
 
     public function anyApprovalRecord(Request $request)
     {
-        $tasks = Approval_record::leftJoin('users', 'users.id','=','approval_record.user_id')
-        ->leftJoin('users as res', 'users.id','=','approval_record.res_id')
-            ->select(['approval_record.id','approval_record.row_id','approval_record.slug','approval_record.model_id','approval_record.section','approval_record.date', 'users.name as user_id','res.name as res_id'])->where('res_id',Auth::user()->id);
+        foreach(Auth::user()->getRoleNames() as $v){
+        if($v == 'owner'){
+            $tasks = Approval_record::leftJoin('users', 'users.id','=','approval_record.user_id')
+            ->leftJoin('users as res', 'users.id','=','approval_record.res_id')
+                ->select(['approval_record.id','approval_record.row_id','approval_record.slug','approval_record.model_id','approval_record.section','approval_record.date', 'users.name as user_id','res.name as res_id']);
+        }else{
+            $tasks = Approval_record::leftJoin('users', 'users.id','=','approval_record.user_id')
+            ->leftJoin('users as res', 'users.id','=','approval_record.res_id')
+                ->select(['approval_record.id','approval_record.row_id','approval_record.slug','approval_record.model_id','approval_record.section','approval_record.date', 'users.name as user_id','res.name as res_id'])->where('res_id',Auth::user()->id);
+        }
+        }
         return Datatables::of($tasks)
         ->make(true);
     }
@@ -927,14 +935,14 @@ class ActiveMethodController  extends CMSBaseController
             ->select(['tasks.id', 'tasks.sender as sender_id', 'tasks.receiver as receiver_id', 'us.name as sender', 'u.name as receiver', 'tasks.title', 'options.title as category', 'tasks.start_date', 'tasks.end_date', 'tasks.active', 'tasks.reminders_num', 'tasks.evaluate'])
             ->where('tasks.isdelete','=','0')
             ->where('tasks.end_date','=',null)
-            ->where(function ($tasks) use ($request) {
+         /*    ->where(function ($tasks) use ($request) {
                 $tasks->where('us.id', '=', $this->getId())
                 ->orWhere(function($q){
                     $q->where('u.id', '=', $this->getId());
                     $q->where('tasks.active', 1);
                 });
                     //->orWhere('u.id', '=', $this->getId());
-            })
+            }) */
             ->orderBy('tasks.category','asc');
         return Datatables::of($tasks)
 
@@ -992,8 +1000,15 @@ class ActiveMethodController  extends CMSBaseController
             ->select(['tasks.id', 'tasks.sender as sender_id', 'tasks.receiver as receiver_id', 'us.name as sender', 'u.name as receiver', 'tasks.title', 'options.title as category', 'tasks.start_date', 'tasks.end_date', 'tasks.active', 'tasks.reminders_num', 'tasks.evaluate'])
             ->where('tasks.isdelete','=','0')
             ->where('tasks.end_date','=',null)
-            ->where('receiver','=',$this->getId())
-
+           // ->where('receiver','=',$this->getId())
+           ->where(function ($tasks) use ($request) {
+            $tasks->where('us.id', '=', $this->getId())
+            ->orWhere(function($q){
+                $q->where('u.id', '=', $this->getId());
+                $q->where('tasks.active', 1);
+            });
+                //->orWhere('u.id', '=', $this->getId());
+        })
             ->orderBy('tasks.category','asc');
         return Datatables::of($tasks)
             ->addColumn('usr', function ($tasks) {
@@ -3337,6 +3352,14 @@ return $html;
     {
         $tasks = Income_levels::where('isdelete',0);
         return Datatables::of($tasks)
+        ->addColumn('remaind', function ($tasks) {
+
+        $toDate = Carbon::parse("2021-08-10");
+            $cDate = Carbon::parse($tasks->in_to);
+            return $cDate->diffInDays();
+
+        })
+
         ->addColumn('activeI', function ($tasks) {
                 return $tasks->active;
             })
@@ -3374,6 +3397,43 @@ return $html;
                 $update->balance=$balance;
                 $update->save();
                 return number_format($balance,2);
+            })
+            ->addColumn('achievement', function ($tasks) {
+                $common_boxes=Income_box::where('income_id',$tasks->id)->get();
+                $balance=0;
+                foreach($common_boxes as $common_box){
+                $box= Box::find($common_box->box_id);
+                if($box){
+                  $arrStart = explode("-", $tasks->in_from);
+                        $arrEnd = explode("-", $tasks->in_to);
+                        $from = Carbon::create( $arrStart[0], $arrStart[1], $arrStart[2],0, 0, 0);
+                        $to = Carbon::create( $arrEnd[0], $arrEnd[1], $arrEnd[2],23, 59, 59);
+                    if($box->id==3){
+                        $courses_receipt = Catch_receipt::where('isdelete','=','0')->whereBetween('date',[$from,$to])->sum('amount');
+
+                        $balance+=$courses_receipt;
+                    }
+                    if($box->id==4){
+                        $advance_receipt = Receipt_salary::where('isdelete','=','0')->whereBetween('date',[$from,$to])->sum('advance_payment');
+
+                        $balance+=$advance_receipt;
+                    }
+                    if($box->repository_id >0){
+                        $rep = Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->whereBetween('created_at',[$from,$to])->sum('total');
+                        $balance+=$rep;
+                    }
+                    if($box->type=="مستقل"){
+                        $rtype = Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->whereBetween('date',[$from,$to])->sum('amount');
+                        $balance+=$rtype;
+                    }
+                }
+                }
+                $update=Income_levels::where('id',$tasks->id)->first();
+                $update->balance=$balance;
+                $update->save();
+                $bala =  number_format($balance,2);
+                $all_leveles= $tasks->level1 + $tasks->level2 + $tasks->level3 + $tasks->level4 +$tasks->level5;
+                return $all_leveles == 0 ? 0 : ($bala / $all_leveles)*100 .'%';
             })
             ->filter(function ($tasks) use ($request) {
                 if ($request->has('moneyId') and $request->get('moneyId') != "") {
@@ -5659,8 +5719,8 @@ $value_sum=$course->value_sum;
 
         $allratios=array_sum($ratio);
         $allcount=count($ratio);
-        $alltaskRatio= number_format($allratios/$allcount,2);
-
+       // $alltaskRatio= number_format($allratios/$allcount,2);
+        $alltaskRatio= $allcount == 0 ? 0 : number_format($allratios/$allcount,2);
         return response()->json([
             'status' => '1',
             'taskRatio' => number_format($alltaskRatio,1),

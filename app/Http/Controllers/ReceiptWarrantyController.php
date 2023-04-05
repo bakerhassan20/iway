@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Box;
 use App\Models\User;
 use App\Models\Salary;
+use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use App\Models\Receipt_warranty;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Notifications\NewLessonNotification;
 
 class ReceiptWarrantyController extends CMSBaseController
 {
@@ -110,6 +112,17 @@ class ReceiptWarrantyController extends CMSBaseController
             $primary->save();
         }
 
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('ReceiptWarranty/'.$receipt_warranty->id,$this->getId(),'انشاء صرف الضمان ','ReceiptWarranty'));
+        MakeTask::dispatch($user->id);
+
+        }
+
+        }
+
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
     }
@@ -192,6 +205,15 @@ class ReceiptWarrantyController extends CMSBaseController
             $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
             $primary->expense -= $amount - $request->input("amount");
             $primary->save();
+        }
+
+        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+        foreach($users as $user){
+        if($user->hasRole('owner') && $user->id != $this->getId()){
+        \Notification::send($user,new NewLessonNotification('ReceiptWarranty/'.$item->id,$this->getId(),'تعديل صرف الضمان ','ReceiptWarranty'));
+        MakeTask::dispatch($user->id);
+        }
+
         }
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");

@@ -135,7 +135,7 @@
                             </div>
                         </div>
                              <br>
-                            <h3 class="panel-title text-left">المجموع: <span class="tag"><Strong id="total_1_filter"></Strong><span> دينار</h3>
+                            <h3 class="panel-title text-left">المجموع: <Strong id="total_1_filter"></Strong> دينار</h3>
                             <br>
 
 		<!-- row -->
@@ -199,16 +199,37 @@
      <script>
        var date = $('.fc-datepicker').datepicker({ dateFormat: 'yy-mm-dd' }).val();
         setTimeout(function() {
+
+            var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var crTable = $('#catch-receipt-table').DataTable({
                 dom: 'Bfrtip',
                 processing: true,
                 serverSide: true,
                 buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf'},
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                     var json = crTable.ajax.json();
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            ' <br><h3 class="panel-title text-left">المجموع: <Strong id="total_1_filter">'+json.tot+'</Strong> دينار</h3><br>'
+                        );
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
+                    columnDefs: [{
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'PDF') {
+                                return String(data).split(' ').reverse().join(' ');
+                            }  return data;} }
+                   ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
                 },

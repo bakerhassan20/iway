@@ -85,6 +85,11 @@
                         </table>
                     </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+<br><br>
                     <div class="row ls_divider">
                         <div class="col-md-4 control-label">رسوم الدورات: <strong id="courseFee"></strong></div>
                         <div class="col-md-4 control-label">المدفوعات: <strong id="coursePay"></strong></div>
@@ -95,12 +100,7 @@
                         <div class="col-md-4 control-label">رصيد الانسحاب: <strong id="courseWit"></strong></div>
                         <div class="col-md-4 control-label">فرق رسوم الدورات: <strong id="courseMin"></strong></div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
+<br>
 		<!-- row -->
 				<div class="row">
                 			<!--div-->
@@ -163,17 +163,38 @@
 <script src="{{URL::asset('assets/js/form-validation.js')}}"></script>
  <script>
         $(function() {
+            var subtitle ="<?= $subtitle ?>";
+            var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' ');
             var wTable = $('#users-table').DataTable({
                 dom: 'Bfrtip',
                 order: [[0, 'desc']],
                 processing: true,
                 serverSide: true,
                 buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf'},
+                    {'extend':'excel','text':'أكسيل','title': subtitle,},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                        var json = wTable.ajax.json();
+
+                    $(win.document.body)
+                        .css( 'font-size', '18pt' )
+                        .prepend(
+                            '<br><br><div class="row ls_divider"><div class="col-md-4 control-label">رسوم الدورات: <strong id="courseFee">'+json.courseFee+'</strong></div><div class="col-md-4 control-label">المدفوعات: <strong id="coursePay">'+json.coursePay+'</strong></div><div class="col-md-4 control-label">مرتجعات الطلاب: <strong id="courseRef">'+json.courseRef+'</strong></div></div><div class="row ls_divider"><div class="col-md-4 control-label">اجور معلمين: <strong id="courseTea">'+json.courseTea+'</strong></div><div class="col-md-4 control-label">رصيد الانسحاب: <strong id="courseWit">'+json.courseWit+'</strong></div><div class="col-md-4 control-label">فرق رسوم الدورات: <strong id="courseMin">'+json.courseMin+'</strong></div></div><br>'
+                        );
+                }},
+
+                    {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    },
+                    },
                     {'extend':'pageLength','text':'حجم العرض'},
-                ],
+
+                   ],
+                    columnDefs: [{
+                        targets: '_all',
+                        render: function(data, type, row) {
+                            if (type === 'PDF') {
+                                return String(data).split(' ').reverse().join(' ');
+                            }  return data;} }
+                   ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
                 },

@@ -135,6 +135,9 @@
 
     <script>
         $(function() {
+
+            var subtitle ="<?= $subtitle ?>";
+      {{--       var pdfsubtitle =  String(subtitle).split(' ').reverse().join(' '); --}}
             var abTable = $('#users-table').DataTable({
                 dom: 'Bfrtip',
                 order: [[0, 'desc']],
@@ -142,9 +145,22 @@
                 serverSide: true,
                 order:[[0,'desc']],
                 buttons: [
-                    {'extend':'excel','text':'أكسيل'},
-                    {'extend':'print','text':'طباعة'},
-                    {'extend':'pdf','text':'pdf','exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
+                    {'extend':'excel','text':'أكسيل','title': subtitle},
+                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                          var json = abTable.ajax.json();
+                        var count_late =json.all - json.count_abs;
+                    $(win.document.body)
+
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            '<br><br><div class="row"><div class="col-4"><h3 class="panel-title pull-left"> عدد ايام الغياب : <strong id="count_abs">'+json.count_abs+'</strong></h3></div><div class="col-4"><h3 class="panel-title pull-left"> عدد مرات التاخير : <strong id="count_late">'+count_late+'</strong></h3></div><div class="col-4"><h3 class="panel-title pull-right"> مجموع التاخير بالساعات : <Strong id="delay_time">'+json.delay_time+'</Strong></h3></div></div><br>'
+                        );
+
+                    $(win.document.body).find( 'table' )
+                        .addClass( 'compact' )
+                        .css( 'font-size', 'inherit' );
+                }},
+                    {'extend':'pdf','text':'pdf','title': subtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
                     }},
                     {'extend':'pageLength','text':'حجم العرض'},
                 ],

@@ -63,7 +63,7 @@ echo $hours;
 									</div>
 								</div>
 							</div>
-					
+
 						</div>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
@@ -82,7 +82,7 @@ echo $hours;
 									</div>
 								</div>
 							</div>
-					
+
 						</div>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
@@ -101,7 +101,7 @@ echo $hours;
 									</div>
 								</div>
 							</div>
-					
+
 						</div>
 					</div>
 					<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
@@ -120,7 +120,7 @@ echo $hours;
 									</div>
 								</div>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
@@ -411,7 +411,7 @@ chartq.updateOptions({
 	/* Apexcharts (#bar) closed */
 
 
-</script> 
+</script>
 <!--Internal  Chart.bundle js -->
 <script src="{{URL::asset('assets/plugins/chart.js/Chart.bundle.min.js')}}"></script>
 <!-- Moment js -->
