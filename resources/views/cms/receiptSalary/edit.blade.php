@@ -213,9 +213,9 @@ Iwayc System
                             <div class="col">
                                 <label class="control-label"></label>
 
-                                <div class="col-sm-10 text-center">
+                               <div class="col-sm-10 text-center">
                                     <button class="submit btn-primary btn" type="submit" name="submit">حفظ</button>
-                                    <a href="/CMS/Static/" class="btn btn-danger"> إلغاء</a>
+                                    <a href="/CMS/ReceiptSalary" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>

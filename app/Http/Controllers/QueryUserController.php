@@ -23,6 +23,7 @@ use App\Models\Student_course;
 use App\Models\Receipt_advance;
 use App\Models\Receipt_student;
 use App\Models\Receipt_warranty;
+use App\Models\Query_email;
 use Yajra\DataTables\DataTables;
 use App\Models\Catch_receipt_box;
 
@@ -32,7 +33,7 @@ class QueryUserController extends Controller
     {
         $subtitle="حركات المستخدمين";
         $title="الاعدادات";
-        $this->getQuery();
+       // $this->getQuery();
         $users=User::where('isdelete',0)->where('Status','مفعل')->get();
         $boxs=Box::where('isdelete',0)->get();
         return view("cms.queriesRep.userQ",compact("title","subtitle","users",'boxs'));
@@ -41,12 +42,12 @@ class QueryUserController extends Controller
 
     public function getQuery(){
 
-        $isQuery=Us_qu::count();
+   /*      $isQuery=Us_qu::count();
         if($isQuery>0){
             $query_del=Us_qu::truncate();
-        }
+        } */
 
-        $Receipt_student = Receipt_student::where("isdelete",0)->get();
+/*         $Receipt_student = Receipt_student::where("isdelete",0)->get();
         foreach ($Receipt_student as $Receipt_S){
            $std_id = Student_course::where('id',$Receipt_S->student_course_id)->first()->student_id;
            $std_name = Student::where('id',$std_id)->first()->nameAR;
@@ -62,9 +63,9 @@ class QueryUserController extends Controller
            $us_qu->box_id =3;
            $us_qu->save();
 
-        }
+        } */
 
-        $Catch_receipt = Catch_receipt::where("isdelete",0)->get();
+ /*        $Catch_receipt = Catch_receipt::where("isdelete",0)->get();
         foreach ($Catch_receipt as $Catch_r){
 
            $std_id = Student_course::where('id',$Catch_r->student_course_id)->first();
@@ -87,10 +88,10 @@ class QueryUserController extends Controller
            $us_qu->box_id =3;
            $us_qu->save();
 
-        }
+        } */
 
 
-
+/*
         $Receipt_salary = Receipt_salary::where("isdelete",0)->get();
         foreach ($Receipt_salary as $Receipt_s){
 
@@ -108,9 +109,9 @@ class QueryUserController extends Controller
            $us_qu->save();
 
         }
+ */
 
-
-
+/*
         $Receipt_course = Receipt_course::where("isdelete",0)->get();
         foreach ($Receipt_course as $Receipt_c){
 
@@ -133,10 +134,10 @@ class QueryUserController extends Controller
            $us_qu->box_id =3;
            $us_qu->save();
 
-        }
+        } */
 
 
-
+/*
         $Receipt_advance = Receipt_advance::where("isdelete",0)->get();
         foreach ($Receipt_advance as $Receipt_a){
 
@@ -153,10 +154,10 @@ class QueryUserController extends Controller
            $us_qu->box_id =4;
            $us_qu->save();
 
-        }
+        } */
 
 
-        $Receipt_reward = Receipt_reward::where("isdelete",0)->get();
+       /*  $Receipt_reward = Receipt_reward::where("isdelete",0)->get();
         foreach ($Receipt_reward as $Receipt_r){
            if($Receipt_r->type == 0){
             $ty='مكافأت';
@@ -182,9 +183,9 @@ class QueryUserController extends Controller
            $us_qu->box_id =4;
            $us_qu->save();
 
-        }
+        } */
 
-
+/*
         $Receipt_warranty = Receipt_warranty::where("isdelete",0)->get();
         foreach ($Receipt_warranty as $Receipt_w){
 
@@ -207,10 +208,10 @@ class QueryUserController extends Controller
            $us_qu->box_id =4;
            $us_qu->save();
 
-        }
+        } */
 
 
-
+/*
         $Catch_receipt_box = Catch_receipt_box::where("isdelete",0)->get();
         foreach ($Catch_receipt_box as $Catch_r_b){
 
@@ -226,9 +227,9 @@ class QueryUserController extends Controller
            $us_qu->box_id =$Catch_r_b->box_id;
            $us_qu->save();
 
-        }
+        } */
 
-        $Receipt_box = Receipt_box::where("isdelete",0)->get();
+  /*       $Receipt_box = Receipt_box::where("isdelete",0)->get();
         foreach ($Receipt_box as $Receipt_b){
             $Box_expense = Box_expense::where('id',$Receipt_b->type)->first();
             if( $Box_expense){
@@ -249,10 +250,10 @@ class QueryUserController extends Controller
            $us_qu->box_id =$Receipt_b->box_id;
            $us_qu->save();
 
-        }
+        } */
 
 
-        $Repository_in = Repository_in::where("isdelete",0)->get();
+/*         $Repository_in = Repository_in::where("isdelete",0)->get();
         foreach ($Repository_in as $Repository_i){
             $rep = Repository::where('id',$Repository_i->repository_id)->first();
             if( $rep){
@@ -274,8 +275,8 @@ class QueryUserController extends Controller
            $us_qu->box_id =$box;
            $us_qu->save();
 
-        }
-
+        } */
+/*
 
 
         $Repository_out = Repository_out::where("isdelete",0)->get();
@@ -299,7 +300,7 @@ class QueryUserController extends Controller
            $us_qu->box_id =$box;
            $us_qu->save();
 
-        }
+        } */
 
     }
 
@@ -307,28 +308,26 @@ class QueryUserController extends Controller
     {
         $tasks = Us_qu::leftJoin('users', 'users.id','=','user_query.created_by')
        -> leftJoin('boxes', 'boxes.id','=','user_query.box_id')
-            ->select(['user_query.id','user_query.m_year','user_query.name as nam', 'user_query.date','user_query.slug','users.name as us','boxes.name as box','user_query.amount','user_query.type','user_query.id_sys']);
+            ->select(['user_query.id','user_query.m_year','user_query.action','user_query.name as nam', 'user_query.created_at','user_query.slug','users.name as us','boxes.name as box','user_query.amount','user_query.type','user_query.id_sys']);
         return Datatables::of($tasks)
+        ->addColumn('created_at', function ($tasks) {
+            return $tasks->created_at->format('Y-m-d h:i');
+        })
              ->filter(function ($tasks) use ($request) {
-        /*     if ($request->has('searchCollectionFees') and $request->get('searchCollectionFees') != "") {
-                $tasks->where('collection_fees.isdelete','=','0')
-                    ->where(function ($tasks) use ($request) {
-                        $tasks->where('courses.courseAR', 'like', "%{$request->get('searchCollectionFees')}%")
-                            ->orWhere('students.nameAR', 'like', "%{$request->get('searchCollectionFees')}%")
-                            ->orWhere('collection_fees.phone', 'like', "%{$request->get('searchCollectionFees')}%")
-                            ->orWhere('collection_fees.fees', 'like', "%{$request->get('searchCollectionFees')}%")
-                            ->orWhere('collection_fees.fees_pay', 'like', "%{$request->get('searchCollectionFees')}%")
-                            ->orWhere('collection_fees.fees_owed', 'like', "%{$request->get('searchCollectionFees')}%")
-                            ->orWhere('collection_fees.warranty', 'like', "%{$request->get('searchCollectionFees')}%")
-                            ->orWhere('collection_fees.count', 'like', "%{$request->get('searchCollectionFees')}%");
+          if ($request->has('searchAbsence') and $request->get('searchAbsence') != "") {
+
+                $tasks->where(function ($tasks) use ($request) {
+                        $tasks->where('users.name', 'like', "%{$request->get('searchAbsence')}%")
+                            ->orWhere('user_query.type', 'like', "%{$request->get('searchAbsence')}%")
+                            ->orWhere('boxes.name', 'like', "%{$request->get('searchAbsence')}%")
+                            ->orWhere('user_query.name', 'like', "%{$request->get('searchAbsence')}%")
+                            ->orWhere('user_query.action', 'like', "%{$request->get('searchAbsence')}%");
                     });
             }
-            if ($request->has('studentId') and $request->get('studentId') != "all") {
-                $tasks->where('students.id', '=', "{$request->get('studentId')}");
+
+            if ($request->has('actionId') and $request->get('actionId') != "") {
+                $tasks->where('user_query.action', '=', "{$request->get('actionId')}");
             }
-            if ($request->has('courseId') and $request->get('courseId') != "all") {
-                $tasks->where('courses.id', '=', "{$request->get('courseId')}");
-            }*/
             if ($request->has('typeId') and $request->get('typeId') != "") {
                 $tasks->where('user_query.type', '=', "{$request->get('typeId')}");
             }
@@ -347,5 +346,76 @@ class QueryUserController extends Controller
     }
 
 
+
+
+
+    public function getEmail(){
+        $title="التسويق";
+        $subtitle="البريد الالكتروني";
+        $this->getQueryEmail();
+        return view('cms.static.emai',compact('title','subtitle'));
+    }
+
+
+    public function getQueryEmail()
+    {
+        $isQuery=Query_email::count();
+        if($isQuery>0){
+            $query_del=Query_email::truncate();
+        }
+
+        $students = Student::where('isdelete','=','0')->get();
+
+            foreach ($students as $student){
+                $us_qu= new Query_email();
+                $us_qu->name = $student->nameAR;
+                $us_qu->type ='طالب';
+                $us_qu->email = $student->email;
+                $us_qu->save();
+            }
+
+        $teachers = Teacher::where('isdelete','=','0')->get();
+
+            foreach ($teachers as $teacher){
+                $us_qu= new Query_email();
+                $us_qu->name = $teacher->name;
+                $us_qu->type ='معلم';
+                $us_qu->email = $teacher->email;
+                $us_qu->save();
+            }
+
+        $employees = Employee::where('isdelete','=','0')->get();
+
+            foreach ($employees as $employee){
+                $us_qu= new Query_email();
+                $us_qu->name = $employee->name;
+                $us_qu->type ='موظف';
+                $us_qu->email = $employee->email;
+                $us_qu->save();
+            }
+    }
+
+
+    public function anyEmail(Request $request)
+    {
+        $tasks = Query_email::select(['query_email.name','query_email.email','query_email.type']);
+         return Datatables::of($tasks)
+              ->filter(function ($tasks) use ($request) {
+                if ($request->has('searchTeacher') and $request->get('searchTeacher') != "") {
+                    $tasks->where(function ($tasks) use ($request){
+                            $tasks->where('name', 'like', "%{$request->get('searchTeacher')}%")
+                                ->orWhere('email', 'like', "%{$request->get('searchTeacher')}%")
+                                ->orWhere('type', 'like', "%{$request->get('searchTeacher')}%");
+                        });
+                }
+
+             if ($request->has('typeId') and $request->get('typeId') != "") {
+                 $tasks->where('query_email.type', '=', "{$request->get('typeId')}");
+             }
+
+         })
+
+         ->make(true);
+    }
 
 }

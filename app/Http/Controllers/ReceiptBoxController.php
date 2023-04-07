@@ -6,6 +6,7 @@ use App\Models\Box;
 use App\Models\User;
 use App\Events\MakeTask;
 use App\Models\Box_year;
+use App\Models\Us_qu;
 use App\Models\Receipt_box;
 use Illuminate\Http\Request;
 use App\Models\Approval_record;
@@ -133,6 +134,30 @@ class ReceiptBoxController extends CMSBaseController
             }
         }
 
+ ////////////////
+            $Box_expense = Box_expense::where('id',$receipt_box->type)->first();
+            if( $Box_expense){
+             $Box_expense =$Box_expense->name;
+
+            }else{
+             $Box_expense =null;
+            }
+           $us_qu= new Us_qu();
+           $us_qu->m_year = $receipt_box->m_year;
+           $us_qu->id_main = $receipt_box->id;
+           $us_qu->id_sys = $receipt_box->id_sys;
+           $us_qu->name = $Box_expense;
+           $us_qu->type = 'صرف صندوق مستقل';
+           $us_qu->action = 'تعديل';
+           $us_qu->amount = $receipt_box->amount;
+           $us_qu->date = $receipt_box->created_at;
+           $us_qu->created_by = $receipt_box->created_by;
+           $us_qu->slug='ReceiptBox';
+           $us_qu->box_id =$receipt_box->box_id;
+           $us_qu->save();
+//////////////
+
+
         $users=User::where('isdelete',0)->where('Status','مفعل')->get();
         foreach($users as $user){
         if($user->hasRole('owner') && $user->id != $this->getId()){
@@ -226,14 +251,40 @@ class ReceiptBoxController extends CMSBaseController
             $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
             $primary->expense -= $amount - $request->input("amount");
             $primary->save();
+
+    ////////////////
+            $Box_expense = Box_expense::where('id',$item->type)->first();
+            if( $Box_expense){
+             $Box_expense =$Box_expense->name;
+
+            }else{
+             $Box_expense =null;
+            }
+           $us_qu= new Us_qu();
+           $us_qu->m_year = $item->m_year;
+           $us_qu->id_main = $item->id;
+           $us_qu->id_sys = $item->id_sys;
+           $us_qu->name = $Box_expense;
+           $us_qu->type = 'صرف صندوق مستقل';
+           $us_qu->action = 'تعديل';
+           $us_qu->amount = $item->amount;
+           $us_qu->date = $item->created_at;
+           $us_qu->created_by = $this->getId();
+           $us_qu->slug='ReceiptBox';
+           $us_qu->box_id =$item->box_id;
+           $us_qu->save();
+//////////////
+           $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+           foreach($users as $user){
+           if($user->hasRole('owner') && $user->id != $this->getId()){
+           \Notification::send($user,new NewLessonNotification('ReceiptBox/'.$item->id,$this->getId(),' تعديل صرف صندوق مستقل','ReceiptBox'));
+           MakeTask::dispatch($user->id);
+           } }
+
+
         }
 
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
-        if($user->hasRole('owner') && $user->id != $this->getId()){
-        \Notification::send($user,new NewLessonNotification('ReceiptBox/'.$item->id,$this->getId(),' تعديل صرف صندوق مستقل','ReceiptBox'));
-        MakeTask::dispatch($user->id);
-        } }
+
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");
         return Redirect::back();
@@ -268,6 +319,31 @@ class ReceiptBoxController extends CMSBaseController
             $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
             $primary->expense -= $item->amount;
             $primary->save();
+
+        ////////////////
+                $Box_expense = Box_expense::where('id',$item->type)->first();
+                if( $Box_expense){
+                 $Box_expense =$Box_expense->name;
+
+                }else{
+                 $Box_expense =null;
+                }
+               $us_qu= new Us_qu();
+               $us_qu->m_year = $item->m_year;
+               $us_qu->id_main = $item->id;
+               $us_qu->id_sys = $item->id_sys;
+               $us_qu->name = $Box_expense;
+               $us_qu->type = 'صرف صندوق مستقل';
+               $us_qu->action = 'حذف';
+               $us_qu->amount = $item->amount;
+               $us_qu->date = $item->created_at;
+               $us_qu->created_by = $this->getId();
+               $us_qu->slug='ReceiptBox';
+               $us_qu->box_id =$item->box_id;
+               $us_qu->save();
+    //////////////
+
+
         }
         flash()->addError("تمت عملية الحذف بنجاح");
         return redirect("/CMS/ReceiptBox/");

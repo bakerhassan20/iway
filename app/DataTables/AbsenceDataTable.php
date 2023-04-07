@@ -132,9 +132,52 @@ class AbsenceDataTable extends DataTable
             $hours = floor($time / 60);
             $minutes = ($time % 60);
             return $hours.":".$minutes;
-        },'count_late'=> function($tasks){
+        },'count_late'=> function($tasks) {
             return $tasks->newQuery(true)->where('type',336)->count('absences.id');
-         }]);
+         },'count_abs'=> function($tasks){
+            $Absence = Absence::leftJoin('employees', 'employees.id','=','absences.employee_id')
+            ->leftJoin('options as opt', 'opt.id','=','absences.region')
+            ->leftJoin('options as op', 'op.id','=','absences.type')
+            ->leftJoin('options as o', 'o.id','=','absences.leaving')->where('type',124)->where('absences.isdelete','=','0');
+
+                if ($this->request()->has('search_h') and $this->request()->get('search_h') != "") {
+                    $Absence->where('absences.isdelete','=','0')
+                        ->where(function ($Absence){
+                            $keyword = $this->request()->get('search_h');
+                            $Absence->where('opt.title', 'like', "%{$keyword}%")
+                                ->orWhere('op.title', 'like', "%{$keyword}%")
+                                ->orWhere('o.title', 'like', "%{$keyword}%")
+                                ->orWhere('employees.name', 'like', "%{$keyword}%");
+                        });
+                }
+                if ($this->request()->has('employee_h') and $this->request()->get('employee_h') != "all") {
+                    $Absence->where('employees.id', '=', "{$this->request()->get('employee_h')}");
+                }
+                if ($this->request()->has('region_h') and $this->request()->get('region_h') != "all") {
+                    $Absence->where('opt.id', '=', "{$this->request()->get('region_h')}");
+                }
+                if ($this->request()->has('type_h') and $this->request()->get('type_h') != "") {
+                    $Absence->where('op.id', '=', "{$this->request()->get('type_h')}");
+                }
+                if ($this->request()->has('leaving_h') and $this->request()->get('leaving_h') != "") {
+                    $Absence->where('o.id', '=', "{$this->request()->get('leaving_h')}");
+                }
+                if ($this->request()->has('money_h') and $this->request()->get('money_h') != "") {
+                    $Absence->where('absences.m_year', '=', "{$this->request()->get('money_h')}");
+                }
+
+
+                if ($this->request()->has('from_h') and $this->request()->has('to_h') and $this->request()->get('from_h') != "" and $this->request()->get('to_h') != "") {
+                    $from=$this->request()->get('from_h');
+                    $to=$this->request()->get('to_h');
+                    $Absence->whereBetween('absences.created_at',[$from,$to]);
+
+
+                }
+
+            return $Absence->count('absences.id');
+         }
+        ]);
 
 
 

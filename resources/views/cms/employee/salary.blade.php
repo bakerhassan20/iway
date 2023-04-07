@@ -6,6 +6,9 @@
     .select2 {
         width:100% !important;
     }
+    .blue-column{
+        color:red;
+    }
 </style>
 
 @section('title')
@@ -77,6 +80,7 @@
                     <tr>
                         <th width="5%">الشهر</th>
                         <th width="5%">العام</th>
+                         <th width="5%"> الموظف</th>
                         <th width="10%">الراتب الاساسي</th>
                         <th width="10%">الراتب الشامل</th>
                         <th width="5%">المكافأت</th>
@@ -120,6 +124,28 @@
 <script src="{{URL::asset('assets/js/form-validation.js')}}"></script>
 
     <script>
+
+ $(document).ready(function() {
+    id='all';
+
+                $.ajax({
+                    url: "/CMS/salary/Emp/" + id,
+                    success: function (data) {
+                  
+                    $('#employeeName').replaceWith('<strong id="employeeName">'+data.name+'</strong>');
+                    $('#employeeAdv').replaceWith('<strong id="employeeAdv">'+data.adv+'</strong>');
+                    $('#employeePay').replaceWith('<strong id="employeePay">'+data.recs+'</strong>');
+                    $('#employeeRec').replaceWith('<strong id="employeeRec">'+data.rem+'</strong>');
+
+                    }
+
+                })
+});
+
+
+
+
+
         $('#employee_h').change(function(){
             var id=$(this).val();
             $.get("/CMS/salary/Emp/" + id,
@@ -168,6 +194,7 @@
                 columns: [
                     { data: 'month', name: 'month' },
                     { data: 'year', name: 'year' },
+                    { data: 'employee_id', name: 'employee_id' },
                     { data: 'salary_warranty', name: 'salary_warranty' },
                     { data: 'salary', name: 'salary' },
                     { data: 'rew', name: 'rew' },

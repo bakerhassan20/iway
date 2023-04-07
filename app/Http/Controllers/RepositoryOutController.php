@@ -6,6 +6,7 @@ use App\Models\Box;
 use App\Models\User;
 use App\Events\MakeTask;
 use App\Models\Box_year;
+use App\Models\Us_qu;
 use App\Models\Repository;
 use Illuminate\Http\Request;
 use App\Models\Repository_out;
@@ -136,15 +137,41 @@ class RepositoryOutController extends CMSBaseController
         $add->date=$Repository_out->created_at;
         $add->save();
         }
+
+
+         //////////////
+         $rep = Repository::where('id',$repository_out->repository_id)->first();
+         if( $rep){
+             $box =$rep->box_id;
+
+         }else{
+             $box =null;
+         }
+         $us_qu= new Us_qu();
+         $us_qu->m_year = $repository_out->m_year;
+         $us_qu->id_main = $repository_out->id;
+         $us_qu->id_sys = $repository_out->id_sys;
+         $us_qu->name = $repository_out->customer;
+         $us_qu->type = 'صرف مستودع';
+         $us_qu->action = 'ادخال';
+         $us_qu->amount = $repository_out->total;
+         $us_qu->date = $repository_out->created_at;
+         $us_qu->created_by = $repository_out->created_by;
+         $us_qu->slug='RepositoryOut';
+         $us_qu->box_id =$box;
+         $us_qu->save();
+         /////////////////
+
+     $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+     foreach($users as $user){
+     if($user->hasRole('owner') && $user->id != $this->getId()){
+     \Notification::send($user,new NewLessonNotification('RepositoryOut/'.$repository_out->id,$this->getId(),'صرف مستودع','RepositoryOut'));
+     MakeTask::dispatch($user->id);
+     } }
+
+
     }
 
-
-    $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-    foreach($users as $user){
-    if($user->hasRole('owner') && $user->id != $this->getId()){
-    \Notification::send($user,new NewLessonNotification('RepositoryOut/'.$repository_out->id,$this->getId(),'صرف مستودع','RepositoryOut'));
-    MakeTask::dispatch($user->id);
-    } }
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
     }
@@ -243,6 +270,30 @@ $repositories=Repository::where('isdelete',0)
                 $primary->save();
             }
 
+
+
+         //////////////
+         $rep = Repository::where('id',$item->repository_id)->first();
+         if( $rep){
+             $box =$rep->box_id;
+
+         }else{
+             $box =null;
+         }
+         $us_qu= new Us_qu();
+         $us_qu->m_year = $item->m_year;
+         $us_qu->id_main = $item->id;
+         $us_qu->id_sys = $item->id_sys;
+         $us_qu->name = $item->customer;
+         $us_qu->type = 'صرف مستودع';
+         $us_qu->action = 'تعديل';
+         $us_qu->amount = $item->total;
+         $us_qu->date = $item->created_at;
+         $us_qu->created_by = $this->getId();
+         $us_qu->slug='RepositoryOut';
+         $us_qu->box_id =$box;
+         $us_qu->save();
+         /////////////////
         $users=User::where('isdelete',0)->where('Status','مفعل')->get();
         foreach($users as $user){
         if($user->hasRole('owner') && $user->id != $this->getId()){
@@ -287,6 +338,29 @@ $repositories=Repository::where('isdelete',0)
                 $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
                 $primary->expense -= $item->total;
                 $primary->save();
+
+                     //////////////
+         $rep = Repository::where('id',$item->repository_id)->first();
+         if( $rep){
+             $box =$rep->box_id;
+
+         }else{
+             $box =null;
+         }
+         $us_qu= new Us_qu();
+         $us_qu->m_year = $item->m_year;
+         $us_qu->id_main = $item->id;
+         $us_qu->id_sys = $item->id_sys;
+         $us_qu->name = $item->customer;
+         $us_qu->type = 'صرف مستودع';
+         $us_qu->action = 'حذف';
+         $us_qu->amount = $item->total;
+         $us_qu->date = $item->created_at;
+         $us_qu->created_by = $this->getId();
+         $us_qu->slug='RepositoryOut';
+         $us_qu->box_id =$box;
+         $us_qu->save();
+         /////////////////
             }
         }
 

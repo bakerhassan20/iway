@@ -54,6 +54,7 @@
                                             @endforeach
                                         </select>
                                     </td>
+
                                     <td>
                                         <select name="type_h" id="type_h" class="form-control">
                                                 <option value=""> اختر نوع السند .... </option>
@@ -68,8 +69,16 @@
                                                 <option value="صرف اجور معلم"> صرف اجور معلم</option>
                                                 <option value="صرف راتب">صرف راتب</option>
                                                 <option value="قبض الدورات">قبض الدورات</option>
-                                                <option value="انسحاب طالب">انسحاب طالب</option>
+                                               
 
+                                        </select>
+                                    </td>
+                                       <td>
+                                        <select name="action_h" id="action_h" class="form-control">
+                                            <option value=""> اختر الاجراء .... </option>
+                                                <option value="ادخال">ادخال</option>
+                                                <option value="تعديل">تعديل</option>
+                                                <option value="حذف">حذف</option>
                                         </select>
                                     </td>
                                     <td>
@@ -107,7 +116,7 @@
                                                 <th>رقم السند</th>
                                                 <th>الاسم</th>
                                                 <th>المبلغ</th>
-                                         {{--        <th></th> --}}
+                                                <th>الاجراء</th>
                                         </tr>
 										</thead>
 
@@ -162,17 +171,19 @@
                         d.typeId = $('select[name=type_h]').val();
                         d.boxId = $('select[name=box_h]').val();
                         d.userId = $('select[name=user_h]').val();
+                        d.actionId = $('select[name=action_h]').val();
                         d.moneyId = $('select[name=money_id]').val();
                     }
                 },
                 columns: [
-                    { data: 'date', name: 'date' },
+                    { data: 'created_at', name: 'created_at' },
                     { data: 'us', name: 'us' },
                     { data: 'type', name: 'type' },
                     { data: 'box', name: 'box' },
                     { data: 'id_sys', name: 'id_sys' },
                     { data: 'nam', name: 'nam' },
                     { data: 'amount', name: 'amount' },
+                    { data: 'action', name: 'action' },
                 ]
             });
             //filtering
@@ -183,6 +194,9 @@
                 abTable.draw();
             });
             $('#user_h').change(function() {
+                abTable.draw();
+            });
+              $('#action_h').change(function() {
                 abTable.draw();
             });
             $('#money_id').change(function() {

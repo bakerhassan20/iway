@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Salary;
 use App\Events\MakeTask;
 use App\Models\Box_year;
+use App\Models\Us_qu;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\Receipt_warranty;
@@ -81,6 +82,16 @@ class ReceiptWarrantyController extends CMSBaseController
             [
                 "required"=>"يجب ادخال هذا الحقل"
             ]);
+
+
+              //لمنع تكرار الشهر
+        /*     $Receipt_war=Receipt_warranty::where('m_year',$this->getMoneyYear())->where('salary_id',$request->input("salary"))->first();
+            if($Receipt_war){
+                $flasher->addWarning("تم صرف ضمان لهذا الشهر من قبل");
+                return Redirect::back();
+            } */
+
+
             $id_system=Receipt_warranty::where('m_year',$this->getMoneyYear())->latest()->first();
             if($id_system){
                 $id_sys =$id_system->id_sys + 1;
@@ -110,18 +121,47 @@ class ReceiptWarrantyController extends CMSBaseController
             $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
             $primary->expense += $request->input("amount_h");
             $primary->save();
+
+            //////////////////
+        $emp_id = Employee::where('id',$receipt_warranty->employee_id)->first();
+        if( $emp_id){
+         $emp_id =$emp_id->name;
+
+        }else{
+         $emp_id =null;
+        }
+       $us_qu= new Us_qu();
+       $us_qu->m_year = $receipt_warranty->m_year;
+       $us_qu->id_main = $receipt_warranty->id;
+       $us_qu->id_sys = $receipt_warranty->id_sys;
+       $us_qu->name = $emp_id;
+       $us_qu->type = 'صرف الضمان';
+       $us_qu->action = 'ادخال';
+       $us_qu->amount = $receipt_warranty->amount;
+       $us_qu->date = $receipt_warranty->created_at;
+       $us_qu->created_by = $receipt_warranty->created_by;
+       $us_qu->slug='ReceiptWarranty';
+       $us_qu->box_id =4;
+       $us_qu->save();
+
+
+       ////////////////
+
+
+       $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+       foreach($users as $user){
+
+       if($user->hasRole('owner') && $user->id != $this->getId()){
+       \Notification::send($user,new NewLessonNotification('ReceiptWarranty/'.$receipt_warranty->id,$this->getId(),'انشاء صرف الضمان ','ReceiptWarranty'));
+       MakeTask::dispatch($user->id);
+
+       }
+
+       }
+
         }
 
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
 
-        if($user->hasRole('owner') && $user->id != $this->getId()){
-        \Notification::send($user,new NewLessonNotification('ReceiptWarranty/'.$receipt_warranty->id,$this->getId(),'انشاء صرف الضمان ','ReceiptWarranty'));
-        MakeTask::dispatch($user->id);
-
-        }
-
-        }
 
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
@@ -205,8 +245,31 @@ class ReceiptWarrantyController extends CMSBaseController
             $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
             $primary->expense -= $amount - $request->input("amount");
             $primary->save();
-        }
 
+
+        //////////////////
+        $emp_id = Employee::where('id',$item->employee_id)->first();
+        if( $emp_id){
+         $emp_id =$emp_id->name;
+
+        }else{
+         $emp_id =null;
+        }
+       $us_qu= new Us_qu();
+       $us_qu->m_year = $item->m_year;
+       $us_qu->id_main = $item->id;
+       $us_qu->id_sys = $item->id_sys;
+       $us_qu->name = $emp_id;
+       $us_qu->type = 'صرف الضمان';
+       $us_qu->action = 'تعديل';
+       $us_qu->amount = $item->amount;
+       $us_qu->date = $item->created_at;
+       $us_qu->created_by = $this->getId();
+       $us_qu->slug='ReceiptWarranty';
+       $us_qu->box_id =4;
+       $us_qu->save();
+
+       ////////////////
         $users=User::where('isdelete',0)->where('Status','مفعل')->get();
         foreach($users as $user){
         if($user->hasRole('owner') && $user->id != $this->getId()){
@@ -215,6 +278,11 @@ class ReceiptWarrantyController extends CMSBaseController
         }
 
         }
+
+
+        }
+
+
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");
         return Redirect::back();
@@ -246,6 +314,32 @@ class ReceiptWarrantyController extends CMSBaseController
             $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
             $primary->expense -= $item->amount;
             $primary->save();
+
+        //////////////////
+        $emp_id = Employee::where('id',$item->employee_id)->first();
+        if( $emp_id){
+         $emp_id =$emp_id->name;
+
+        }else{
+         $emp_id =null;
+        }
+       $us_qu= new Us_qu();
+       $us_qu->m_year = $item->m_year;
+       $us_qu->id_main = $item->id;
+       $us_qu->id_sys = $item->id_sys;
+       $us_qu->name = $emp_id;
+       $us_qu->type = 'صرف الضمان';
+       $us_qu->action = 'حذف';
+       $us_qu->amount = $item->amount;
+       $us_qu->date = $item->created_at;
+       $us_qu->created_by = $this->getId();
+       $us_qu->slug='ReceiptWarranty';
+       $us_qu->box_id =4;
+       $us_qu->save();
+
+       ////////////////
+
+
         }
         flash()->addError("تمت عملية الحذف بنجاح");
         return redirect("/CMS/ReceiptWarranty/");

@@ -9,6 +9,7 @@ use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Material;
 use App\Models\Repository;
+use App\Models\Us_qu;
 use App\Models\Rep_section;
 use Illuminate\Http\Request;
 use App\Models\Repository_in;
@@ -134,14 +135,43 @@ class RepositoryInController extends CMSBaseController
             $matrial = Material::where('id',$material_id)->first();
             $matrial->count_new = $matrial->count_new - $request->input("quantity");
             $matrial->save();
+
+
+        /////////////////////////
+            $rep = Repository::where('id',$repository_in->repository_id)->first();
+            if( $rep){
+                $box =$rep->box_id;
+                $name=$rep->name;
+            }else{
+                $box =null;
+                $name=null;
+            }
+
+            $us_qu= new Us_qu();
+            $us_qu->m_year = $repository_in->m_year;
+            $us_qu->id_main = $repository_in->id;
+            $us_qu->id_sys = $repository_in->id_sys;
+            $us_qu->name = $name;
+            $us_qu->type = 'قبض مستودع';
+            $us_qu->action = 'ادخال';
+            $us_qu->amount = $repository_in->total;
+            $us_qu->date = $repository_in->created_at;
+            $us_qu->created_by = $repository_in->created_by;
+            $us_qu->slug='RepositoryIn';
+            $us_qu->box_id =$box;
+            $us_qu->save();
+            //////////////
+
+            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+            foreach($users as $user){
+            if($user->hasRole('owner') && $user->id != $this->getId()){
+            \Notification::send($user,new NewLessonNotification('RepositoryIn/'.$repository_in->id,$this->getId(),' قبض مستودع','RepositoryIn'));
+            MakeTask::dispatch($user->id);
+            } }
+
         }
 
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
-        if($user->hasRole('owner') && $user->id != $this->getId()){
-        \Notification::send($user,new NewLessonNotification('RepositoryIn/'.$repository_in->id,$this->getId(),' قبض مستودع','RepositoryIn'));
-        MakeTask::dispatch($user->id);
-        } }
+
 
 
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
@@ -245,6 +275,32 @@ class RepositoryInController extends CMSBaseController
                 $primary->save();
             }
 
+
+/////////////////////////
+            $rep = Repository::where('id',$item->repository_id)->first();
+            if( $rep){
+                $box =$rep->box_id;
+                $name=$rep->name;
+               }else{
+                $box =null;
+                $name=null;
+               }
+
+           $us_qu= new Us_qu();
+           $us_qu->m_year = $item->m_year;
+           $us_qu->id_main = $item->id;
+           $us_qu->id_sys = $item->id_sys;
+           $us_qu->name = $name;
+           $us_qu->type = 'قبض مستودع';
+           $us_qu->action = 'تعديل';
+           $us_qu->amount = $item->total;
+           $us_qu->date = $item->created_at;
+           $us_qu->created_by = $this->getId();
+           $us_qu->slug='RepositoryIn';
+           $us_qu->box_id =$box;
+           $us_qu->save();
+//////////////
+
             $users=User::where('isdelete',0)->where('Status','مفعل')->get();
             foreach($users as $user){
             if($user->hasRole('owner') && $user->id != $this->getId()){
@@ -285,6 +341,32 @@ class RepositoryInController extends CMSBaseController
                 $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
                 $primary->income -= $item->total;
                 $primary->save();
+
+
+/////////////////////////
+            $rep = Repository::where('id',$item->repository_id)->first();
+            if( $rep){
+                $box =$rep->box_id;
+                $name=$rep->name;
+               }else{
+                $box =null;
+                $name=null;
+               }
+
+           $us_qu= new Us_qu();
+           $us_qu->m_year = $item->m_year;
+           $us_qu->id_main = $item->id;
+           $us_qu->id_sys = $item->id_sys;
+           $us_qu->name = $name;
+           $us_qu->type = 'قبض مستودع';
+           $us_qu->action = 'حذف';
+           $us_qu->amount = $item->total;
+           $us_qu->date = $item->created_at;
+           $us_qu->created_by = $this->getId();
+           $us_qu->slug='RepositoryIn';
+           $us_qu->box_id =$box;
+           $us_qu->save();
+//////////////
             }
         }
         flash()->addError("تمت عملية الحذف بنجاح");

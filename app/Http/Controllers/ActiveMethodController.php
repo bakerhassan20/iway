@@ -272,7 +272,7 @@ class ActiveMethodController  extends CMSBaseController
         $item=Certificate::find($id);
         $item->print_execute=$opt;
         if($opt==1){
-        $item->release_date=date("Y-m-d h:i:s");
+        $item->release_date=date("Y-m-d h:i");
         }
         $item->save();
         return response()->json(['status' => '1','date' =>$item->release_date]);
@@ -287,7 +287,7 @@ class ActiveMethodController  extends CMSBaseController
 
     // function getInAbsence($id){
     //     $item=Absence::find($id);
-    //     $item->hour_in=date("Y-m-d h:i:s");
+    //     $item->hour_in=date("Y-m-d h:i");
     //     $item->save();
     //     $date = Absence::where('id',$id)->first(['hour_in']);
     //     return Response::json($date);
@@ -295,13 +295,13 @@ class ActiveMethodController  extends CMSBaseController
 
     function getInAbsence($id){
         $item=Absence::find($id);
-        $item->hour_in=date("Y-m-d h:i:s");
+        $item->hour_in=date("Y-m-d h:i");
         $item->save();
         $absence = Absence::where('id', $id)->first(['hour_in', 'hour_out']);
         $hour_in = strtotime($absence->hour_in);
         $hour_out = strtotime($absence->hour_out);
         $diff = $hour_out - $hour_in;
-        $duration = gmdate('h:i:s', $diff);
+        $duration = gmdate('h:i', $diff);
 
            return Response::json(['hour_in' => $absence->hour_in, 'hour_out' => $absence->hour_out, 'duration' => $duration]);
 
@@ -310,7 +310,7 @@ class ActiveMethodController  extends CMSBaseController
 
     function getOutAbsence($id){
         $item=Absence::find($id);
-        $item->hour_out=date("Y-m-d h:i:s");
+        $item->hour_out=date("Y-m-d h:i");
         $item->save();
         $date = Absence::where('id',$id)->first(['hour_out']);
         return Response::json($date);
@@ -321,7 +321,7 @@ class ActiveMethodController  extends CMSBaseController
     //     $hourIn = strtotime($absence->hour_in);
     //     $hourOut = strtotime($absence->hour_out);
     //     $durationInSeconds = $hourOut - $hourIn;
-    //     $duration = gmdate('h:i:s', $durationInSeconds);
+    //     $duration = gmdate('h:i', $durationInSeconds);
     //     return Response::json(['duration' => $duration]);
     // }
 
@@ -486,16 +486,21 @@ class ActiveMethodController  extends CMSBaseController
     {
         foreach(Auth::user()->getRoleNames() as $v){
         if($v == 'owner'){
-            $tasks = Approval_record::leftJoin('users', 'users.id','=','approval_record.user_id')
-            ->leftJoin('users as res', 'users.id','=','approval_record.res_id')
-                ->select(['approval_record.id','approval_record.row_id','approval_record.slug','approval_record.model_id','approval_record.section','approval_record.date', 'users.name as user_id','res.name as res_id']);
+            $tasks = Approval_record::leftJoin('users as us', 'us.id','=','approval_record.user_id')
+            ->leftJoin('users as res', 'res.id','=','approval_record.res_id')
+                ->select(['approval_record.id','approval_record.row_id','approval_record.slug','approval_record.model_id','approval_record.section','approval_record.created_at', 'us.name as user_id','res.name as resp']);
         }else{
-            $tasks = Approval_record::leftJoin('users', 'users.id','=','approval_record.user_id')
-            ->leftJoin('users as res', 'users.id','=','approval_record.res_id')
-                ->select(['approval_record.id','approval_record.row_id','approval_record.slug','approval_record.model_id','approval_record.section','approval_record.date', 'users.name as user_id','res.name as res_id'])->where('res_id',Auth::user()->id);
+            $tasks = Approval_record::leftJoin('users as us', 'us.id','=','approval_record.user_id')
+            ->leftJoin('users as res', 'res.id','=','approval_record.res_id')
+                ->select(['approval_record.id','approval_record.row_id','approval_record.slug','approval_record.model_id','approval_record.section','approval_record.created_at', 'us.name as user_id','res.name as resp'])->where('res.id',Auth::user()->id);
         }
         }
+
         return Datatables::of($tasks)
+        ->editColumn('created_at', function ($tasks) {
+
+        return $tasks->created_at->format('Y-m-d h:i');
+        })
         ->make(true);
     }
 
@@ -669,7 +674,7 @@ class ActiveMethodController  extends CMSBaseController
            // ->where('sc.m_year',$this->getMoneyYear());
         return Datatables::of($tasks)
         ->editColumn('created_at', function($tasks){
-            return $tasks->created_at->format('Y-m-d h:i:s');
+            return $tasks->created_at->format('Y-m-d h:i');
         })
             ->filter(function ($tasks) use ($request) {
                 if ($request->has('searchCountClaim') and $request->get('searchCountClaim') != "") {
@@ -713,7 +718,7 @@ class ActiveMethodController  extends CMSBaseController
             ->where('count_warning.isdelete','=','0');
         return Datatables::of($tasks)
         ->editColumn('created_at', function($tasks){
-            return $tasks->created_at->format('Y-m-d h:i:s');
+            return $tasks->created_at->format('Y-m-d h:i');
         })
         ->filter(function ($tasks) use ($request) {
             if ($request->has('searchCountWarning') and $request->get('searchCountWarning') != "") {
@@ -953,8 +958,8 @@ class ActiveMethodController  extends CMSBaseController
                 return date('y/m/d H:m', strtotime($tasks->start_date) );
             }) */
             ->addColumn('rem', function ($tasks) {
-                $day = \Carbon\Carbon::parse($tasks->start_date)->diffInDays(\Carbon\Carbon::parse(date('Y-m-d h:s')));
-                $hours = \Carbon\Carbon::parse($tasks->start_date)->diffInHours(\Carbon\Carbon::parse(date('Y-m-d h:s')));
+                $day = \Carbon\Carbon::parse($tasks->start_date)->diffInDays(\Carbon\Carbon::parse(date('Y-m-d h:i')));
+                $hours = \Carbon\Carbon::parse($tasks->start_date)->diffInHours(\Carbon\Carbon::parse(date('Y-m-d h:i')));
                 $hour=$hours-($day*24);
                 $rem=$day . ' يوم ' . $hour . ' ساعة';
                 return $rem;
@@ -1016,8 +1021,8 @@ class ActiveMethodController  extends CMSBaseController
             })
 
             ->addColumn('rem', function ($tasks) {
-                $day = \Carbon\Carbon::parse($tasks->start_date)->diffInDays(\Carbon\Carbon::parse(date('Y-m-d h:s')));
-                $hours = \Carbon\Carbon::parse($tasks->start_date)->diffInHours(\Carbon\Carbon::parse(date('Y-m-d h:s')));
+                $day = \Carbon\Carbon::parse($tasks->start_date)->diffInDays(\Carbon\Carbon::parse(date('Y-m-d h:i')));
+                $hours = \Carbon\Carbon::parse($tasks->start_date)->diffInHours(\Carbon\Carbon::parse(date('Y-m-d h:i')));
                 $hour=$hours-($day*24);
                 $rem=$day . ' يوم ' . $hour . ' ساعة';
                 return $rem;
@@ -1069,8 +1074,8 @@ class ActiveMethodController  extends CMSBaseController
                 return $this->getId();
             })
             ->addColumn('rem', function ($tasks) {
-                $day = \Carbon\Carbon::parse($tasks->start_date)->diffInDays(\Carbon\Carbon::parse(date('Y-m-d h:s')));
-                $hours = \Carbon\Carbon::parse($tasks->start_date)->diffInHours(\Carbon\Carbon::parse(date('Y-m-d h:s')));
+                $day = \Carbon\Carbon::parse($tasks->start_date)->diffInDays(\Carbon\Carbon::parse(date('Y-m-d h:i')));
+                $hours = \Carbon\Carbon::parse($tasks->start_date)->diffInHours(\Carbon\Carbon::parse(date('Y-m-d h:i')));
                 $hour=$hours-($day*24);
                 $rem=$day . ' يوم ' . $hour . ' ساعة';
                 return $rem;
@@ -1616,6 +1621,8 @@ return $html;
             })
             ->make(true);
     }
+
+
 
     public function anyYearStudent(Request $request)
     {
@@ -3023,7 +3030,7 @@ return $html;
                     $tasks->where('employees.id', '=', "{$request->get('employeeId')}");
                 }
                 if ($request->has('monthId') and $request->get('monthId') != "") {
-                    $tasks->where('receipt_salaries.month', '=', "{$request->get('monthId')}");
+                    $tasks->where('salaries.month', '=', "{$request->get('monthId')}");
                 }
                 if ($request->has('userId') and $request->get('userId') != "") {
                     $tasks->where('receipt_salaries.created_by', '=', "{$request->get('userId')}");
@@ -3581,7 +3588,7 @@ return $html;
     {
         $tasks = Record_done::leftJoin('users as create', 'create.id','=','record_done.created_by')
             ->leftJoin('users as res', 'res.id','=','record_done.res')
-            ->select([ 'record_done.id','record_done.title','record_done.type','record_done.row_id','record_done.slug','record_done.isdelete','record_done.created_at','record_done.updated_at','create.name as created_by','res.name as res']);
+            ->select([ 'record_done.id','record_done.title','record_done.type','record_done.row_id','record_done.slug','record_done.isdelete','record_done.created_at','record_done.updated_at','create.name as created_by','res.name as res'])->where('create.id',Auth::user()->id);
         return Datatables::of($tasks)
         ->editColumn('created_at', function($tasks){
             return $tasks->created_at->format('Y-m-d h:i');
@@ -5153,6 +5160,9 @@ return $response;
         return Datatables::of($tasks)
             ->editColumn('created_by', function ($tasks) {
                 return $tasks->updated_by?$tasks->updated_by:$tasks->created_by;
+
+            })   ->editColumn('created_at', function ($tasks) {
+                return $tasks->created_at->format('Y/m/d h:i');
             })
             ->filter(function ($tasks) use ($request) {
                 if ($request->has('searchLevelUp') and $request->get('searchLevelUp') != "") {

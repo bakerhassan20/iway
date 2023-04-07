@@ -50,18 +50,18 @@
                                                         <td>
                                                             <select name="month_4_h" id="month_4_h" class="form-control">
                                                                 <option value=""> اختر من الشهر.... </option>
-                                                                <option {{old("month_4_h")=="01"?"selected":""}} value="1"> Jan - 01 </option>
-                                                                <option {{old("month_4_h")=="02"?"selected":""}} value="2"> Fab - 02 </option>
-                                                                <option {{old("month_4_h")=="03"?"selected":""}} value="3"> Mar - 03 </option>
-                                                                <option {{old("month_4_h")=="04"?"selected":""}} value="4"> Apr - 04 </option>
-                                                                <option {{old("month_4_h")=="05"?"selected":""}} value="5"> May - 05 </option>
-                                                                <option {{old("month_4_h")=="06"?"selected":""}} value="6"> June - 06 </option>
-                                                                <option {{old("month_4_h")=="07"?"selected":""}} value="7"> July - 07 </option>
-                                                                <option {{old("month_4_h")=="08"?"selected":""}} value="8"> Aug - 08 </option>
-                                                                <option {{old("month_4_h")=="09"?"selected":""}} value="9"> Sept - 09 </option>
-                                                                <option {{old("month_4_h")=="10"?"selected":""}} value="10"> Oct - 10 </option>
-                                                                <option {{old("month_4_h")=="11"?"selected":""}} value="11"> Nov - 11 </option>
-                                                                <option {{old("month_4_h")=="12"?"selected":""}} value="12"> Dec - 12 </option>
+                                                                <option  value="1"> Jan - 01 </option>
+                                                                <option  value="2"> Fab - 02 </option>
+                                                                <option  value="3"> Mar - 03 </option>
+                                                                <option  value="4"> Apr - 04 </option>
+                                                                <option  value="5"> May - 05 </option>
+                                                                <option  value="6"> June - 06 </option>
+                                                                <option  value="7"> July - 07 </option>
+                                                                <option  value="8"> Aug - 08 </option>
+                                                                <option  value="9"> Sept - 09 </option>
+                                                                <option  value="10"> Oct - 10 </option>
+                                                                <option  value="11"> Nov - 11 </option>
+                                                                <option  value="12"> Dec - 12 </option>
                                                             </select>
                                                         </td>
                                                         <td>

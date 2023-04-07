@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\Student;
 use App\Events\MakeTask;
 use App\Models\Box_year;
+use App\Models\Us_qu;
 use Illuminate\Http\Request;
 use App\Models\Catch_receipt;
 use App\Models\Student_course;
@@ -162,6 +163,28 @@ class CatchReceiptController extends CMSBaseController
             $msg = 'يجب اضافة مبلغ';
         }
 
+        /////////
+        $std_id = Student_course::where('id',$catchReceipt->student_course_id)->first();
+        if( $std_id){
+         $std_id =$std_id->student_id;
+         $std_name = Student::where('id',$std_id)->first()->nameAR;
+        }else{
+         $std_name =null;
+        }
+        $us_qu= new Us_qu();
+        $us_qu->m_year = $catchReceipt->m_year;
+        $us_qu->id_main = $catchReceipt->id;
+        $us_qu->id_sys = $catchReceipt->id_sys;
+        $us_qu->name = $std_name;
+        $us_qu->type = 'قبض الدورات';
+        $us_qu->action = 'ادخال';
+        $us_qu->amount = $catchReceipt->amount;
+        $us_qu->date = $catchReceipt->created_at;
+        $us_qu->created_by = $catchReceipt->created_by;
+        $us_qu->slug='CatchReceipt';
+        $us_qu->box_id =3;
+        $us_qu->save();
+        /////////////
 
         $users=User::where('isdelete',0)->where('Status','مفعل')->get();
         foreach($users as $user){
@@ -267,6 +290,30 @@ class CatchReceiptController extends CMSBaseController
             $primary->income -= $amount - $request->input("amount");
             $primary->save();
 
+
+        /////////
+        $std_id = Student_course::where('id',$item->student_course_id)->first();
+        if( $std_id){
+         $std_id =$std_id->student_id;
+         $std_name = Student::where('id',$std_id)->first()->nameAR;
+        }else{
+         $std_name =null;
+        }
+        $us_qu= new Us_qu();
+        $us_qu->m_year = $item->m_year;
+        $us_qu->id_main = $item->id;
+        $us_qu->id_sys = $item->id_sys;
+        $us_qu->name = $std_name;
+        $us_qu->type = 'قبض الدورات';
+        $us_qu->action = 'تعديل';
+        $us_qu->amount = $item->amount;
+        $us_qu->date = $item->created_at;
+        $us_qu->created_by = $this->getId();
+        $us_qu->slug='CatchReceipt';
+        $us_qu->box_id =3;
+        $us_qu->save();
+        /////////////
+
             $users=User::where('isdelete',0)->where('Status','مفعل')->get();
             foreach($users as $user){
 
@@ -315,6 +362,29 @@ class CatchReceiptController extends CMSBaseController
             $primary->income -= $item->amount;
             $primary->save();
         }
+
+        /////////
+        $std_id = Student_course::where('id',$item->student_course_id)->first();
+        if( $std_id){
+         $std_id =$std_id->student_id;
+         $std_name = Student::where('id',$std_id)->first()->nameAR;
+        }else{
+         $std_name =null;
+        }
+        $us_qu= new Us_qu();
+        $us_qu->m_year = $item->m_year;
+        $us_qu->id_main = $item->id;
+        $us_qu->id_sys = $item->id_sys;
+        $us_qu->name = $std_name;
+        $us_qu->type = 'قبض الدورات';
+        $us_qu->action = 'حذف';
+        $us_qu->amount = $item->amount;
+        $us_qu->date = $item->created_at;
+        $us_qu->created_by = $this->getId();
+        $us_qu->slug='CatchReceipt';
+        $us_qu->box_id =3;
+        $us_qu->save();
+        /////////////
         flash()->addError("تمت عملية الحذف بنجاح");
         return redirect("/CMS/CatchReceipt/");
     }

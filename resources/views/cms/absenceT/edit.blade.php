@@ -59,7 +59,7 @@ Iwayc System
                                     <select name="course_id" id="course_id" class="form-control select2">
                                         <option value=""> اختر من القائمة.... </option>
                                         @foreach($courses as $course)
-                                            <option {{$item->course_id==$course->id?"selected":""}} value="{{$course->id}}">
+                                    <option {{$item->course_id==$course->id?"selected":""}} value="{{$course->id}}">
                                                 {{\App\Models\Teacher::find($course->teacher_id)->name}} - {{$course->courseAR}}
                                             </option>
                                         @endforeach

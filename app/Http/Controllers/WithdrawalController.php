@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Course;
 use App\Models\Student;
 use App\Models\Teacher;
+use App\Events\MakeTask;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
 use App\Models\Student_course;
@@ -13,6 +14,8 @@ use App\Models\Receipt_student;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\CMSBaseController;
+use App\Notifications\NewLessonNotification;
 
 class WithdrawalController extends CMSBaseController
 {
@@ -47,7 +50,7 @@ class WithdrawalController extends CMSBaseController
      */
     public function create()
     {
-        $parentTitle="اضافة طلب انسحاب جديد";
+        $parentTitle="اضافة طلب انسحاب";
         $title="الماليه";
         $students=Student::where('isdelete',0)->where('m_year',$this->getMoneyYear())->where('active',1)->get();
         $courses=Course::where('isdelete',0)->where('m_year',$this->getMoneyYear())->where('active',1)->get();
@@ -123,6 +126,15 @@ class WithdrawalController extends CMSBaseController
             $course->total_reg_student = $course->total_reg_student - 1;
             $course->total_withdrawn_student = $course->total_withdrawn_student + 1;
             $course->save();
+
+            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+            foreach($users as $user){
+            if($user->hasRole('owner') && $user->id != $this->getId()){
+            \Notification::send($user,new NewLessonNotification('Withdrawal',$this->getId(),'بعمل انسحاب طالب من دوره','Withdrawal'));
+            MakeTask::dispatch($user->id);
+            } }
+
+
         }
 
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
@@ -139,7 +151,7 @@ class WithdrawalController extends CMSBaseController
     {
         $parentTitle="عرض طلب الانسحاب ";
         $item=Withdrawal::where("id",$id)->where("isdelete",0)->first();
-        $title="ادارة طلبات الانسحاب";
+        $title="طلبات الانسحاب";
         $linkApp="/CMS/Withdrawal/";
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
@@ -158,7 +170,7 @@ class WithdrawalController extends CMSBaseController
     {
         $parentTitle="تعديل طلبات الانسحاب ";
         $item=Withdrawal::where("id",$id)->where("isdelete",0)->first();
-        $title="ادارة طلبات الانسحاب";
+        $title="طلبات الانسحاب";
         $linkApp="/CMS/Withdrawal/";
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
@@ -253,9 +265,9 @@ class WithdrawalController extends CMSBaseController
     public function getAdd($id)
     {
         $item = Student_course::find($id);
-        $parentTitle="اضافة طلب انسحاب جديد";
-        $title="ادارة طلبات الانسحاب";
-   
+        $parentTitle="اضافة طلب انسحاب";
+        $title="طلبات الانسحاب";
+
         return view("cms.withdrawal.add",compact("title","parentTitle","item","id"));
     }
     public function getYearFilter()

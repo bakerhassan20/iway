@@ -193,6 +193,11 @@
 		    <div class="notification-subtext mb-2"><h5 class="notification-label mb-1">{{ $notification->created_at->format('Y-m-d h:i') }}</h5>
 
           </div>
+
+            <form method="POST" action="/markAs"style =''>@csrf
+            <input type="hidden" value="{{ $notification->id }}"name="not_id">
+            <button  type="submit" class="btn btn-sm btn-warning" >إخفاء</button></form>
+
 	    </div>
 		<div class="mr-auto" >
 		    <i class="las la-angle-left text-left text-muted"></i>

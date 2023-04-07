@@ -128,7 +128,7 @@ Iwayc System
                                 <label class="control-label"></label>
                                 <div class="col-xs-12 col-sm-12 col-md-12 text-center">
                                     <button class="submit btn-primary btn" type="submit" name="submit">حفظ</button>
-                                    <a href="/CMS/Static/" class="btn btn-danger"> إلغاء</a>
+                                    <a href="/CMS/CatchReceiptBox" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>

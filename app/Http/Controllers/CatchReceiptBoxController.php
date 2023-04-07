@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Box;
 use App\Models\User;
+use App\Models\Us_qu;
 use App\Events\MakeTask;
 use App\Models\Box_year;
 use Illuminate\Http\Request;
@@ -118,16 +119,35 @@ class CatchReceiptBoxController extends CMSBaseController
             $primary = Box_year::where('box_id','1')->where('m_year',$this->getMoneyYear())->first();
             $primary->income += $request->input("amount");
             $primary->save();
+
+////////////////
+            $us_qu= new Us_qu();
+            $us_qu->m_year = $catchReceiptBox->m_year;
+            $us_qu->id_main = $catchReceiptBox->id;
+            $us_qu->id_sys = $catchReceiptBox->id_sys;
+            $us_qu->name = $catchReceiptBox->customer;
+            $us_qu->type = 'قبض صندوق مستقل';
+            $us_qu->action = 'ادخال';
+            $us_qu->amount = $catchReceiptBox->amount;
+            $us_qu->date = $catchReceiptBox->created_at;
+            $us_qu->created_by = $catchReceiptBox->created_by;
+            $us_qu->slug='CatchReceiptBox';
+            $us_qu->box_id =$catchReceiptBox->box_id;
+            $us_qu->save();
+//////////////////
+
+            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+            foreach($users as $user){
+            if($user->hasRole('owner') && $user->id != $this->getId()){
+            \Notification::send($user,new NewLessonNotification('CatchReceiptBox/'.$catchReceiptBox->id,$this->getId(),'قبض صندوق مستقل','CatchReceiptBox'));
+            MakeTask::dispatch($user->id);
+            } }
+            $flasher->addSuccess("تمت عملية الاضافة بنجاح");
+            return Redirect::back();
+
         }
 
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
-        if($user->hasRole('owner') && $user->id != $this->getId()){
-        \Notification::send($user,new NewLessonNotification('CatchReceiptBox/'.$catchReceiptBox->id,$this->getId(),'قبض صندوق مستقل','CatchReceiptBox'));
-        MakeTask::dispatch($user->id);
-        } }
-        $flasher->addSuccess("تمت عملية الاضافة بنجاح");
-        return Redirect::back();
+
     }
 
     /**
@@ -218,6 +238,23 @@ class CatchReceiptBoxController extends CMSBaseController
             $primary->income -= $amount - $request->input("amount");
             $primary->save();
 
+            ////////////////
+            $us_qu= new Us_qu();
+            $us_qu->m_year = $item->m_year;
+            $us_qu->id_main = $item->id;
+            $us_qu->id_sys = $item->id_sys;
+            $us_qu->name = $item->customer;
+            $us_qu->type = 'قبض صندوق مستقل';
+            $us_qu->action = 'تعديل';
+            $us_qu->amount = $item->amount;
+            $us_qu->date = $item->created_at;
+            $us_qu->created_by = $this->getId();
+            $us_qu->slug='CatchReceiptBox';
+            $us_qu->box_id =$item->box_id;
+            $us_qu->save();
+//////////////////
+
+
             $users=User::where('isdelete',0)->where('Status','مفعل')->get();
             foreach($users as $user){
             if($user->hasRole('owner') && $user->id != $this->getId()){
@@ -259,6 +296,23 @@ class CatchReceiptBoxController extends CMSBaseController
             $primary = Box_year::where('box_id','1')->where('m_year',$this->getMoneyYear())->first();
             $primary->income -= $item->amount;
             $primary->save();
+
+
+////////////////
+            $us_qu= new Us_qu();
+            $us_qu->m_year = $item->m_year;
+            $us_qu->id_main = $item->id;
+            $us_qu->id_sys = $item->id_sys;
+            $us_qu->name = $item->customer;
+            $us_qu->type = 'قبض صندوق مستقل';
+            $us_qu->action = 'حذف';
+            $us_qu->amount = $item->amount;
+            $us_qu->date = $item->created_at;
+            $us_qu->created_by = $this->getId();
+            $us_qu->slug='CatchReceiptBox';
+            $us_qu->box_id =$item->box_id;
+            $us_qu->save();
+//////////////////
         }
         flash()->addError("تمت عملية الحذف بنجاح");
         return redirect("/CMS/CatchReceiptBox/");

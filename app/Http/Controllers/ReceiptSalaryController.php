@@ -10,6 +10,7 @@ use App\Models\Box_year;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\Receipt_salary;
+use App\Models\Us_qu;
 use App\Models\Approval_record;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Auth;
@@ -157,6 +158,23 @@ class ReceiptSalaryController extends CMSBaseController
 
  }
 
+          /////////////
+        $emp_id = Employee::where('id',$receipt_salary->employee_id)->first()->name;
+        $us_qu= new Us_qu();
+        $us_qu->m_year = $receipt_salary->m_year;
+        $us_qu->id_main = $receipt_salary->id;
+        $us_qu->id_sys = $receipt_salary->id_sys;
+        $us_qu->name = $emp_id;
+        $us_qu->type = 'صرف راتب';
+        $us_qu->action = 'ادخال';
+        $us_qu->amount = $receipt_salary->amount;
+        $us_qu->date = $receipt_salary->created_at;
+        $us_qu->created_by = $this->getId();
+        $us_qu->slug='ReceiptSalary';
+        $us_qu->box_id =4;
+        $us_qu->save();
+         ///////
+
         $users=User::where('isdelete',0)->where('Status','مفعل')->get();
         foreach($users as $user){
 
@@ -185,7 +203,7 @@ class ReceiptSalaryController extends CMSBaseController
 
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/Static/");
+            return redirect("/CMS/ReceiptSalary/");
         }
         return view("cms.receiptSalary.show",compact("title","item","id","parentTitle"));
     }
@@ -205,7 +223,7 @@ class ReceiptSalaryController extends CMSBaseController
 
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/Static/");
+            return redirect("/CMS/ReceiptSalary/");
         }
         return view("cms.receiptSalary.edit",compact("title","item","id","parentTitle","employees"));
     }
@@ -273,6 +291,24 @@ class ReceiptSalaryController extends CMSBaseController
                 $salary->save();
             }
 
+        /////////////
+        $emp_id = Employee::where('id',$item->employee_id)->first()->name;
+        $us_qu= new Us_qu();
+        $us_qu->m_year = $item->m_year;
+        $us_qu->id_main = $item->id;
+        $us_qu->id_sys = $item->id_sys;
+        $us_qu->name = $emp_id;
+        $us_qu->type = 'صرف راتب';
+        $us_qu->action = 'تعديل';
+        $us_qu->amount = $item->amount;
+        $us_qu->date = $item->created_at;
+        $us_qu->created_by = $this->getId();
+        $us_qu->slug='ReceiptSalary';
+        $us_qu->box_id =4;
+        $us_qu->save();
+         ///////
+
+
             $users=User::where('isdelete',0)->where('Status','مفعل')->get();
             foreach($users as $user){
 
@@ -317,7 +353,26 @@ class ReceiptSalaryController extends CMSBaseController
             $primary->expense -= $item->amount;
 //            $primary->income -= $item->advance_payment;
             $primary->save();
+
+                  /////////////
+        $emp_id = Employee::where('id',$item->employee_id)->first()->name;
+        $us_qu= new Us_qu();
+        $us_qu->m_year = $item->m_year;
+        $us_qu->id_main = $item->id;
+        $us_qu->id_sys = $item->id_sys;
+        $us_qu->name = $emp_id;
+        $us_qu->type = 'صرف راتب';
+        $us_qu->action = 'حذف';
+        $us_qu->amount = $item->amount;
+        $us_qu->date = $item->created_at;
+        $us_qu->created_by = $this->getId();
+        $us_qu->slug='ReceiptSalary';
+        $us_qu->box_id =4;
+        $us_qu->save();
+         ///////
+
         }
+
         flash()->addError("تمت عملية الحذف بنجاح");
         return redirect("/CMS/ReceiptSalary/");
     }

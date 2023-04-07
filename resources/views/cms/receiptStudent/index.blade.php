@@ -7,13 +7,43 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
+
 <style>
     .select2 {
         width:100% !important;
     }
+
+   @media print {
+    @page{
+        size:105mm 148mm !important;
+    }
+    td,th{
+        font-size:6.5px !important;
+        color:red;
+    }
+    .main_title{
+        font-size:10px !important;
+    }
+    .main_footer{
+      font-size:10px !important;
+    }
+    .main_subtitle{
+     font-size:10px !important;
+    }
+    .panel-title{
+        font-size:10px !important;
+    }
+    table{
+        margin:0;
+    }
+ title{
+display:none !important;
+}
+
+}
 </style>
 @section('title')
- Iwayc System
+
 
 @endsection
 
@@ -95,8 +125,9 @@
 
 							</div>
 							<div class="card-body">
-								<div class="table-responsive ls-table">
-						<table id="receipt-student-table" class="table table-bordered table-striped table-hover">
+								<div class="">
+						<table id="receipt-student-table" class="table-bordered table-striped table-hover">
+
                    <thead>
                             <tr>
                                 <th>الرقم الحاسوبي</th>
@@ -155,14 +186,22 @@
                 serverSide: true,
                       buttons: [
                     {'extend':'excel','text':'أكسيل','title': subtitle,},
-                    {'extend':'print','text':'طباعة','title': subtitle,   customize: function ( win ) {
+                    {'extend':'print','text':'طباعة', customize: function ( win ) {
                         var json = rsTable.ajax.json();
+$(win.document.body).prepend('<div style="position:absolute; top:10; right:0;"class="main_title">My Title</div>')
+         .prepend('<div style="position:absolute; bottom:20; left:0;font-size:40px"class="main_footer">Creato il:footer </div>')
+         .prepend('<div style="position:absolute; top:10; left:50;font-size:24px;"class="main_subtitle">SubTitle</div>')
 
-                    $(win.document.body)
-                        .css( 'font-size', '10pt' )
-                        .prepend(
-                            '<br><h3 class="panel-title text-left">المجموع: (<Strong id="total_3_filter">'+json.tot+'</Strong> دينار)</h3>'
-                        );
+        .prepend('<br><br><br><h3 class="panel-title text-left">المجموع: (<Strong id="total_3_filter">'+json.tot+'</Strong> دينار)</h3>');
+
+$(win.document.body).find('table').removeClass('dataTable')
+$(win.document.body).find('th').each(function(index){
+{{-- $(this).css('font-size','18px'); --}}
+            });
+
+
+
+
                 }},
 
                     {'extend':'pdf','text':'pdf','title': pdfsubtitle,'exportOptions': {'orthogonal': "PDF"},customize: function ( doc ) {processDoc(doc); //fun in app.js
@@ -191,6 +230,7 @@
                         d.moneyId = $('select[name=money_id]').val();
                     }
                 },
+
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'id_comp', name: 'id_comp' },
@@ -233,5 +273,7 @@
                 $("#total_3_filter").replaceWith('<Strong id="total_3_filter">'+json.tot+'</Strong>');
             });
         });
-    </script>
+
+
+</script>
 @endsection

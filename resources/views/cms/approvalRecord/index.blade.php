@@ -112,8 +112,8 @@
                 columns: [
                     {data: 'section', name: 'section'},
                     {data: 'user_id', name: 'user_id'},
-                     {data: 'res_id', name: 'res_id'},
-                    {data: 'date', name: 'date'},
+                     {data: 'resp', name: 'resp'},
+                    {data: 'created_at', name: 'created_at'},
                     {
                         "mRender": function (data, type, row) {
                             var show = '<a class="btn btn-xs btn-warning" href="/CMS/' + row.slug + '/' + row.row_id +'">عرض</a>';

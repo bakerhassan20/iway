@@ -9,6 +9,7 @@ use App\Models\Box_year;
 use Illuminate\Http\Request;
 use App\Models\Receipt_course;
 use Flasher\Prime\FlasherInterface;
+use App\Models\Us_qu;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\CMSBaseController;
@@ -118,16 +119,42 @@ class ReceiptCourseController extends CMSBaseController
         $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
         $primary->expense += $request->input("amount");
         $primary->save();
-    }
 
+
+
+        ////////////////
+        $tech_id = Course::where('id',$receipt_course->course_id)->first();
+        if( $tech_id){
+        $tech_id =$tech_id->teacher_id;
+        $tech_name = Teacher::where('id',$tech_id)->first()->name;
+        }else{
+        $tech_name =null;
+        }
+        $us_qu= new Us_qu();
+        $us_qu->m_year = $receipt_course->m_year;
+        $us_qu->id_main = $receipt_course->id;
+        $us_qu->id_sys = $receipt_course->id_sys;
+        $us_qu->name = $tech_name;
+        $us_qu->type = 'صرف اجور معلم';
+        $us_qu->action = 'ادخال';
+        $us_qu->amount = $receipt_course->amount;
+        $us_qu->date = $receipt_course->created_at;
+        $us_qu->created_by = $receipt_course->created_by;
+        $us_qu->slug='ReceiptCourse';
+        $us_qu->box_id =3;
+        $us_qu->save();
+
+    //////////////////
     $users=User::where('isdelete',0)->where('Status','مفعل')->get();
     foreach($users as $user){
-
     if($user->hasRole('owner') && $user->id != $this->getId()){
     \Notification::send($user,new NewLessonNotification('ReceiptCourse/'.$receipt_course->id,$this->getId(),'انشاء صرف اجور معلم','ReceiptCourse'));
-    MakeTask::dispatch($user->id);
+    MakeTask::dispatch($user->id); } }
+
+
     }
-    }
+
+
 
     $flasher->addSuccess("تمت عملية الاضافة بنجاح");
     return Redirect::back();
@@ -218,6 +245,30 @@ class ReceiptCourseController extends CMSBaseController
         $primary->save();
 
 
+             ////////////////
+             $tech_id = Course::where('id',$item->course_id)->first();
+             if( $tech_id){
+             $tech_id =$tech_id->teacher_id;
+             $tech_name = Teacher::where('id',$tech_id)->first()->name;
+             }else{
+             $tech_name =null;
+             }
+             $us_qu= new Us_qu();
+             $us_qu->m_year = $item->m_year;
+             $us_qu->id_main = $item->id;
+             $us_qu->id_sys = $item->id_sys;
+             $us_qu->name = $tech_name;
+             $us_qu->type = 'صرف اجور معلم';
+             $us_qu->action = 'تعديل';
+             $us_qu->amount = $item->amount;
+             $us_qu->date = $item->created_at;
+             $us_qu->created_by = $this->getId();
+             $us_qu->slug='ReceiptCourse';
+             $us_qu->box_id =3;
+             $us_qu->save();
+
+         //////////////////
+
         $users=User::where('isdelete',0)->where('Status','مفعل')->get();
         foreach($users as $user){
         if($user->hasRole('owner') && $user->id != $this->getId()){
@@ -258,6 +309,31 @@ class ReceiptCourseController extends CMSBaseController
             $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
             $primary->expense -= $item->amount;
             $primary->save();
+
+                         ////////////////
+                         $tech_id = Course::where('id',$item->course_id)->first();
+                         if( $tech_id){
+                         $tech_id =$tech_id->teacher_id;
+                         $tech_name = Teacher::where('id',$tech_id)->first()->name;
+                         }else{
+                         $tech_name =null;
+                         }
+                         $us_qu= new Us_qu();
+                         $us_qu->m_year = $item->m_year;
+                         $us_qu->id_main = $item->id;
+                         $us_qu->id_sys = $item->id_sys;
+                         $us_qu->name = $tech_name;
+                         $us_qu->type = 'صرف اجور معلم';
+                         $us_qu->action = 'حذف';
+                         $us_qu->amount = $item->amount;
+                         $us_qu->date = $item->created_at;
+                         $us_qu->created_by = $this->getId();
+                         $us_qu->slug='ReceiptCourse';
+                         $us_qu->box_id =3;
+                         $us_qu->save();
+
+                     //////////////////
+
         }
         flash()->addError("تمت عملية الحذف بنجاح");
         return redirect("/CMS/ReceiptCourse");

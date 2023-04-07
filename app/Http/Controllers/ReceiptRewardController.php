@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Option;
 use App\Events\MakeTask;
 use App\Models\Box_year;
+use App\Models\Us_qu;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\Receipt_reward;
@@ -146,6 +147,35 @@ class ReceiptRewardController extends CMSBaseController
     }
 
 }
+                         ///////////////////////////////
+                         if($receipt_salary->type == 0){
+                            $ty='مكافأت';
+                           }else{
+                            $ty='خصومات';
+                           }
+                           $emp_id = Employee::where('id',$receipt_salary->employee_id)->first();
+                           if( $emp_id){
+                            $emp_id =$emp_id->name;
+
+                           }else{
+                            $emp_id =null;
+                           }
+                           $us_qu= new Us_qu();
+                           $us_qu->m_year = $receipt_salary->m_year;
+                           $us_qu->id_main = $receipt_salary->id;
+                           $us_qu->id_sys = $receipt_salary->id_sys;
+                           $us_qu->name = $emp_id;
+                           $us_qu->type = $ty;
+                           $us_qu->action = 'ادخال';
+                           $us_qu->amount = $receipt_salary->amount;
+                           $us_qu->date = $receipt_salary->created_at;
+                           $us_qu->created_by = $this->getId();
+                           $us_qu->slug='ReceiptReward';
+                           $us_qu->box_id =4;
+                           $us_qu->save();
+            ///////////////////////////
+
+
              if( $request->input("type") == 0){
                 $title ='صرف مكافأة';
              }else{
@@ -254,8 +284,33 @@ class ReceiptRewardController extends CMSBaseController
                 $primary->income -= $amount - $request->input("amount");
                 $primary->save();
             }
+ ///////////////////////////////
+            if($item->type == 0){
+                $ty='مكافأت';
+               }else{
+                $ty='خصومات';
+               }
+               $emp_id = Employee::where('id',$item->employee_id)->first();
+               if( $emp_id){
+                $emp_id =$emp_id->name;
 
-
+               }else{
+                $emp_id =null;
+               }
+               $us_qu= new Us_qu();
+               $us_qu->m_year = $item->m_year;
+               $us_qu->id_main = $item->id;
+               $us_qu->id_sys = $item->id_sys;
+               $us_qu->name = $emp_id;
+               $us_qu->type = $ty;
+               $us_qu->action = 'تعديل';
+               $us_qu->amount = $item->amount;
+               $us_qu->date = $item->created_at;
+               $us_qu->created_by = $this->getId();
+               $us_qu->slug='ReceiptReward';
+               $us_qu->box_id =4;
+               $us_qu->save();
+///////////////////////////
             if( $item->type == 0){
                 $title ='تعديل مكافأة';
              }else{
@@ -311,6 +366,37 @@ class ReceiptRewardController extends CMSBaseController
                 $primary->income -= $item->amount;
                 $primary->save();
             }
+
+
+             ///////////////////////////////
+             if($item->type == 0){
+                $ty='مكافأت';
+               }else{
+                $ty='خصومات';
+               }
+               $emp_id = Employee::where('id',$item->employee_id)->first();
+               if( $emp_id){
+                $emp_id =$emp_id->name;
+
+               }else{
+                $emp_id =null;
+               }
+               $us_qu= new Us_qu();
+               $us_qu->m_year = $item->m_year;
+               $us_qu->id_main = $item->id;
+               $us_qu->id_sys = $item->id_sys;
+               $us_qu->name = $emp_id;
+               $us_qu->type = $ty;
+               $us_qu->action = 'حذف';
+               $us_qu->amount = $item->amount;
+               $us_qu->date = $item->created_at;
+               $us_qu->created_by = $this->getId();
+               $us_qu->slug='ReceiptReward';
+               $us_qu->box_id =4;
+               $us_qu->save();
+///////////////////////////
+
+
         }
         flash()->addError("تمت عملية الحذف بنجاح");
         return redirect("CMS/ReceiptReward/");

@@ -329,6 +329,11 @@ Route::get('ReceiptStudentFilter', 'ReceiptStudentController@getYearFilter');
 //user query
 Route::get('datatables/UserQ', 'QueryUserController@anyUserQ');
 Route::get('UserQ', 'QueryUserController@getUserQ');
+
+Route::get('datatables/Email', 'QueryUserController@anyEmail');
+Route::get('Email', 'QueryUserController@getEmail');
+
+
 //شؤون الموظفين
 // ReceiptSalary Controller
         Route::get('IncomeBox/{id}', 'ActiveMethodController@getIncomeBox');

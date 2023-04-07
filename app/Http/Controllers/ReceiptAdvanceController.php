@@ -8,6 +8,7 @@ use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use App\Models\Us_qu;
 use App\Models\Approval_record;
 use App\Models\Receipt_advance;
 use Flasher\Prime\FlasherInterface;
@@ -132,6 +133,23 @@ class ReceiptAdvanceController extends CMSBaseController
         $add->save();
     }
 }
+ ///////////
+            $emp_id = Employee::where('id',$receipt_advance->employee_id)->first()->name;
+            $us_qu= new Us_qu();
+            $us_qu->m_year = $receipt_advance->m_year;
+            $us_qu->id_main = $receipt_advance->id;
+            $us_qu->id_sys = $receipt_advance->id_sys;
+            $us_qu->name = $emp_id;
+            $us_qu->type = 'صرف سلفة';
+            $us_qu->action = 'ادخال';
+            $us_qu->amount = $receipt_advance->advance_payment;
+            $us_qu->date = $receipt_advance->created_at;
+            $us_qu->created_by = $receipt_advance->created_by;
+            $us_qu->slug='ReceiptAdvance';
+            $us_qu->box_id =4;
+            $us_qu->save();
+
+////////////////
             $users=User::where('isdelete',0)->where('Status','مفعل')->get();
             foreach($users as $user){
             if($user->hasRole('owner') && $user->id != $this->getId()){
@@ -227,6 +245,27 @@ class ReceiptAdvanceController extends CMSBaseController
             $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
             $primary->expense -= $amount - $request->input("advance_payment");
             $primary->save();
+
+
+            ///////////
+             $emp_id = Employee::where('id',$item->employee_id)->first()->name;
+             $us_qu= new Us_qu();
+             $us_qu->m_year = $item->m_year;
+             $us_qu->id_main = $item->id;
+             $us_qu->id_sys = $item->id_sys;
+             $us_qu->name = $emp_id;
+             $us_qu->type = 'صرف سلفة';
+             $us_qu->action = 'تعديل';
+             $us_qu->amount = $item->advance_payment;
+             $us_qu->date = $item->created_at;
+             $us_qu->created_by = $this->getId();
+             $us_qu->slug='ReceiptAdvance';
+             $us_qu->box_id =4;
+             $us_qu->save();
+
+            ////////////////
+
+
         }
 
         $users=User::where('isdelete',0)->where('Status','مفعل')->get();
@@ -268,6 +307,24 @@ class ReceiptAdvanceController extends CMSBaseController
             $primary = Box_year::where('box_id',1)->where('m_year',$this->getMoneyYear())->first();
             $primary->expense -= $item->advance_payment;
             $primary->save();
+
+
+            ///////////
+            $emp_id = Employee::where('id',$item->employee_id)->first()->name;
+            $us_qu= new Us_qu();
+            $us_qu->m_year = $item->m_year;
+            $us_qu->id_main = $item->id;
+            $us_qu->id_sys = $item->id_sys;
+            $us_qu->name = $emp_id;
+            $us_qu->type = 'صرف سلفة';
+            $us_qu->action = 'حذف';
+            $us_qu->amount = $item->advance_payment;
+            $us_qu->date = $item->created_at;
+            $us_qu->created_by = $this->getId();
+            $us_qu->slug='ReceiptAdvance';
+            $us_qu->box_id =4;
+            $us_qu->save();
+           ////////////////
         }
         flash()->addError("تمت عملية الحذف بنجاح");
         return redirect("/CMS/ReceiptAdvance/");

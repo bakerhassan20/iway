@@ -52,19 +52,8 @@ Iwayc System
                                     </div>
                                 </div>
 
-                        </div><br>
-
-                        <div class="row">
-                            <div class="col">
-                                <label class="control-label">سنة الميلاد:* </label>
-
-
-                                    <input type="text" value="{{$item->birthday}}" class="form-control" id="birthday"
-                                           name="birthday" disabled>
-                                </div>
-                            <div class="col">
+                                    <div class="col">
                                 <label class="col control-label">التاريخ: </label>
-
                                 <div class="col">
                                     <input type="text" value="{{$item->date}}" class="form-control" id="date"
                                            name="date" disabled>
@@ -72,6 +61,8 @@ Iwayc System
                                 </div>
 
                         </div><br>
+
+
 
                         <div class="row">
                             <div class="col">

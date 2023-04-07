@@ -124,6 +124,7 @@ class AbsenceTController extends CMSBaseController
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
             return redirect("/CMS/AbsenceT/");
         }
+        
         return view("cms.absenceT.edit",compact("title","item","id","courses","parentTitle"));
     }
 

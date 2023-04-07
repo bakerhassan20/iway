@@ -102,10 +102,10 @@
     </div>
 <br><br>
 <div class="row">
-{{-- <div class="col-4">
+ <div class="col-4">
      <h3 class="panel-title pull-left"> عدد ايام الغياب : <strong id="count_rows"></strong></h3>
-</div> --}}
-<div class="col-8">
+</div>
+<div class="col-4">
      <h3 class="panel-title pull-left"> عدد مرات التاخير : <strong id="count_late"></strong></h3>
 </div>
 <div class="col-4">
@@ -137,7 +137,7 @@
 				<!-- row closed -->
                 @endcan
 
-                @cannot('عرض اذن موظف')
+    @cannot('عرض اذن موظف')
         <div class="col-md-offset-1 col-md-10 alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             ليس لديك صلاحية يرجي مراجعة المسؤول
         </div>
@@ -202,7 +202,7 @@
             });
             table.on( 'xhr', function () {
                 var json = table.ajax.json();
-                $("#count_rows").replaceWith('<Strong id="count_rows">'+json.count_rows+'</Strong>');
+                $("#count_rows").replaceWith('<Strong id="count_rows">'+json.count_abs+'</Strong>');
                  $("#count_late").replaceWith('<Strong id="count_late">'+json.count_late+'</Strong>');
                 $("#sum_diff").replaceWith('<Strong id="sum_diff">'+json.sum_diff+'</Strong>');
 

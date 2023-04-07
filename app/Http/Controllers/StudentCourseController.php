@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Course;
 use App\Models\Teacher;
+use App\Events\MakeTask;
 use Illuminate\Http\Request;
 use App\Models\Catch_receipt;
 use App\Models\Student_course;
@@ -12,6 +13,7 @@ use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\CMSBaseController;
+use App\Notifications\NewLessonNotification;
 
 class StudentCourseController extends CMSBaseController
 {
@@ -116,6 +118,15 @@ class StudentCourseController extends CMSBaseController
     $course = Course::find($request->input("course_h"));
     $course->total_reg_student = $course->total_reg_student + 1;
     $course->save();
+
+
+    $users=User::where('isdelete',0)->where('Status','مفعل')->get();
+    foreach($users as $user){
+    if($user->hasRole('owner') && $user->id != $this->getId()){
+    \Notification::send($user,new NewLessonNotification('StudentCourse',$this->getId(),'بتسجيل طالب في دوره','StudentCourse'));
+    MakeTask::dispatch($user->id);
+    } }
+
 
     $flasher->addSuccess("تمت عملية الاضافة بنجاح");
     return Redirect::back();

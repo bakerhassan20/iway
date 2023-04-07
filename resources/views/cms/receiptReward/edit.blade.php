@@ -73,7 +73,7 @@ Iwayc System
                             <label class="col control-label">السنة المالية:* </label>
 
                             <div class="col">
-                                <select name="m_year" id="m_year" class="form-control">
+                                <select name="m_year" id="m_year" class="form-control disable">
                                     @foreach($moneyYears as $moneyYear)
                                         <option {{$item->m_year==$moneyYear->year?"selected":""}} value="{{$moneyYear->year}}"> {{$moneyYear->year}} </option>
                                     @endforeach

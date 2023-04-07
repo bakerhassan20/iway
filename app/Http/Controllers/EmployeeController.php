@@ -307,8 +307,42 @@ class EmployeeController extends CMSBaseController
     }
 
     function getEmpSalary($id){
-        $employee= Employee::find($id);
-        $year=$this->getMoneyYear();
+
+        if($id == 'all'){
+
+            $year=$this->getMoneyYear();
+
+            $advance=0;
+            $isReceipt_advance=Receipt_advance::where('m_year',$year)->where('isdelete',0)->count();
+            if ($isReceipt_advance>0){
+                $receipt_advances=Receipt_advance::where('m_year',$year)->where('isdelete',0)->get();
+                foreach ($receipt_advances as $receipt_advance){
+                    $advance += $receipt_advance->advance_payment;
+                }
+            }
+
+            $recs=0;
+            $isReceipt_salary=Receipt_salary::where('isdelete',0)->where('m_year',$year)->count();
+            if ($isReceipt_salary>0){
+                $receipt_salarys=Receipt_salary::where('m_year',$year)->where('isdelete',0)->get();
+                foreach ($receipt_salarys as $receipt_salary){
+                    $recs += $receipt_salary->advance_payment;
+                }
+            }
+
+
+            return response()->json([
+                'status' => '1',
+                'name' => 'الكل',
+                'adv' => number_format($advance,2),
+                'recs' => number_format($recs,2),
+                'rem' => number_format($advance - $recs,2),
+            ]);
+
+        }else{
+
+            $employee= Employee::find($id);
+            $year=$this->getMoneyYear();
 
         $advance=0;
         $isReceipt_advance=Receipt_advance::where('employee_id',$employee->id)->where('m_year',$year)->where('isdelete',0)->count();
@@ -330,11 +364,15 @@ class EmployeeController extends CMSBaseController
 
         return response()->json([
             'status' => '1',
-            'name' => $employee->name,
-            'adv' => $advance,
-            'recs' => $recs,
-            'rem' => $advance - $recs,
+            'name' =>$employee->name,
+            'adv' => number_format($advance,2),
+            'recs' => number_format($recs,2),
+            'rem' => number_format($advance - $recs,2),
         ]);
+
+        }
+
+
     }
 
 }
