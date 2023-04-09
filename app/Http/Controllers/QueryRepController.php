@@ -55,10 +55,6 @@ class QueryRepController  extends CMSBaseController
             'عدد المهام الجديدة',
             'عدد المهام المنجزة',
             'تقييم المهام المنجزة',
-            'عدد المكافأت',
-            'قيمة المكافأت',
-            'عدد الخصومات',
-            'قيمة الخصومات',
             'عدد حملات التسويق الهاتفي',
         ];
         $this->getAllUser();
@@ -75,10 +71,6 @@ class QueryRepController  extends CMSBaseController
             'عدد المهام الجديدة',
             'عدد المهام المنجزة',
             'تقييم المهام المنجزة',
-            'عدد المكافأت',
-            'قيمة المكافأت',
-            'عدد الخصومات',
-            'قيمة الخصومات',
             'عدد حملات التسويق الهاتفي',
         ];
         $users=User::all();
@@ -189,62 +181,7 @@ class QueryRepController  extends CMSBaseController
                     $query_user->count=Task::where('created_by',$user->id)->whereYear('created_at', '=', date('Y'))->where('end_date','!=',null)->avg('evaluate');
                     $query_user->save();
                 }
-                elseif($static=="عدد المكافأت"){
-                    $query_user->day1=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(1))->where('type',0)->count();
-                    $query_user->day7=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(7))->where('type',0)->count();
-                    $query_user->day15=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(15))->where('type',0)->count();
-                    $query_user->day30=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(30))->where('type',0)->count();
-                    $query_user->day60=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(60))->where('type',0)->count();
-                    $query_user->day90=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(90))->where('type',0)->count();
-                    $query_user->day180=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(180))->where('type',0)->count();
-                    $query_user->last1=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-1)->where('type',0)->count();
-                    $query_user->last2=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-2)->where('type',0)->count();
-                    $query_user->last3=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-3)->where('type',0)->count();
-                    $query_user->count=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y'))->where('type',0)->count();
-                    $query_user->save();
-                }
-                elseif($static=="قيمة المكافأت"){
-                    $query_user->day1=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(1))->where('type',0)->sum('amount');
-                    $query_user->day7=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(7))->where('type',0)->sum('amount');
-                    $query_user->day15=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(15))->where('type',0)->sum('amount');
-                    $query_user->day30=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(30))->where('type',0)->sum('amount');
-                    $query_user->day60=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(60))->where('type',0)->sum('amount');
-                    $query_user->day90=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(90))->where('type',0)->sum('amount');
-                    $query_user->day180=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(180))->where('type',0)->sum('amount');
-                    $query_user->last1=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-1)->where('type',0)->sum('amount');
-                    $query_user->last2=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-2)->where('type',0)->sum('amount');
-                    $query_user->last3=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-3)->where('type',0)->sum('amount');
-                    $query_user->count=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y'))->where('type',0)->sum('amount');
-                    $query_user->save();
-                }
-                elseif($static=="عدد الخصومات"){
-                    $query_user->day1=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(1))->where('type',1)->count();
-                    $query_user->day7=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(7))->where('type',1)->count();
-                    $query_user->day15=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(15))->where('type',1)->count();
-                    $query_user->day30=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(30))->where('type',1)->count();
-                    $query_user->day60=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(60))->where('type',1)->count();
-                    $query_user->day90=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(90))->where('type',1)->count();
-                    $query_user->day180=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(180))->where('type',1)->count();
-                    $query_user->last1=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-1)->where('type',1)->count();
-                    $query_user->last2=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-2)->where('type',1)->count();
-                    $query_user->last3=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-3)->where('type',1)->count();
-                    $query_user->count=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y'))->where('type',1)->count();
-                    $query_user->save();
-                }
-                elseif($static=="قيمة الخصومات"){
-                    $query_user->day1=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(1))->where('type',1)->sum('amount');
-                    $query_user->day7=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(7))->where('type',1)->sum('amount');
-                    $query_user->day15=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(15))->where('type',1)->sum('amount');
-                    $query_user->day30=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(30))->where('type',1)->sum('amount');
-                    $query_user->day60=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(60))->where('type',1)->sum('amount');
-                    $query_user->day90=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(90))->where('type',1)->sum('amount');
-                    $query_user->day180=Receipt_reward::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(180))->where('type',1)->sum('amount');
-                    $query_user->last1=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-1)->where('type',1)->sum('amount');
-                    $query_user->last2=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-2)->where('type',1)->sum('amount');
-                    $query_user->last3=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y')-3)->where('type',1)->sum('amount');
-                    $query_user->count=Receipt_reward::where('created_by',$user->id)->whereYear('created_at', '=', date('Y'))->where('type',1)->sum('amount');
-                    $query_user->save();
-                }
+
                 elseif($static=="عدد حملات التسويق الهاتفي"){
                     $query_user->day1=Campaign::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(1))->count();
                     $query_user->day7=Campaign::where('created_by',$user->id)->where('created_at','>',Carbon::now()->subDays(7))->count();

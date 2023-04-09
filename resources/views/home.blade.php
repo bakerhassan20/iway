@@ -4,7 +4,11 @@
 
 <!--  Owl-carousel css-->
 <link href="{{URL::asset('assets/plugins/owl-carousel/owl.carousel.css')}}" rel="stylesheet" />
-
+<style>
+.dt-buttons{
+display:none !important;
+}
+</style>
 @endsection
 @section('title-page-header')
 الصفحه الرئيسيه
@@ -41,10 +45,7 @@ $userL = \App\Models\User_year::where('user_id',Auth::user()->id)->count(); ?>
     @else
         <?php $uY = null; ?>
     @endif
-{{-- @php
- $hours = now()->diffInMinutes(\Carbon\Carbon::parse(\App\Models\Reminder_task::first()->created_at));
-echo $hours;
-@endphp --}}
+
 				<!-- row -->
 				<div class="row row-sm">
 					<div class="col-xl-3 col-lg-6 col-md-6 col-xm-12">
@@ -173,18 +174,20 @@ echo $hours;
 						</div>
 					</div>
                     	</div>
-<div class="row row-sm">
+
+
+{{-- <div class="row row-sm">
 		<div class="col">
 		  <div class="card">
 
-{{--         <div class="col-lg-12 col-xl-12">
+         <div class="col-lg-12 col-xl-12">
             <div class="card card-dashboard-map-one">
                 <label class="main-content-label"></label>
                 <div class="" style="width: 100%">
                   {!! $chartjs_2->render() !!}
                 </div>
             </div>
-        </div> --}}
+        </div>
 						</div>
 </div>
 <div class="col">
@@ -213,8 +216,90 @@ echo $hours;
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> --}}
 				<!-- row close -->
+      <!-- row -->
+				<div class="row">
+                			<!--div-->
+					<div class="col-xl-12">
+						<div class="card mg-b-20">
+							<div class="card-header pb-0">
+								<div class="d-flex justify-content-between">
+
+							</div>
+							<div class="card-body">
+								<div class="table-responsive country-table">
+									<table id="users-table" class="table table-striped table-bordered mb-0 text-sm-nowrap text-lg-nowrap text-xl-nowrap">
+
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>اسم المستخدم</th>
+                                                <th>الموضوع</th>
+                                                <th>العدد الكلي</th>
+                                            </tr>
+                                            </thead>
+
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--/div-->
+				</div>
+
+
+
+				<!-- row closed -->
+
+			</div>
+
+            		<!-- row opened -->
+				<div class="row row-sm row-deck">
+
+					<div class="col">
+						<div class="card card-table-two">
+
+
+							<div class="table-responsive country-table">
+								<table class="table table-striped table-bordered mb-0 text-sm-nowrap text-lg-nowrap text-xl-nowrap">
+									<thead>
+
+										<tr>
+                                        	<th class="wd-lg-25p">اسم الموظف</th>
+											<th class="wd-lg-25p tx-right">عدد الغياب</th>
+											<th class="wd-lg-25p tx-right"> ايام التاخير</th>
+                                            <th class="wd-lg-25p tx-right">مجموع التاخير</th>
+                                            <th class="wd-lg-25p tx-right">عدد المكافات</th>
+                                            <th class="wd-lg-25p tx-right">قيمه المكافات</th>
+                                            <th class="wd-lg-25p tx-right">عدد الخصومات</th>
+                                            <th class="wd-lg-25p tx-right">قيمه الخصومات</th>
+										</tr>
+									</thead>
+									<tbody>
+
+                                    @foreach ( $query_emp as $query_e )
+                                    	<tr>
+											<td class="tx-right tx-medium ">{{$query_e->name}}</td>
+											<td class="tx-right tx-medium ">{{$query_e->absence}}</td>
+											<td class="tx-right tx-medium ">{{$query_e->late}}</td>
+											<td class="tx-right tx-medium ">{{$query_e->all_late}}</td>
+                                            <td class="tx-right tx-medium ">{{$query_e->reward}}</td>
+											<td class="tx-right tx-medium ">{{$query_e->all_reward}}</td>
+											<td class="tx-right tx-medium ">{{$query_e->reward1}}</td>
+                                            <td class="tx-right tx-medium ">{{$query_e->all_reward1}}</td>
+										</tr>
+                                    @endforeach
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+						</div>
+
+				<!-- /row -->
+
 
 				<!-- row opened -->
 				<div class="row row-sm row-deck">
@@ -259,9 +344,10 @@ echo $hours;
 						</div>
 					</div>
 						</div>
-					</div>
-				</div>
+				
 				<!-- /row -->
+
+
                 @endcan
 
                 @cannot('الصفحة الرئيسية')
@@ -429,5 +515,33 @@ chartq.updateOptions({
 <script src="{{URL::asset('assets/js/modal-popup.js')}}"></script>
 <!--Internal  index js -->
 <script src="{{URL::asset('assets/js/index.js')}}"></script> --}}
+ <script>
+        $(function() {
 
+            var qTable = $('#users-table').DataTable({
+                dom: 'Bfrtip',
+                order: [[0, 'desc']],
+                processing: true,
+                serverSide: true,
+               pageLength: 8,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json',
+                },
+                searching: false,
+                orderBy:[0,'desc'],
+                ajax: {
+                    url: '/CMS/datatables/QueryUser',
+
+                },
+                columns: [
+                    { data: 'id', name: 'id', visible : false},
+                    { data: 'user_id', name: 'user_id' },
+                    { data: 'subject', name: 'subject' },
+                    { data: 'count', name: 'count' },
+
+                ]
+            });
+
+        });
+    </script>
 @endsection
