@@ -143,3 +143,10 @@ html {
   .select2 {
     width:100% !important;
 }
+
+.sidebar{
+    width: 450px !important;
+}
+.sidebar .list-group-item {
+    margin-bottom: -10px !important;
+}

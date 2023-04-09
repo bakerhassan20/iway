@@ -111,9 +111,7 @@ class HomeController extends CMSBaseController
 
     }
 
-    public function TotalProducts(){
 
-     }
     function theme(Request $request){
         $theme = ColorTheme::where('user_id',Auth::user()->id)->first();
          if($theme->mode == 'dark'){

@@ -70,12 +70,12 @@ echo $hours;
 						<div class="card overflow-hidden sales-card bg-danger-gradient">
 							<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
 								<div class="">
-									<h4 class="mb-3 text-white">المعلمين</h4>
+									<h4 class="mb-3 text-white">عدد تسجيل الدورات</h4>
 								</div>
 								<div class="pb-0 mt-0">
 									<div class="d-flex">
 										<div class="">
-											<h3 class="font-weight-bold mb-1 text-white">{{ \App\Models\Teacher::where("isdelete",0)->count() }}</h3>
+											<h3 class="font-weight-bold mb-1 text-white">{{ \App\Models\Student_course::where("isdelete",0)->count() }}</h3>
 
 										</div>
 
@@ -89,12 +89,12 @@ echo $hours;
 						<div class="card overflow-hidden sales-card bg-success-gradient">
 							<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
 								<div class="">
-									<h4 class="mb-3 text-white">الموظفين</h4>
+									<h4 class="mb-3 text-white">عدد الانسحابات</h4>
 								</div>
 								<div class="pb-0 mt-0">
 									<div class="d-flex">
 										<div class="">
-											<h3 class=" font-weight-bold mb-1 text-white">{{ \App\Models\Employee::where("isdelete",0)->count() }}</h3>
+											<h3 class=" font-weight-bold mb-1 text-white">{{ \App\Models\Withdrawal::where("isdelete",0)->count() }}</h3>
 
 										</div>
 
@@ -108,12 +108,12 @@ echo $hours;
 						<div class="card overflow-hidden sales-card bg-warning-gradient">
 							<div class="pl-3 pt-3 pr-3 pb-2 pt-0">
 								<div class="">
-									<h4 class="mb-3 text-white">الدورات</h4>
+									<h4 class="mb-3 text-white">عدد فحص المستوي</h4>
 								</div>
 								<div class="pb-0 mt-0">
 									<div class="d-flex">
 										<div class="">
-											<h3 class="font-weight-bold mb-1 text-white">{{ \App\Models\Course::where("isdelete",0)->count() }}</h3>
+											<h3 class="font-weight-bold mb-1 text-white">{{ App\Models\English::where("isdelete",0)->count() }}</h3>
 
 										</div>
 
@@ -177,14 +177,14 @@ echo $hours;
 		<div class="col">
 		  <div class="card">
 
-        <div class="col-lg-12 col-xl-12">
+{{--         <div class="col-lg-12 col-xl-12">
             <div class="card card-dashboard-map-one">
                 <label class="main-content-label"></label>
                 <div class="" style="width: 100%">
                   {!! $chartjs_2->render() !!}
                 </div>
             </div>
-        </div>
+        </div> --}}
 						</div>
 </div>
 <div class="col">
@@ -366,7 +366,7 @@ echo $hours;
 	  tooltip: {
 		  y: {
 			  formatter: function (val) {
-				  return "$ " + val + " thousands"
+				  return  val + " دينار"
 			  }
 		  }
 	  }
@@ -389,17 +389,17 @@ echo $hours;
 
 chartq.updateOptions({
  series: [{
-        name: 'Speed',
+        name: 'الصندوق الرئيسي',
        data: [response.data[0].day1, response.data[0].day15, response.data[0].day7,response.data[0].day30, response.data[0].day60, response.data[0].day90, response.data[0].day180]
     },{
-        name: 'Turnover',
+        name: 'صندوق المركز',
         data: [response.data[1].day1, response.data[1].day15, response.data[1].day7,response.data[1].day30, response.data[1].day60, response.data[1].day90, response.data[1].day180]
     },{
-        name: 'Turnover',
+        name: 'صندوق الدورت',
         data: [response.data[2].day1, response.data[2].day15, response.data[2].day7,response.data[2].day30, response.data[2].day60, response.data[2].day90, response.data[2].day180]
     },
      {
-        name: 'In',
+        name: 'صندوق الرواتب',
         data: [response.data[3].day1, response.data[3].day15, response.data[3].day7,response.data[3].day30, response.data[3].day60, response.data[3].day90, response.data[3].day180]
     }],
     xaxis: {
@@ -412,7 +412,7 @@ chartq.updateOptions({
 
 
 </script>
-<!--Internal  Chart.bundle js -->
+{{-- <!--Internal  Chart.bundle js -->
 <script src="{{URL::asset('assets/plugins/chart.js/Chart.bundle.min.js')}}"></script>
 <!-- Moment js -->
 <script src="{{URL::asset('assets/plugins/raphael/raphael.min.js')}}"></script>
@@ -428,6 +428,6 @@ chartq.updateOptions({
 
 <script src="{{URL::asset('assets/js/modal-popup.js')}}"></script>
 <!--Internal  index js -->
-<script src="{{URL::asset('assets/js/index.js')}}"></script>
+<script src="{{URL::asset('assets/js/index.js')}}"></script> --}}
 
 @endsection

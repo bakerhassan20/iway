@@ -3361,7 +3361,6 @@ return $html;
         return Datatables::of($tasks)
         ->addColumn('remaind', function ($tasks) {
 
-        $toDate = Carbon::parse("2021-08-10");
             $cDate = Carbon::parse($tasks->in_to);
             return $cDate->diffInDays();
 
