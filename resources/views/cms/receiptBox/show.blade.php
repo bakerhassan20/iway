@@ -93,7 +93,8 @@ Iwayc System
                                     @can('تعديل  صرف صندوق')
                                     <a href="/CMS/ReceiptBox/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
-                                    <a href="/CMS/ReceiptBox/" class="btn btn-danger"> إلغاء</a>
+                                      <a href="/CMS/ReceiptBox/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    <a href="/CMS/ReceiptBox" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>

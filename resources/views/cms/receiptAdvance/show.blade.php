@@ -98,7 +98,7 @@ Iwayc System
                                 <label class="col control-label">دفعات السداد الشهري:* </label>
 
                                 <div class="col">
-                                    <input type="text" value="{{$item->month_payment}}" class="form-control" id="month_payment"
+                                    <input type="text" value="{{number_format($item->month_payment,2)}}" class="form-control" id="month_payment"
                                            name="month_payment" disabled>
                                 </div>
                                 </div>
@@ -134,7 +134,8 @@ Iwayc System
                                     @can('تعديل صرف سلفة')
                                     <a href="/CMS/ReceiptAdvance/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
-                                    <a href="/CMS/ReceiptAdvance/" class="btn btn-danger"> إلغاء</a>
+                                     <a href="/CMS/ReceiptAdvance/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    <a href="/CMS/ReceiptAdvance" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>

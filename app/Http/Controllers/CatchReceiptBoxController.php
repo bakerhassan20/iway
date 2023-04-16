@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Box;
 use App\Models\User;
 use App\Models\Us_qu;
+use App\Models\Prin_t;
 use App\Events\MakeTask;
 use App\Models\Box_year;
 use Illuminate\Http\Request;
@@ -158,17 +159,36 @@ class CatchReceiptBoxController extends CMSBaseController
      */
     public function show($id,FlasherInterface $flasher)
     {
-        $parentTitle = "عرض سندات القبض - الصناديق ";
+        $parentTitle = "عرض سند قبض صندوق ";
         $item = Catch_receipt_box::where("id", $id)->where("isdelete", 0)->first();
         $title="شوؤن الموظفين";
 
         if ($item == NULL) {
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/Static/");
+            return redirect("/CMS/CatchReceiptBox");
         }
         return view("cms.catchReceiptBox.show", compact("title", "item", "id","parentTitle"));
     }
+        
+    public function print($id)
+    {
+        $parentTitle = "عرض سند قبض صندوق ";
+        $item = Catch_receipt_box::where("id", $id)->where("isdelete", 0)->first();
+        $title="شوؤن الموظفين";
 
+        if ($item == NULL) {
+            flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
+            return redirect("/CMS/CatchReceiptBox");
+        }
+        $print = Prin_t::first();
+        
+        if($print->type == 'A5'){
+            return view("cms.catchReceiptBox.printA5",compact("title","item","id","parentTitle",'print'));
+        }else{
+            return view("cms.catchReceiptBox.printA6",compact("title","item","id","parentTitle",'print'));
+        }
+       
+    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -184,7 +204,7 @@ class CatchReceiptBoxController extends CMSBaseController
 
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/Static/");
+            return redirect("/CMS/CatchReceiptBox");
         }
         return view("cms.catchReceiptBox.edit",compact("title","item","id","parentTitle","boxes"));
     }

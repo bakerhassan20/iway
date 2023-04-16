@@ -105,7 +105,8 @@ Iwayc System
                                     @can('تعديل قبض صندوق')
                                     <a href="/CMS/CatchReceiptBox/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
-                                    <a href="/CMS/Static/" class="btn btn-danger"> إلغاء</a>
+                                    <a href="/CMS/CatchReceiptBox/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    <a href="/CMS/CatchReceiptBox" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>

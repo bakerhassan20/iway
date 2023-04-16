@@ -8,6 +8,7 @@ use App\Models\Option;
 use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Us_qu;
+use App\Models\Prin_t;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\Receipt_reward;
@@ -210,6 +211,26 @@ class ReceiptRewardController extends CMSBaseController
         }
         return view("cms.receiptReward.show",compact("title","item","id","parentTitle"));
     }
+
+    
+  public function print($id)
+  {
+    $parentTitle="عرض صرف مكافأة - خصم";
+    $item=Receipt_reward::where("id",$id)->where("isdelete",0)->first();
+    $title="شوؤن الموظفين";
+    if($item==NULL){
+        flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
+        return redirect("/CMS/Static/");
+    }
+      $print = Prin_t::first();
+      
+      if($print->type == 'A5'){
+          return view("cms.receiptReward.printA5",compact("title","item","id","parentTitle",'print'));
+      }else{
+          return view("cms.receiptReward.printA6",compact("title","item","id","parentTitle",'print'));
+      }
+     
+  }
 
     /**
      * Show the form for editing the specified resource.

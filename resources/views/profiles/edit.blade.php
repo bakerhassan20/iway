@@ -72,7 +72,7 @@
 				</form>
 			</div>
 
-         {{--    <div class="col-12 col-lg-6 my-2">
+        {{--      <div class="col-12 col-lg-6 my-2">
                 <form method="POST" action="{{route('profile.update_email')}}">
                      @csrf
                     @method("PUT")
@@ -121,7 +121,7 @@
                         </div>
                     </div>
                 </form>
-            </div> --}}
+            </div>  --}}
 
             <div class="col-12 col-lg-6 my-2">
                 <form method="POST" action="{{route('profile.update-password')}}">

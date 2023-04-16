@@ -59,31 +59,33 @@ Iwayc System
             <div class="card-body">
                       <form id="formID" class="formular form-horizontal ls_form" method="post" action="/CMS/ReceiptStudent">
                         @csrf
-                        <div class="row">
+
                             <div class="col">
-                                <label class="control-label">رقم السند الحاسوبي:* </label>
+                             {{--    <label class="control-label">رقم السند الحاسوبي:* </label> --}}
                                 <input type="hidden" value="{{$userL>0?$uY:$moneyWork->year}}" id="edu_year_h" name="edu_year_h">
-                                    <input type="number" min="{{$id}}" value="{{$id}}" class="form-control validate[required] text-input" id="id"
+                                    <input type="hidden" min="{{$id}}" value="{{$id}}" class="form-control validate[required] text-input" id="id"
                                            name="id">
-                                    <div class="text-danger">{{$errors->first('id')}}</div>
+                          {{--           <div class="text-danger">{{$errors->first('id')}}</div> --}}
                                 </div>
+                        <div class="row">
+                        
                       <div class="col">
                                 <label class="control-label">رقم السند الورقي:* </label>
                                     <input type="number" min="0" value="{{$id_comp}}" class="form-control validate[required] text-input" id="id_comp"
                                            name="id_comp">
                                     <div class="text-danger">{{$errors->first('id_comp')}}</div>
                                 </div>
-
-                        </div><br>
-
-                        <div class="row">
-                            <div class="col">
+                             <div class="col">
                                 <label class="control-label">تاريخ السند الورقي:* </label>
 
                                     <input type="text" value="{{date('Y-m-d')}}" class="form-control fc-datepicker" id="date"
                                            name="date">
                                     <div class="text-danger">{{$errors->first('date')}}</div>
                                 </div>
+                        </div><br>
+
+                        <div class="row">
+                          
                          <div class="col">
                                 <label class="control-label">اسم الطالب والدورة المنسحب منها:* </label>
                                     <input type="hidden" value="{{$studentCourse->id}}" id="student_course_id_h" name="student_course_id_h">
@@ -92,10 +94,8 @@ Iwayc System
                                     <div class="text-danger">{{$errors->first('student_course_id')}}</div>
                                 </div>
 
-                        </div><br>
 
-                        <div class="row">
-                            <div class="col">
+                                 <div class="col">
                                 <label class="control-label">المبلغ:* </label>
                                     <input type="hidden" value="{{$withdrawal->refund}}" id="amount_h" name="amount_h">
                                     <input type="number" onchange="setTwoNumberDecimal(this)" step="any" min="0" value="{{$withdrawal->refund}}" class="form-control validate[required] text-input" id="amount"

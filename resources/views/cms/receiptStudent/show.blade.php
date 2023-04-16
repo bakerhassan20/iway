@@ -1,5 +1,9 @@
+
+
+
 @extends('layouts.master')
 @section('css')
+
 
 @section('title')
 Iwayc System
@@ -81,16 +85,13 @@ Iwayc System
                                 <label class="control-label"></label>
 
                                 <div class="col-sm-10">
-                                    @can('تعديل صرف مخالصة')
-                                    {{--<a href="/CMS/ReceiptStudent/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>--}}
-                                    @endcan
-                                    <a href="/CMS/ReceiptStudent/" class="btn btn-danger"> إلغاء</a>
+                                    <a href="/CMS/ReceiptStudent/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    <a href="/CMS/ReceiptStudent" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>
 
                     </form>
-
 
         </div>
     </div>
@@ -109,6 +110,9 @@ Iwayc System
 </div>
 <!-- main-content closed -->
 @endsection
+
+
+
 @section('js')
 
 @endsection

@@ -9,6 +9,7 @@ use App\Models\Box_year;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\Us_qu;
+use App\Models\Prin_t;
 use App\Models\Approval_record;
 use App\Models\Receipt_advance;
 use Flasher\Prime\FlasherInterface;
@@ -176,9 +177,29 @@ class ReceiptAdvanceController extends CMSBaseController
 
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/Static/");
+            return redirect("/CMS/receiptAdvance/");
         }
         return view("cms.receiptAdvance.show",compact("title","item","id","parentTitle"));
+    }
+
+    public function print($id)
+    {
+        $parentTitle="عرض سندات الصرف - سلفة ";
+        $item=Receipt_advance::where("id",$id)->where("isdelete",0)->first();
+        $title="شوؤن الموظفين";
+
+        if($item==NULL){
+            flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
+            return redirect("/CMS/receiptAdvance/");
+        }
+        $print = Prin_t::first();
+        
+        if($print->type == 'A5'){
+            return view("cms.receiptAdvance.printA5",compact("title","item","id","parentTitle",'print'));
+        }else{
+            return view("cms.receiptAdvance.printA6",compact("title","item","id","parentTitle",'print'));
+        }
+       
     }
 
     /**
@@ -196,7 +217,7 @@ class ReceiptAdvanceController extends CMSBaseController
 
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/Static/");
+            return redirect("/CMS/receiptAdvance/");
         }
         return view("cms.receiptAdvance.edit",compact("title","item","id","parentTitle","employees"));
     }

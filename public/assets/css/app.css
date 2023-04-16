@@ -92,6 +92,7 @@ a .disabled {
     width: 60px;
     height: 60px;
     border-radius: 50%;
+
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -129,6 +130,7 @@ html {
 
 .nav .nav-item .dropdown-menu2 {
     min-width: 400px !important;
+   
 
 }
 
@@ -142,6 +144,7 @@ html {
 
   .select2 {
     width:100% !important;
+   
 }
 
 .sidebar{
@@ -149,4 +152,5 @@ html {
 }
 .sidebar .list-group-item {
     margin-bottom: -10px !important;
+
 }

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Us_qu;
+use App\Models\Prin_t;
 use App\Models\Receipt_box;
 use Illuminate\Http\Request;
 use App\Models\Approval_record;
@@ -177,15 +178,36 @@ class ReceiptBoxController extends CMSBaseController
      */
     public function show($id,FlasherInterface $flasher)
     {
-        $parentTitle="عرض سندات الصرف - الصناديق ";
+        $parentTitle="عرض سند صرف صندوق";
         $item=Receipt_box::where("id",$id)->where("isdelete",0)->first();
         $title="شوؤن الموظفين";
 
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/ReceiptBox/");
+            return redirect("/CMS/ReceiptBox");
         }
         return view("cms.receiptBox.show",compact("title","item","id","parentTitle"));
+    }
+
+    public function print($id)
+    {
+        
+        $parentTitle="عرض سند صرف صندوق";
+        $item=Receipt_box::where("id",$id)->where("isdelete",0)->first();
+        $title="شوؤن الموظفين";
+
+        if($item==NULL){
+            flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
+            return redirect("/CMS/ReceiptBox");
+        }
+        $print = Prin_t::first();
+        
+        if($print->type == 'A5'){
+            return view("cms.receiptBox.printA5",compact("title","item","id","parentTitle",'print'));
+        }else{
+            return view("cms.receiptBox.printA6",compact("title","item","id","parentTitle",'print'));
+        }
+       
     }
 
     /**
@@ -203,7 +225,7 @@ class ReceiptBoxController extends CMSBaseController
 
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/ReceiptBox/");
+            return redirect("/CMS/ReceiptBox");
         }
         return view("cms.receiptBox.edit",compact("title","item","id","parentTitle","boxes"));
     }

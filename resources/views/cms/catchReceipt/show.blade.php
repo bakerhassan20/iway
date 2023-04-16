@@ -9,11 +9,7 @@
                 <div class="panel-body form_view">
                     <form id="formID" class="formular form-horizontal ls_form">
                         <div class="row">
-                            <div class="col">
-                                <label class="control-label">رقم السند الحاسوبي: </label>
-                                    <input type="text" value="{{$item->id}}" class="form-control" id="id"
-                                           name="id" disabled>
-                                </div>
+                        
 
                                 <div class="col">
                                 <label class="control-label">رقم السند الورقي: </label>
@@ -76,7 +72,10 @@
                                     @can('تعديل قبض دورة')
                                     <a href="/CMS/CatchReceipt/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
-                                    <a href="/CMS/CatchReceipt/" class="btn btn-danger"> إلغاء</a>
+                               
+                                    <a href="/CMS/CatchReceipt/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                 
+                                    <a href="/CMS/CatchReceipt" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>

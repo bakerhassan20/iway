@@ -254,6 +254,7 @@ Route::get('ReceiptCourseFilter', 'ReceiptCourseController@getYearFilter');
 Route::get('RTeacher/{id}', 'ActiveMethodController@getRTeacher');
 Route::get('datatables/QueryTeacher', 'QueryRepController@anyQueryTeacher');
 Route::get('QueryTeacher', 'QueryRepController@getTeacher');
+Route::get('ReceiptCourse/print/{id}', 'ReceiptCourseController@print');
 // الماليه
 Route::get('datatables/Course', 'ActiveMethodController@anyCourse');
 Route::get('course/CourseReport/{id}', 'ActiveMethodController@getCourseReport');
@@ -325,6 +326,7 @@ Route::resource('ReceiptStudent', 'ReceiptStudentController');
 Route::get('delete/ReceiptStudent/{id}', 'ReceiptStudentController@getDelete');
 Route::get('add/ReceiptStudent/{id}', 'ReceiptStudentController@getCreate');
 Route::get('ReceiptStudentFilter', 'ReceiptStudentController@getYearFilter');
+Route::get('ReceiptStudent/print/{id}', 'ReceiptStudentController@print');
 
 //user query
 Route::get('datatables/UserQ', 'QueryUserController@anyUserQ');
@@ -344,16 +346,19 @@ Route::get('Email', 'QueryUserController@getEmail');
         Route::get('MonthSalary/{id}', 'ActiveMethodController@getMonthSalary');
         Route::get('MSalary/{id}', 'ActiveMethodController@getMSalary');
         Route::get('MMSalary/{id}', 'ActiveMethodController@getMMSalary');
+        Route::get('ReceiptSalary/print/{id}', 'ReceiptSalaryController@print');
 
 //ReceiptAdvance Controller
         Route::get('datatables/ReceiptAdvance', 'ActiveMethodController@anyReceiptAdvance');
         Route::resource('ReceiptAdvance', 'ReceiptAdvanceController');
         Route::get('delete/ReceiptAdvance/{id}', 'ReceiptAdvanceController@getDelete');
+        Route::get('ReceiptAdvance/print/{id}', 'ReceiptAdvanceController@print');
 
 //ReceiptReward Controller
         Route::get('datatables/ReceiptReward', 'ActiveMethodController@anyReceiptReward');
         Route::resource('ReceiptReward', 'ReceiptRewardController');
-        Route::get('delete/ReceiptReward/{id}', 'ReceiptRewardController@getDelete');
+        Route::get('delete/ReceiptReward/{id}', 'ReceiptRewardController@getDelete');  
+        Route::get('ReceiptReward/print/{id}', 'ReceiptRewardController@print');
 
 //ReceiptWarranty Controller
         Route::get('datatables/ReceiptWarranty', 'ActiveMethodController@anyReceiptWarranty');
@@ -379,7 +384,9 @@ Route::get('Email', 'QueryUserController@getEmail');
         Route::get('datatables/ReceiptBox', 'ActiveMethodController@anyReceiptBox');
         Route::resource('ReceiptBox', 'ReceiptBoxController');
         Route::get('delete/ReceiptBox/{id}', 'ReceiptBoxController@getDelete');
-
+        Route::get('CatchReceipt/print/{id}', 'CatchReceiptController@print');
+        Route::get('CatchReceiptBox/print/{id}', 'CatchReceiptBoxController@print');
+        Route::get('ReceiptBox/print/{id}', 'ReceiptBoxController@print');
 //جديد 2019
         Route::get('datatables/RecordDone', 'ActiveMethodController@anyRecordDone');
         Route::resource('RecordDone', 'RecordDoneController');
@@ -510,6 +517,14 @@ Route::get('Done/Inventory/{id}', 'RepInventoryController@getDone');
 Route::get('Accept/Inventory/{id}', 'RepInventoryController@getAccept');
 Route::get('count_inv/{id}', 'RepInventoryController@count_inv');
 
+
+
+Route::get('Printer', 'PrinterController@index');
+Route::post('Printer/Head', 'PrinterController@updateHead')->name('print.head');
+Route::post('Printer/Footer', 'PrinterController@updateFooter')->name('print.footer');
+Route::post('Printer/Type', 'PrinterController@updateType')->name('print.type');
+Route::post('Printer/Icon', 'PrinterController@updateIcon')->name('print.icon');
+Route::post('Printer/Link', 'PrinterController@updateLink')->name('print.link');
 });
 
 require __DIR__.'/auth.php';

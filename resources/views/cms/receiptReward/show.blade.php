@@ -79,7 +79,7 @@ Iwayc System
                                 <label class="col control-label">النوع:* </label>
 
                                 <div class="col">
-                                    <input type="text" value="{{$item->type?'مكافأت':'خصومات'}}" class="form-control" id="type"
+                                    <input type="text" value="@if($item->type == 0)صرف مكافأة @else صرف خصم @endif" class="form-control" id="type"
                                            name="type" disabled>
                                 </div>
                                 </div>
@@ -137,7 +137,9 @@ Iwayc System
                                     @can('تعديل صرف مكافأة')
                                     <a href="/CMS/ReceiptReward/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
-                                    <a href="/CMS/ReceiptReward/" class="btn btn-danger"> إلغاء</a>
+                                      <a href="/CMS/ReceiptReward/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+
+                                    <a href="/CMS/ReceiptReward" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>

@@ -2948,7 +2948,7 @@ return $html;
             ->leftJoin('teachers', 'teachers.id','=','courses.teacher_id')
             ->leftJoin('users as us', 'us.id','=','receipt_students.created_by')
             ->leftJoin('users as u', 'u.id','=','receipt_students.updated_by')
-            ->select([ 'receipt_students.id','receipt_students.id_comp','receipt_students.date','receipt_students.m_year', 'teachers.name as teacherAR', 'students.nameAR as studentAR', 'courses.courseAR', 'receipt_students.amount', 'receipt_students.created_at', 'us.name as created_by', 'u.name as updated_by'])
+            ->select([ 'receipt_students.id','receipt_students.id_comp','receipt_students.id_sys','receipt_students.date','receipt_students.m_year', 'teachers.name as teacherAR', 'students.nameAR as studentAR', 'courses.courseAR', 'receipt_students.amount', 'receipt_students.created_at', 'us.name as created_by', 'u.name as updated_by'])
             ->where('receipt_students.isdelete','=','0')->where('receipt_students.m_year',$this->getMoneyYear());
         return Datatables::of($tasks)
             ->addColumn('created_by', function ($tasks) {

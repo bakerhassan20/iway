@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\Receipt_course;
 use Flasher\Prime\FlasherInterface;
 use App\Models\Us_qu;
+use App\Models\Prin_t;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\CMSBaseController;
@@ -177,6 +178,27 @@ class ReceiptCourseController extends CMSBaseController
         }
         return view("cms.receiptCourse.show",compact("title","item","id","parentTitle"));
     }
+
+
+    public function print($id)
+    {
+        $title="شؤون المعلمين";
+        $parentTitle="عرض سندات الصرف - دورات ";
+        $item=Receipt_course::where("id",$id)->where("isdelete",0)->first();
+        if($item==NULL){
+            flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
+            return redirect("/CMS/ReceiptCourse/");
+        }
+        $print = Prin_t::first();
+      
+        if($print->type == 'A5'){
+            return view("cms.receiptCourse.printA5",compact("title","item","id","parentTitle",'print'));
+        }else{
+            return view("cms.receiptCourse.printA6",compact("title","item","id","parentTitle",'print'));
+        }
+       
+    }
+
 
     /**
      * Show the form for editing the specified resource.

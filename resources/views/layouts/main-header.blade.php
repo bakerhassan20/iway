@@ -239,7 +239,7 @@
                                 <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bx bx-cog"></i> تعديل الملف الشخصي</a>
                                 <a class="dropdown-item" href="/CMS/My/Task"><i class="bx bxs-inbox"></i>مهماتي</a>
                                 <a class="dropdown-item" href="{{ route('chatify') }}"><i class="bx bx-envelope"></i>الرسائل</a>
-
+                                <a class="dropdown-item" href="{{ \App\Models\Prin_t::first()->link }}"><i class="fas fa-building"></i>المنصه</a>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i
                                         class="bx bx-log-out"></i>تسجيل خروج</a>

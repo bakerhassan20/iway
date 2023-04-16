@@ -11,6 +11,7 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\Receipt_salary;
 use App\Models\Us_qu;
+use App\Models\Prin_t;
 use App\Models\Approval_record;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\Auth;
@@ -206,6 +207,26 @@ class ReceiptSalaryController extends CMSBaseController
             return redirect("/CMS/ReceiptSalary/");
         }
         return view("cms.receiptSalary.show",compact("title","item","id","parentTitle"));
+    }
+      
+    public function print($id)
+    {
+        $parentTitle="عرض سندات الصرف";
+        $item=Receipt_salary::where("id",$id)->where("isdelete",0)->first();
+        $title="شوؤن الموظفين";
+
+        if($item==NULL){
+            flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
+            return redirect("/CMS/ReceiptSalary/");
+        }
+        $print = Prin_t::first();
+        
+        if($print->type == 'A5'){
+            return view("cms.receiptSalary.printA5",compact("title","item","id","parentTitle",'print'));
+        }else{
+            return view("cms.receiptSalary.printA6",compact("title","item","id","parentTitle",'print'));
+        }
+       
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\Student;
 use App\Events\MakeTask;
 use App\Models\Box_year;
+use App\Models\Prin_t;
 use App\Models\Us_qu;
 use Illuminate\Http\Request;
 use App\Models\Catch_receipt;
@@ -211,14 +212,34 @@ class CatchReceiptController extends CMSBaseController
         $parentTitle="عرض سندات القبض - دورات ";
         $item=Catch_receipt::where("id",$id)->where("isdelete",0)->first();
         $title="شوؤن الطلبه";
-        $linkApp="/CMS/Static/";
+      
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/Static/");
+            return redirect("/CMS/catchReceipt");
         }
-        $returnHTML = view("cms.catchReceipt.show",compact("title","item","id","parentTitle","linkApp"))->render();
+        $returnHTML = view("cms.catchReceipt.show",compact("title","item","id","parentTitle"))->render();
             return response()->json(['html'=>$returnHTML]);
     }
+    
+    
+ public function print($id)
+ {
+    $parentTitle="عرض سندات القبض - دورات ";
+    $item=Catch_receipt::where("id",$id)->where("isdelete",0)->first();
+    $title="شوؤن الطلبه";
+  
+    if($item==NULL){
+        flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
+        return redirect("/CMS/catchReceipt");
+    }
+     $print = Prin_t::first();
+     if($print->type == 'A5'){
+         return view("cms.catchReceipt.printA5",compact("title","item","id","parentTitle",'print'));
+     }else{
+         return view("cms.catchReceipt.printA6",compact("title","item","id","parentTitle",'print'));
+     }
+    
+ }
 
     /**
      * Show the form for editing the specified resource.

@@ -9,6 +9,7 @@ use App\Models\Box_year;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
 use App\Models\Student_course;
+use App\Models\Prin_t;
 use App\Models\Approval_record;
 use App\Models\Receipt_student;
 use Flasher\Prime\FlasherInterface;
@@ -94,10 +95,16 @@ class ReceiptStudentController extends CMSBaseController
         [
             "required"=>"يجب ادخال هذا الحقل"
         ]);
-
+        $id_system=Receipt_student::where('m_year',$this->getMoneyYear())->latest()->first();
+        if($id_system){
+            $id_sys =$id_system->id_sys + 1;
+        }else{
+            $id_sys = 1;
+        }
     $receipt_student = Receipt_student::create([
         'id' => $request->input("id"),
         'id_comp' => $request->input("id_comp"),
+        'id_sys' => $id_sys,
         'm_year' => $request->input("edu_year_h"),
         'student_course_id' => $request->input("student_course_id_h"),
         'date' => $request->input("date"),
@@ -162,6 +169,23 @@ class ReceiptStudentController extends CMSBaseController
             return redirect("/CMS/ReceiptStudent/");
         }
         return view("cms.receiptStudent.show",compact("title","item","id","parentTitle"));
+    }
+  
+    public function print($id)
+    {
+        $parentTitle="تعديل سندات الصرف - مخالصة ";
+        $item=Receipt_student::where("id",$id)->where("isdelete",0)->first();
+        $print = Prin_t::first();
+        $title="الماليه";
+        if($item==NULL){
+            return redirect("/CMS/ReceiptStudent/");
+        }
+        if($print->type == 'A5'){
+            return view("cms.receiptStudent.printA5",compact("title","item","id","parentTitle",'print'));
+        }else{
+            return view("cms.receiptStudent.printA6",compact("title","item","id","parentTitle",'print'));
+        }
+       
     }
 
     /**
