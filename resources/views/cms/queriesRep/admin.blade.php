@@ -31,7 +31,8 @@
                     <tr>
                         <th></th>
                         <th>الموضوع</th>
-                        <th>العدد الكلي</th>
+                        <th>جميع السنوات</th>
+                        <th>العام الحالي</th>
                         <th>اليوم</th>
                         <th>7 ايام</th>
                         <th>15 يوم</th>
@@ -102,6 +103,7 @@
                 columns: [
                     { data: 'id', name: 'id', visible : false},
                     { data: 'subject', name: 'subject' },
+                    { data: 'all', name: 'all' },
                     { data: 'count', name: 'count' },
                     { data: 'day1', name: 'day1' },
                     { data: 'day7', name: 'day7' },

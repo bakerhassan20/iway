@@ -125,7 +125,10 @@ Iwayc System
                                     @can('تعديل صرف دورة')
                                     <a href="/CMS/ReceiptCourse/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
-                                     <a href="/CMS/ReceiptCourse/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    @can('طباعه صرف اجور معلم')
+                                   <a href="/CMS/ReceiptCourse/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    @endcan
+
                                     <a href="/CMS/ReceiptCourse" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>

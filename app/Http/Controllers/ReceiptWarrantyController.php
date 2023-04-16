@@ -148,14 +148,12 @@ class ReceiptWarrantyController extends CMSBaseController
        ////////////////
 
 
-       $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-       foreach($users as $user){
-
-       if($user->hasRole('owner') && $user->id != $this->getId()){
+       if(Auth::user()->responsible_id != null){
+        $user=User::where('id',Auth::user()->responsible_id)->get();
        \Notification::send($user,new NewLessonNotification('ReceiptWarranty/'.$receipt_warranty->id,$this->getId(),'انشاء صرف الضمان ','ReceiptWarranty'));
-       MakeTask::dispatch($user->id);
+       MakeTask::dispatch(Auth::user()->responsible_id);
 
-       }
+
 
        }
 
@@ -270,12 +268,11 @@ class ReceiptWarrantyController extends CMSBaseController
        $us_qu->save();
 
        ////////////////
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
-        if($user->hasRole('owner') && $user->id != $this->getId()){
+       if(Auth::user()->responsible_id != null){
+        $user=User::where('id',Auth::user()->responsible_id)->get();
         \Notification::send($user,new NewLessonNotification('ReceiptWarranty/'.$item->id,$this->getId(),'تعديل صرف الضمان ','ReceiptWarranty'));
-        MakeTask::dispatch($user->id);
-        }
+        MakeTask::dispatch(Auth::user()->responsible_id);
+
 
         }
 

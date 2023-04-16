@@ -141,12 +141,11 @@ class ReceiptStudentController extends CMSBaseController
         }
     }
 
-    $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-    foreach($users as $user){
-    if($user->hasRole('owner') && $user->id != $this->getId()){
+    if(Auth::user()->responsible_id != null){
+        $user=User::where('id',Auth::user()->responsible_id)->get();
     \Notification::send($user,new NewLessonNotification('ReceiptStudent/'.$receipt_student->id,$this->getId(),'صرف مخالصة','ReceiptStudent'));
-    MakeTask::dispatch($user->id);
-    } }
+    MakeTask::dispatch(Auth::user()->responsible_id);
+    }
 
 
     $flasher->addSuccess("تمت عملية الاضافة بنجاح");
@@ -170,7 +169,7 @@ class ReceiptStudentController extends CMSBaseController
         }
         return view("cms.receiptStudent.show",compact("title","item","id","parentTitle"));
     }
-  
+
     public function print($id)
     {
         $parentTitle="تعديل سندات الصرف - مخالصة ";
@@ -185,7 +184,7 @@ class ReceiptStudentController extends CMSBaseController
         }else{
             return view("cms.receiptStudent.printA6",compact("title","item","id","parentTitle",'print'));
         }
-       
+
     }
 
     /**
@@ -249,12 +248,11 @@ class ReceiptStudentController extends CMSBaseController
         $primary->save();
     }
 
-    $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-    foreach($users as $user){
-    if($user->hasRole('owner') && $user->id != $this->getId()){
+    if(Auth::user()->responsible_id != null){
+        $user=User::where('id',Auth::user()->responsible_id)->get();
     \Notification::send($user,new NewLessonNotification('ReceiptStudent/'.$item->id,$this->getId(),'تعديل صرف مخالصة','ReceiptStudent'));
-    MakeTask::dispatch($user->id);
-    } }
+    MakeTask::dispatch(Auth::user()->responsible_id);
+    }
 
     $flasher->addSuccess("تمت عملية الحفظ بنجاح");
     return Redirect::back();

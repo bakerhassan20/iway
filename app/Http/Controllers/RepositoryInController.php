@@ -10,6 +10,7 @@ use App\Models\Box_year;
 use App\Models\Material;
 use App\Models\Repository;
 use App\Models\Us_qu;
+use App\Models\Prin_t;
 use App\Models\Rep_section;
 use Illuminate\Http\Request;
 use App\Models\Repository_in;
@@ -162,12 +163,11 @@ class RepositoryInController extends CMSBaseController
             $us_qu->save();
             //////////////
 
-            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-            foreach($users as $user){
-            if($user->hasRole('owner') && $user->id != $this->getId()){
+            if(Auth::user()->responsible_id != null){
+                $user=User::where('id',Auth::user()->responsible_id)->get();
             \Notification::send($user,new NewLessonNotification('RepositoryIn/'.$repository_in->id,$this->getId(),' قبض مستودع','RepositoryIn'));
-            MakeTask::dispatch($user->id);
-            } }
+            MakeTask::dispatch(Auth::user()->responsible_id);
+            }
 
         }
 
@@ -192,9 +192,29 @@ class RepositoryInController extends CMSBaseController
         $linkApp="/CMS/RepositoryIn/";
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/RepositoryIn/");
+            return redirect("/CMS/RepositoryIn");
         }
         return view("cms.repositoryIn.show",compact("title","item","id","parentTitle","linkApp"));
+    }
+
+    public function print($id)
+    {
+        $parentTitle="عرض قبض المستودع ";
+        $item=Repository_in::where("id",$id)->where("isdelete",0)->first();
+        $title="ادارة الواردات";
+        $linkApp="/CMS/RepositoryIn/";
+        if($item==NULL){
+            flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
+            return redirect("/CMS/RepositoryIn");
+        }
+        $print = Prin_t::first();
+
+        if($print->type == 'A5'){
+            return view("cms.repositoryIn.printA5",compact("title","item","id","parentTitle",'print'));
+        }else{
+            return view("cms.repositoryIn.printA6",compact("title","item","id","parentTitle",'print'));
+        }
+
     }
 
     /**
@@ -301,12 +321,11 @@ class RepositoryInController extends CMSBaseController
            $us_qu->save();
 //////////////
 
-            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-            foreach($users as $user){
-            if($user->hasRole('owner') && $user->id != $this->getId()){
+if(Auth::user()->responsible_id != null){
+    $user=User::where('id',Auth::user()->responsible_id)->get();
             \Notification::send($user,new NewLessonNotification('RepositoryIn/'.$item->id,$this->getId(),' تعديل قبض مستودع','RepositoryIn'));
-            MakeTask::dispatch($user->id);
-            } }
+            MakeTask::dispatch(Auth::user()->responsible_id);
+            }
         }
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");

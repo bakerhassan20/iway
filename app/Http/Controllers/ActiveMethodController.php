@@ -1746,6 +1746,8 @@ return $html;
             ->make(true);
     }
 
+    
+
     public function anyCampaign(Request $request)
     {
         $tasks = Campaign::leftJoin('users as us', 'us.id','=','campaigns.created_by')
@@ -3042,9 +3044,10 @@ return $html;
             ->with(['tot' => function($tasks)
                 {
                      return $tasks->sum('receipt_salaries.amount');
+
                 },'tot2' => function($tasks)
                 {
-                     return $tasks->sum('receipt_salaries.advance_payment');
+                     return number_format( $tasks->sum('receipt_salaries.advance_payment'),2);
                 }])->addIndexColumn()
 
             ->make(true);

@@ -182,12 +182,11 @@ class ReceiptRewardController extends CMSBaseController
              }else{
                 $title ='صرف خصم';
              }
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
-        if($user->hasRole('owner') && $user->id != $this->getId()){
+             if(Auth::user()->responsible_id != null){
+                $user=User::where('id',Auth::user()->responsible_id)->get();
         \Notification::send($user,new NewLessonNotification('ReceiptReward/'.$receipt_salary->id,$this->getId(), $title,'ReceiptReward'));
-        MakeTask::dispatch($user->id);
-        } }
+        MakeTask::dispatch(Auth::user()->responsible_id);
+        }
 
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
@@ -212,7 +211,7 @@ class ReceiptRewardController extends CMSBaseController
         return view("cms.receiptReward.show",compact("title","item","id","parentTitle"));
     }
 
-    
+
   public function print($id)
   {
     $parentTitle="عرض صرف مكافأة - خصم";
@@ -223,13 +222,13 @@ class ReceiptRewardController extends CMSBaseController
         return redirect("/CMS/Static/");
     }
       $print = Prin_t::first();
-      
+
       if($print->type == 'A5'){
           return view("cms.receiptReward.printA5",compact("title","item","id","parentTitle",'print'));
       }else{
           return view("cms.receiptReward.printA6",compact("title","item","id","parentTitle",'print'));
       }
-     
+
   }
 
     /**
@@ -337,12 +336,11 @@ class ReceiptRewardController extends CMSBaseController
              }else{
                 $title ='تعديل خصم';
              }
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
-        if($user->hasRole('owner') && $user->id != $this->getId()){
+             if(Auth::user()->responsible_id != null){
+                $user=User::where('id',Auth::user()->responsible_id)->get();
         \Notification::send($user,new NewLessonNotification('ReceiptReward/'.$item->id,$this->getId(), $title,'ReceiptReward'));
-        MakeTask::dispatch($user->id);
-        } }
+        MakeTask::dispatch(Auth::user()->responsible_id);
+        }
 
 
         }

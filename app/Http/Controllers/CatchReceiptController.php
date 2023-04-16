@@ -187,14 +187,10 @@ class CatchReceiptController extends CMSBaseController
         $us_qu->save();
         /////////////
 
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
-
-         if($user->hasRole('owner') && $user->id != $this->getId()){
+        if(Auth::user()->responsible_id != null){
+            $user=User::where('id',Auth::user()->responsible_id)->get();
         \Notification::send($user,new NewLessonNotification('CatchReceipt',$catchReceipt->created_by,'انشاء قبض دوره','catchReceipt'));
-        MakeTask::dispatch($user->id);
-
-         }
+        MakeTask::dispatch(Auth::user()->responsible_id);
 
         }
         $flasher->addSuccess($msg);
@@ -212,7 +208,7 @@ class CatchReceiptController extends CMSBaseController
         $parentTitle="عرض سندات القبض - دورات ";
         $item=Catch_receipt::where("id",$id)->where("isdelete",0)->first();
         $title="شوؤن الطلبه";
-      
+
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
             return redirect("/CMS/catchReceipt");
@@ -220,14 +216,14 @@ class CatchReceiptController extends CMSBaseController
         $returnHTML = view("cms.catchReceipt.show",compact("title","item","id","parentTitle"))->render();
             return response()->json(['html'=>$returnHTML]);
     }
-    
-    
+
+
  public function print($id)
  {
     $parentTitle="عرض سندات القبض - دورات ";
     $item=Catch_receipt::where("id",$id)->where("isdelete",0)->first();
     $title="شوؤن الطلبه";
-  
+
     if($item==NULL){
         flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
         return redirect("/CMS/catchReceipt");
@@ -238,7 +234,7 @@ class CatchReceiptController extends CMSBaseController
      }else{
          return view("cms.catchReceipt.printA6",compact("title","item","id","parentTitle",'print'));
      }
-    
+
  }
 
     /**
@@ -335,14 +331,12 @@ class CatchReceiptController extends CMSBaseController
         $us_qu->save();
         /////////////
 
-            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-            foreach($users as $user){
-
-             if($user->hasRole('owner') && $user->id != $this->getId()){
+        if(Auth::user()->responsible_id != null){
+            $user=User::where('id',Auth::user()->responsible_id)->get();
             \Notification::send($user,new NewLessonNotification('CatchReceipt',$this->getId(),'تعديل قبض دوره','catchReceipt'));
-            MakeTask::dispatch($user->id);
+            MakeTask::dispatch(Auth::user()->responsible_id);
 
-             }
+
 
             }
         }

@@ -134,7 +134,10 @@ Iwayc System
                                     @can('تعديل صرف سلفة')
                                     <a href="/CMS/ReceiptAdvance/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
-                                     <a href="/CMS/ReceiptAdvance/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    @can('طباعه صرف سلفه')
+                                 <a href="/CMS/ReceiptAdvance/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    @endcan
+
                                     <a href="/CMS/ReceiptAdvance" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>

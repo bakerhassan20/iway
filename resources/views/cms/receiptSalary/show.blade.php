@@ -180,7 +180,10 @@ Iwayc System
                                     @can('تعديل طالب')
                                     <a href="/CMS/ReceiptSalary/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
-                                 <a href="/CMS/ReceiptSalary/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    @can('طباعه صرف راتب')
+                                    <a href="/CMS/ReceiptSalary/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    @endcan
+
                                     <a href="/CMS/ReceiptSalary" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>

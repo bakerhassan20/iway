@@ -21,6 +21,7 @@ use App\Models\Certificate;
 use App\Models\English_reg;
 use App\Models\Query_admin;
 use App\Models\Query_money;
+use App\Models\Query_course;
 use App\Models\Receipt_box;
 use Illuminate\Http\Request;
 use App\Models\Catch_receipt;
@@ -924,6 +925,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Student_course::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Student_course::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Student_course::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Student_course::where('isdelete',0)->count();
                 $query_user->save();
             }
             elseif($static=="عدد حركات الانسحاب"){
@@ -938,6 +940,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Withdrawal::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Withdrawal::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Withdrawal::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Withdrawal::where('isdelete',0)->count();
                 $query_user->save();
             }
             elseif($static=="عدد حركات المخالصات"){
@@ -952,6 +955,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Receipt_student::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Receipt_student::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Receipt_student::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Receipt_student::where('isdelete',0)->count();
                 $query_user->save();
             }
             elseif($static=="عدد الدورات الدراسية المفتوحة"){
@@ -966,6 +970,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Course::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Course::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Course::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Course::where('isdelete',0)->count();
                 $query_user->save();
             }
             elseif($static=="عدد التحويل للقسم القانوني"){
@@ -980,6 +985,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Legal_affairs::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Legal_affairs::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Legal_affairs::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Legal_affairs::where('isdelete',0)->count();
                 $query_user->save();
             }
             elseif($static=="عدد فحص المستوي"){
@@ -994,6 +1000,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=English::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=English::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=English::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=English::where('isdelete',0)->count();
                 $query_user->save();
             }
             elseif($static=="عدد تسجيل دورات محادثة"){
@@ -1008,6 +1015,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=English_reg::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=English_reg::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=English_reg::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=English_reg::where('isdelete',0)->count();
                 $query_user->save();
             }
             elseif($static=="عدد بيانات الطلاب"){
@@ -1022,6 +1030,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Student::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Student::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Student::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Student::where('isdelete',0)->count();
                 $query_user->save();
             }
             elseif($static=="عدد الطلاب VIP"){
@@ -1036,6 +1045,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Student::where('isdelete',0)->where('classification',44)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Student::where('isdelete',0)->where('classification',44)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Student::where('isdelete',0)->where('classification',44)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Student::where('isdelete',0)->where('classification',44)->count();
                 $query_user->save();
             }
             elseif($static=="عدد الطلاب Blist"){
@@ -1050,6 +1060,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Student::where('isdelete',0)->where('classification',45)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Student::where('isdelete',0)->where('classification',45)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Student::where('isdelete',0)->where('classification',45)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Student::where('isdelete',0)->where('classification',45)->count();
                 $query_user->save();
             }
             elseif($static=="عدد حملات التسويق"){
@@ -1064,7 +1075,10 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Campaign::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Campaign::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Campaign::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Campaign::where('isdelete',0)->count();
+
                 $query_user->save();
+
             }
             elseif($static=="عدد الشهادات المصدقة"){
                 $query_user->day1=Certificate::where('isdelete',0)->where('type',84)->where('created_at','>',Carbon::now()->subDays(1))->count();
@@ -1078,6 +1092,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Certificate::where('isdelete',0)->where('type',84)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Certificate::where('isdelete',0)->where('type',84)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Certificate::where('isdelete',0)->where('type',84)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Certificate::where('isdelete',0)->where('type',84)->count();
                 $query_user->save();
             }
             elseif($static=="عدد الشهادات المشاركة"){
@@ -1092,6 +1107,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Certificate::where('isdelete',0)->where('type',85)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Certificate::where('isdelete',0)->where('type',85)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Certificate::where('isdelete',0)->where('type',85)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Certificate::where('isdelete',0)->where('type',85)->count();
                 $query_user->save();
             }
             elseif($static=="عدد الشهادات التقدير"){
@@ -1106,6 +1122,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Certificate::where('isdelete',0)->where('type',87)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Certificate::where('isdelete',0)->where('type',87)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Certificate::where('isdelete',0)->where('type',87)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Certificate::where('isdelete',0)->where('type',87)->count();
                 $query_user->save();
             }
             elseif($static=="عدد الشهادات الدولية"){
@@ -1120,6 +1137,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Certificate::where('isdelete',0)->where('type',86)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Certificate::where('isdelete',0)->where('type',86)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Certificate::where('isdelete',0)->where('type',86)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Certificate::where('isdelete',0)->where('type',86)->count();
                 $query_user->save();
             }
             elseif($static=="عدد الشهادات القديمة"){
@@ -1134,6 +1152,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Certificate::where('isdelete',0)->where('type',88)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Certificate::where('isdelete',0)->where('type',88)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Certificate::where('isdelete',0)->where('type',88)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Certificate::where('isdelete',0)->where('type',88)->count();
                 $query_user->save();
             }
             elseif($static=="عدد الشهادات الكلي"){
@@ -1148,6 +1167,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Certificate::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Certificate::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Certificate::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Certificate::where('isdelete',0)->count();
                 $query_user->save();
             }
             elseif($static=="عدد بيانات الموظفين"){
@@ -1162,6 +1182,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Employee::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Employee::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Employee::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Employee::where('isdelete',0)->count();
                 $query_user->save();
             }
             elseif($static=="عدد بيانات المعلمين"){
@@ -1176,6 +1197,7 @@ class QueryRepController  extends CMSBaseController
                 $query_user->last2=Teacher::where('isdelete',0)->whereYear('created_at', '=', date('Y')-2)->count();
                 $query_user->last3=Teacher::where('isdelete',0)->whereYear('created_at', '=', date('Y')-3)->count();
                 $query_user->count=Teacher::where('isdelete',0)->whereYear('created_at', '=', date('Y'))->count();
+                $query_user->all=Teacher::where('isdelete',0)->count();
                 $query_user->save();
             }
         }
@@ -1183,7 +1205,7 @@ class QueryRepController  extends CMSBaseController
 
     public function anyQueryAdmin(Request $request)
     {
-        $tasks = Query_admin::select([ 'query_admin.id','query_admin.subject','query_admin.count','query_admin.day1','query_admin.day7','query_admin.day15','query_admin.day30','query_admin.day60','query_admin.day90','query_admin.day180','query_admin.last1','query_admin.last2','query_admin.last3']);
+        $tasks = Query_admin::select([ 'query_admin.id','query_admin.subject','query_admin.count','query_admin.all','query_admin.day1','query_admin.day7','query_admin.day15','query_admin.day30','query_admin.day60','query_admin.day90','query_admin.day180','query_admin.last1','query_admin.last2','query_admin.last3']);
         return Datatables::of($tasks)
             ->make(true);
     }
@@ -1296,5 +1318,71 @@ class QueryRepController  extends CMSBaseController
         }
 
     }
+
+
+
+    public function getQueryCourser()
+    {
+        $subtitle="احصائيات الدورات";
+        $title="جديد 2019";
+        $years=Money_year::where('isdelete',0)->orderBy('year','desc')->get();
+        $this->getAllCoures();
+        return view("cms.queriesRep.course",compact("title","subtitle",'years'));
+    }
+
+
+      public function getAllCoures(){
+        $isQueryCourse=Query_course::count();
+        if($isQueryCourse>0){
+            $query_course_del=Query_course::truncate();
+        }
+
+        $options=Option::where('parent_id',276)->where('isdelete',0)->orderBy('title')->get();
+        $years=Money_year::where('isdelete',0)->orderBy('year','desc')->get();
+        foreach ($options as $option){
+            foreach ($years as $year){
+            $courses = Course::where('m_year',$year->year)->where('category_id',$option->id)->where('isdelete',0)->get();
+            $query_course= new Query_course();
+            $query_course->title=$option->title;
+            $query_course->year=$year->year;
+            $query_course->total_register=$courses->sum('total_reg_student');
+            $query_course->total_withdrawn=$courses->sum('total_withdrawn_student');
+            $query_course->all_graduate= $courses->sum('total_reg_student') - $courses->sum('total_withdrawn_student');
+            $query_course->save();
+            }
+        }
+      }
+
+    public function anyQueryCourse(Request $request)
+    {
+        $tasks = Query_course::select([ 'query_course.id','query_course.title','query_course.year',  'query_course.total_withdrawn',  'query_course.total_register','query_course.all_graduate']);
+        return Datatables::of($tasks)
+            ->filter(function ($tasks) use ($request) {
+
+                if ($request->has('searchCourse') and $request->get('searchCourse') != "") {
+                    $tasks->where(function ($tasks) use ($request){
+                    $tasks->where('query_course.title', 'like', "%{$request->get('searchCourse')}%")
+                            ->orWhere('query_course.total_withdrawn', 'like', "%{$request->get('searchCourse')}%")
+                            ->orWhere('query_course.total_register', 'like', "%{$request->get('searchCourse')}%")
+                            ->orWhere('query_course.all_graduate', 'like', "%{$request->get('searchCourse')}%");
+                        });
+                }
+
+                if ($request->has('yearId') and $request->get('yearId') != "") {
+                    $tasks->where('query_course.year', '=', "{$request->get('yearId')}");
+                }
+            })
+            ->with(['all_registered'=>function($tasks){
+                return $tasks->sum('query_course.total_register');
+            },'all_withdrawn'=>function($tasks){
+                return $tasks->sum('query_course.total_withdrawn');
+            },'all_graduate'=>function($tasks){
+                return $tasks->sum('query_course.all_graduate');
+            }])
+            ->make(true);
+    }
+
+
+
 
 }

@@ -146,11 +146,10 @@ class ReceiptCourseController extends CMSBaseController
         $us_qu->save();
 
     //////////////////
-    $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-    foreach($users as $user){
-    if($user->hasRole('owner') && $user->id != $this->getId()){
+    if(Auth::user()->responsible_id != null){
+        $user=User::where('id',Auth::user()->responsible_id)->get();
     \Notification::send($user,new NewLessonNotification('ReceiptCourse/'.$receipt_course->id,$this->getId(),'انشاء صرف اجور معلم','ReceiptCourse'));
-    MakeTask::dispatch($user->id); } }
+    MakeTask::dispatch(Auth::user()->responsible_id); }
 
 
     }
@@ -190,13 +189,13 @@ class ReceiptCourseController extends CMSBaseController
             return redirect("/CMS/ReceiptCourse/");
         }
         $print = Prin_t::first();
-      
+
         if($print->type == 'A5'){
             return view("cms.receiptCourse.printA5",compact("title","item","id","parentTitle",'print'));
         }else{
             return view("cms.receiptCourse.printA6",compact("title","item","id","parentTitle",'print'));
         }
-       
+
     }
 
 
@@ -291,12 +290,11 @@ class ReceiptCourseController extends CMSBaseController
 
          //////////////////
 
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
-        if($user->hasRole('owner') && $user->id != $this->getId()){
+         if(Auth::user()->responsible_id != null){
+            $user=User::where('id',Auth::user()->responsible_id)->get();
         \Notification::send($user,new NewLessonNotification('ReceiptCourse/'.$item->id,$this->getId(),'تعديل صرف اجور معلم ','ReceiptCourse'));
-        MakeTask::dispatch($user->id);
-        }
+        MakeTask::dispatch(Auth::user()->responsible_id);
+
 
         }
     }

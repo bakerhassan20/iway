@@ -137,12 +137,11 @@ class CatchReceiptBoxController extends CMSBaseController
             $us_qu->save();
 //////////////////
 
-            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-            foreach($users as $user){
-            if($user->hasRole('owner') && $user->id != $this->getId()){
+           if(Auth::user()->responsible_id != null){
+            $user=User::where('id',Auth::user()->responsible_id)->get();
             \Notification::send($user,new NewLessonNotification('CatchReceiptBox/'.$catchReceiptBox->id,$this->getId(),'قبض صندوق مستقل','CatchReceiptBox'));
-            MakeTask::dispatch($user->id);
-            } }
+            MakeTask::dispatch(Auth::user()->responsible_id);
+            }
             $flasher->addSuccess("تمت عملية الاضافة بنجاح");
             return Redirect::back();
 
@@ -169,7 +168,7 @@ class CatchReceiptBoxController extends CMSBaseController
         }
         return view("cms.catchReceiptBox.show", compact("title", "item", "id","parentTitle"));
     }
-        
+
     public function print($id)
     {
         $parentTitle = "عرض سند قبض صندوق ";
@@ -181,13 +180,13 @@ class CatchReceiptBoxController extends CMSBaseController
             return redirect("/CMS/CatchReceiptBox");
         }
         $print = Prin_t::first();
-        
+
         if($print->type == 'A5'){
             return view("cms.catchReceiptBox.printA5",compact("title","item","id","parentTitle",'print'));
         }else{
             return view("cms.catchReceiptBox.printA6",compact("title","item","id","parentTitle",'print'));
         }
-       
+
     }
     /**
      * Show the form for editing the specified resource.
@@ -275,12 +274,11 @@ class CatchReceiptBoxController extends CMSBaseController
 //////////////////
 
 
-            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-            foreach($users as $user){
-            if($user->hasRole('owner') && $user->id != $this->getId()){
+          if(Auth::user()->responsible_id != null){
+    $user=User::where('id',Auth::user()->responsible_id)->get();
             \Notification::send($user,new NewLessonNotification('CatchReceiptBox/'.$item->id,$this->getId(),'تعديل قبض صندوق مستقل','CatchReceiptBox'));
-            MakeTask::dispatch($user->id);
-            } }
+            MakeTask::dispatch(Auth::user()->responsible_id);
+            }
         }
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");

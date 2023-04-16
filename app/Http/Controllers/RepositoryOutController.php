@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Events\MakeTask;
 use App\Models\Box_year;
 use App\Models\Us_qu;
+use App\Models\Prin_t;
+
 use App\Models\Repository;
 use Illuminate\Http\Request;
 use App\Models\Repository_out;
@@ -162,12 +164,13 @@ class RepositoryOutController extends CMSBaseController
          $us_qu->save();
          /////////////////
 
-     $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-     foreach($users as $user){
-     if($user->hasRole('owner') && $user->id != $this->getId()){
+         if(Auth::user()->responsible_id != null){
+
+            $user=User::where('id',Auth::user()->responsible_id)->get();
      \Notification::send($user,new NewLessonNotification('RepositoryOut/'.$repository_out->id,$this->getId(),'صرف مستودع','RepositoryOut'));
-     MakeTask::dispatch($user->id);
-     } }
+
+     MakeTask::dispatch(Auth::user()->responsible_id);
+     }
 
 
     }
@@ -187,12 +190,32 @@ class RepositoryOutController extends CMSBaseController
         $parentTitle="عرض الصادر ";
         $item=Repository_out::where("id",$id)->where("isdelete",0)->first();
         $title="صرف مستودع";
-        $linkApp="/CMS/RepositoryOut/";
+        $linkApp="/CMS/RepositoryOut";
         if($item==NULL){
             flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
-            return redirect("/CMS/RepositoryOut/");
+            return redirect("/CMS/RepositoryOut");
         }
         return view("cms.repositoryOut.show",compact("title","item","id","parentTitle","linkApp"));
+    }
+
+    public function print($id)
+    {
+        $parentTitle="عرض الصادر ";
+        $item=Repository_out::where("id",$id)->where("isdelete",0)->first();
+        $title="صرف مستودع";
+        $linkApp="/CMS/RepositoryOut";
+        if($item==NULL){
+            flash()->addWarning("الرجاء التأكد من الرابط المطلوب");
+            return redirect("/CMS/RepositoryOut");
+        }
+        $print = Prin_t::first();
+
+        if($print->type == 'A5'){
+            return view("cms.repositoryOut.printA5",compact("title","item","id","parentTitle",'print'));
+        }else{
+            return view("cms.repositoryOut.printA6",compact("title","item","id","parentTitle",'print'));
+        }
+
     }
 
     /**
@@ -294,12 +317,11 @@ $repositories=Repository::where('isdelete',0)
          $us_qu->box_id =$box;
          $us_qu->save();
          /////////////////
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
-        if($user->hasRole('owner') && $user->id != $this->getId()){
+         if(Auth::user()->responsible_id != null){
+            $user=User::where('id',Auth::user()->responsible_id)->get();
         \Notification::send($user,new NewLessonNotification('RepositoryOut/'.$item->id,$this->getId(),'تعديل صرف مستودع','RepositoryOut'));
-        MakeTask::dispatch($user->id);
-        } }
+        MakeTask::dispatch(Auth::user()->responsible_id);
+        }
 
 
         }

@@ -118,7 +118,11 @@ Iwayc System
                                     @can('تعديل  قبض مستودع')
                                     <a href="/CMS/RepositoryIn/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
+                                    @can('طباعه قبض مستودع')
+                                  <a href="/CMS/RepositoryIn/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
                                     <a href="/CMS/RepositoryIn/" class="btn btn-danger"> إلغاء</a>
+                                    @endcan
+
                                 </div>
                             </div>
                         </div><br>

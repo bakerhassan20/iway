@@ -120,12 +120,11 @@ class StudentCourseController extends CMSBaseController
     $course->save();
 
 
-    $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-    foreach($users as $user){
-    if($user->hasRole('owner') && $user->id != $this->getId()){
+    if(Auth::user()->responsible_id != null){
+        $user=User::where('id',Auth::user()->responsible_id)->get();
     \Notification::send($user,new NewLessonNotification('StudentCourse',$this->getId(),'بتسجيل طالب في دوره','StudentCourse'));
-    MakeTask::dispatch($user->id);
-    } }
+    MakeTask::dispatch(Auth::user()->responsible_id);
+    }
 
 
     $flasher->addSuccess("تمت عملية الاضافة بنجاح");

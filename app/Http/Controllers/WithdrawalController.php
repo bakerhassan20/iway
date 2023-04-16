@@ -127,13 +127,11 @@ class WithdrawalController extends CMSBaseController
             $course->total_withdrawn_student = $course->total_withdrawn_student + 1;
             $course->save();
 
-            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-            foreach($users as $user){
-            if($user->hasRole('owner') && $user->id != $this->getId()){
+            if(Auth::user()->responsible_id != null){
+                $user=User::where('id',Auth::user()->responsible_id)->get();
             \Notification::send($user,new NewLessonNotification('Withdrawal',$this->getId(),'بعمل انسحاب طالب من دوره','Withdrawal'));
-            MakeTask::dispatch($user->id);
-            } }
-
+            MakeTask::dispatch(Auth::user()->responsible_id);
+            }
 
         }
 

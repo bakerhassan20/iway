@@ -335,7 +335,8 @@ Route::get('UserQ', 'QueryUserController@getUserQ');
 Route::get('datatables/Email', 'QueryUserController@anyEmail');
 Route::get('Email', 'QueryUserController@getEmail');
 
-
+Route::get('datatables/QueryCourse', 'QueryRepController@anyQueryCourse');
+Route::get('QueryCourse', 'QueryRepController@getQueryCourser');
 //شؤون الموظفين
 // ReceiptSalary Controller
         Route::get('IncomeBox/{id}', 'ActiveMethodController@getIncomeBox');
@@ -357,7 +358,7 @@ Route::get('Email', 'QueryUserController@getEmail');
 //ReceiptReward Controller
         Route::get('datatables/ReceiptReward', 'ActiveMethodController@anyReceiptReward');
         Route::resource('ReceiptReward', 'ReceiptRewardController');
-        Route::get('delete/ReceiptReward/{id}', 'ReceiptRewardController@getDelete');  
+        Route::get('delete/ReceiptReward/{id}', 'ReceiptRewardController@getDelete');
         Route::get('ReceiptReward/print/{id}', 'ReceiptRewardController@print');
 
 //ReceiptWarranty Controller
@@ -489,6 +490,9 @@ Route::get('datatables/Repository', 'ActiveMethodController@anyRepository');
 Route::resource('Repository', 'RepositoryController');
 Route::get('Repository/active/{id}', 'ActiveMethodController@getActiveRepository');
 Route::get('delete/Repository/{id}', 'RepositoryController@getDelete');
+Route::get('RepositoryIn/print/{id}', 'RepositoryInController@print');
+Route::get('RepositoryOut/print/{id}', 'RepositoryOutController@print');
+
 Route::prefix('RepositorySection')->group(function () {
     Route::get('{id}', 'RepSectionController@getIndex');
     Route::get('add/{id}', 'RepSectionController@getAdd');
@@ -497,6 +501,9 @@ Route::prefix('RepositorySection')->group(function () {
     Route::post('edit/{id}', 'RepSectionController@postEdit');
     Route::get('delete/{id}', 'RepSectionController@getDelete');
 });
+
+
+
 
 Route::resource('InventoryRepos', 'InventoryReposController');
      Route::post('InventoryRepo', 'InventoryReposController@InvenRepo');

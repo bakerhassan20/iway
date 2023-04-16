@@ -85,8 +85,11 @@ Iwayc System
                                 <label class="control-label"></label>
 
                                 <div class="col-sm-10">
-                                    <a href="/CMS/ReceiptStudent/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
-                                    <a href="/CMS/ReceiptStudent" class="btn btn-danger"> إلغاء</a>
+                                @can('طباعه صرف مخالصه')
+                            <a href="/CMS/ReceiptStudent/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+
+                                @endcan
+                              <a href="/CMS/ReceiptStudent" class="btn btn-danger"> إلغاء</a>
                                 </div>
                             </div>
                         </div><br>

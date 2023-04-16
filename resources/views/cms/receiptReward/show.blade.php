@@ -137,7 +137,10 @@ Iwayc System
                                     @can('تعديل صرف مكافأة')
                                     <a href="/CMS/ReceiptReward/{{$item->id}}/edit" class="submit btn-primary btn" type="submit" name="submit">تعديل</a>
                                     @endcan
-                                      <a href="/CMS/ReceiptReward/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    @can('طباعه صرف مكافاه خصم')
+                                  <a href="/CMS/ReceiptReward/print/{{$item->id}}"target="_blank"  class="btn btn-warning">طباعه</a>
+                                    @endcan
+
 
                                     <a href="/CMS/ReceiptReward" class="btn btn-danger"> إلغاء</a>
                                 </div>

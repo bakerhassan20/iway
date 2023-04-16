@@ -151,12 +151,11 @@ class ReceiptAdvanceController extends CMSBaseController
             $us_qu->save();
 
 ////////////////
-            $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-            foreach($users as $user){
-            if($user->hasRole('owner') && $user->id != $this->getId()){
+if(Auth::user()->responsible_id != null){
+    $user=User::where('id',Auth::user()->responsible_id)->get();
             \Notification::send($user,new NewLessonNotification('ReceiptAdvance/'.$receipt_advance->id,$this->getId(),'انشاء صرف سلفة ','ReceiptAdvance'));
-            MakeTask::dispatch($user->id);
-            } }
+            MakeTask::dispatch(Auth::user()->responsible_id);
+            }
 
         $flasher->addSuccess("تمت عملية الاضافة بنجاح");
         return Redirect::back();
@@ -193,13 +192,13 @@ class ReceiptAdvanceController extends CMSBaseController
             return redirect("/CMS/receiptAdvance/");
         }
         $print = Prin_t::first();
-        
+
         if($print->type == 'A5'){
             return view("cms.receiptAdvance.printA5",compact("title","item","id","parentTitle",'print'));
         }else{
             return view("cms.receiptAdvance.printA6",compact("title","item","id","parentTitle",'print'));
         }
-       
+
     }
 
     /**
@@ -289,12 +288,11 @@ class ReceiptAdvanceController extends CMSBaseController
 
         }
 
-        $users=User::where('isdelete',0)->where('Status','مفعل')->get();
-        foreach($users as $user){
-        if($user->hasRole('owner') && $user->id != $this->getId()){
+        if(Auth::user()->responsible_id != null){
+            $user=User::where('id',Auth::user()->responsible_id)->get();
         \Notification::send($user,new NewLessonNotification('ReceiptAdvance/'.$item->id,$this->getId(),'تعديل صرف سلفة ','ReceiptAdvance'));
-        MakeTask::dispatch($user->id);
-        } }
+        MakeTask::dispatch(Auth::user()->responsible_id);
+        }
 
 
         $flasher->addSuccess("تمت عملية الحفظ بنجاح");
