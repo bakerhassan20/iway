@@ -43,19 +43,71 @@ $English=App\Models\English::where('created_by',Auth::user()->id)->whereYear('cr
 $Campaign=App\Models\Campaign::where('created_by',Auth::user()->id)->whereYear('created_at', '=', date('Y'))->count();
 
 ///////////////////////
-         $char = app()->chartjs
-         ->name('pieChartTest')
-         ->type('pie')
-         ->size(['width' => 400, 'height' => 200])
-         ->labels(['Label x', 'Label y'])
-         ->datasets([
-             [
-                 'backgroundColor' => ['#FF6384', '#36A2EB'],
-                 'hoverBackgroundColor' => ['#FF6384', '#36A2EB'],
-                 'data' => [69, 59]
-             ]
-         ])
-         ->options([]);
+
+
+ $tasks = App\Models\Income_levels::where('isdelete',0)->where('active',1)->first();
+
+  $common_boxes=App\Models\Income_box::where('income_id',$tasks->id)->get();
+                $balance=0;
+                foreach($common_boxes as $common_box){
+                $box= App\Models\Box::find($common_box->box_id);
+                if($box){
+                  $arrStart = explode("-", $tasks->in_from);
+                        $arrEnd = explode("-", $tasks->in_to);
+                        $from = Carbon\Carbon::create( $arrStart[0], $arrStart[1], $arrStart[2],0, 0, 0);
+                        $to = Carbon\Carbon::create( $arrEnd[0], $arrEnd[1], $arrEnd[2],23, 59, 59);
+                    if($box->id==3){
+                        $courses_receipt = App\Models\Catch_receipt::where('isdelete','=','0')->whereBetween('date',[$from,$to])->sum('amount');
+
+                        $balance+=$courses_receipt;
+                    }
+                    if($box->id==4){
+                        $advance_receipt = App\Models\Receipt_salary::where('isdelete','=','0')->whereBetween('date',[$from,$to])->sum('advance_payment');
+
+                        $balance+=$advance_receipt;
+                    }
+                    if($box->repository_id >0){
+                        $rep = App\Models\Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->whereBetween('created_at',[$from,$to])->sum('total');
+                        $balance+=$rep;
+                    }
+                    if($box->type==147){
+                        $rtype = App\Models\Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->whereBetween('date',[$from,$to])->sum('amount');
+                        $balance+=$rtype;
+                    }
+                }
+                }
+
+           $bala = $balance;
+           $rate="";
+         $all_leveles= $tasks->level1 + $tasks->level2 + $tasks->level3 + $tasks->level4 +$tasks->level5;
+
+                if($bala <= $tasks->level1){
+                    $rat = ($bala * 40) / $tasks->level1;
+                    $rate = number_format($rat,1);
+                }
+                if($bala <= ($tasks->level2 + $tasks->level1) && $bala > $tasks->level1){
+                    $rat = ($bala * 60) / ($tasks->level2 + $tasks->level1);
+                     $rate = number_format($rat,1);
+                }
+
+                if($bala <= ($tasks->level3 + $tasks->level2+ $tasks->level1) && $bala > ($tasks->level2 + $tasks->level1)){
+                    $rat = ($bala * 80) / ($tasks->level3 + $tasks->level2+ $tasks->level1);
+                     $rate = number_format($rat,1);
+                }
+
+                if($bala <= ($tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1) && $bala > ($tasks->level3 +$tasks->level2 + $tasks->level1)){
+                    $rat = ($bala * 90) / ($tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1);
+                     $rate = number_format($rat,1);
+                }
+                if($bala <= ( $tasks->level5 + $tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1) && $bala > ($tasks->level4 + $tasks->level3 +$tasks->level2 + $tasks->level1)){
+                    $rat = ($bala * 100) / ( $tasks->level5 + $tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1);
+                     $rate = number_format($rat,1);
+                }
+                if( $bala > ( $tasks->level5 + $tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1)){
+                     $rate = 100;
+                }
+
+
 @endphp
 
 
@@ -199,16 +251,34 @@ $Campaign=App\Models\Campaign::where('created_by',Auth::user()->id)->whereYear('
 
                                    <div class="col-lg-12 col-xl-12">
 
+<span class="l1"style="position: absolute;top: 143px;right: 178px;font-size: 35px;">{{ $rate  }}%</span>
+<span class="l1"style="position: absolute;top: 201px;right: 184px;">نسبه الانجاز</span>
+    <div class="progress-bar"
+style="width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, white 79%, transparent 80% 100%),
+    conic-gradient(#1101fd {{ $rate  }}%, #9094cd 0);
+    margin-top: 90px;
+    margin-right: 115px;">
+        <progress value="5%" min="0" max="100" style="visibility:hidden;height:0;width:0;"></progress>
 
-                                            <label class="main-content-label"></label>
-                                            <div class="" style="width: 100%">
-                                            {!! $char->render() !!}
-                                            </div>
+    </div>
 
                                     </div>
+    <span class="l1"style="position: absolute; top: 490px;right: 146px;">L1</span>
+     <span class="l2"style="position: absolute;top: 490px;right: 270px;">L2</span>
+       <span class="l3"style="position: absolute;top: 374px;right: 310px;">L3</span>
+         <span class="l4"style="position: absolute;top: 322px;right: 275px;">L4</span>
+       <span class="l5"style="position: absolute;top: 302px;right: 213px;">L5</span>
 							</div>
-						</div>
+                            <div class=""style="margin:35px">
+<p> اسم المستوي :<span style="font-weight: bold;"> {{ $tasks->name }}</span></p>
+<p>الفتره من : <span style="font-weight: bold;">{{ $from->format('d-m-Y')}}</span> &ensp;&ensp; الي :<span style="font-weight: bold;"> {{ $to->format('d-m-Y') }}</span> </p>
 
+</div>
+						</div>
 
 
 

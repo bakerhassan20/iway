@@ -144,10 +144,10 @@ public function destroy(Request $request)
 function getActive($id){
     $item=User::find($id);
     if($item->Status == "مفعل"){
-        $item->Status="غير فعال";
+        $item->Status="غير مفعل";
         $item->save();
     }else{
-        $item->Status="فعال";
+        $item->Status="مفعل";
         $item->save();
     }
 

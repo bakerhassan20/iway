@@ -41,6 +41,7 @@ class RepositoryController extends CMSBaseController
         $title="المستودعات";
         $linkApp="/CMS/Repository/";
         $boxes=Box::where('repository_id',0)->where('type',148)->where('isdelete',0)->where('active',1)->get();
+      
         $users = User::where('isdelete',0)->where('Status','مفعل')->orderBy('name')->get();
         return view("cms.repository.add",compact("title","parentTitle","linkApp","boxes",'users'));
     }

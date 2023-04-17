@@ -1746,7 +1746,7 @@ return $html;
             ->make(true);
     }
 
-    
+
 
     public function anyCampaign(Request $request)
     {
@@ -3396,7 +3396,7 @@ return $html;
                         $rep = Repository_in::where('repository_id','=',$box->repository_id)->where('isdelete','=','0')->whereBetween('created_at',[$from,$to])->sum('total');
                         $balance+=$rep;
                     }
-                    if($box->type=="مستقل"){
+                    if($box->type==147){
                         $rtype = Catch_receipt_box::where('box_id','=',$box->id)->where('isdelete','=','0')->whereBetween('date',[$from,$to])->sum('amount');
                         $balance+=$rtype;
                     }
@@ -3440,9 +3440,36 @@ return $html;
                 $update=Income_levels::where('id',$tasks->id)->first();
                 $update->balance=$balance;
                 $update->save();
-                $bala =  number_format($balance,2);
+                $bala = $balance;
+
                 $all_leveles= $tasks->level1 + $tasks->level2 + $tasks->level3 + $tasks->level4 +$tasks->level5;
-                return $all_leveles == 0 ? 0 : ($bala / $all_leveles)*100 .'%';
+
+                if($bala <= $tasks->level1){
+                    $rat = ($bala * 40) / $tasks->level1;
+                    return number_format($rat,2) .'%' . "L1";
+                }
+                if($bala <= ($tasks->level2 + $tasks->level1) && $bala > $tasks->level1){
+                    $rat = ($bala * 60) / ($tasks->level2 + $tasks->level1);
+                    return number_format($rat,2) .'%' . "L2";
+                }
+
+                if($bala <= ($tasks->level3 + $tasks->level2+ $tasks->level1) && $bala > ($tasks->level2 + $tasks->level1)){
+                    $rat = ($bala * 80) / ($tasks->level3 + $tasks->level2+ $tasks->level1);
+                    return number_format($rat,2) .'%' . "L3";
+                }
+
+                if($bala <= ($tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1) && $bala > ($tasks->level3 +$tasks->level2 + $tasks->level1)){
+                    $rat = ($bala * 90) / ($tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1);
+                    return number_format($rat,2) .'%' . "L4";
+                }
+                if($bala <= ( $tasks->level5 + $tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1) && $bala > ($tasks->level4 + $tasks->level3 +$tasks->level2 + $tasks->level1)){
+                    $rat = ($bala * 100) / ( $tasks->level5 + $tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1);
+                    return number_format($rat,2) .'%' . "L5";
+                }
+                if( $bala > ( $tasks->level5 + $tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1)){
+                    return 100 .'%' . "L5";
+                }
+
             })
             ->filter(function ($tasks) use ($request) {
                 if ($request->has('moneyId') and $request->get('moneyId') != "") {

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'Status',
         'avatar',
         'responsible_id',
+        'isdelete',
 
 
     ];

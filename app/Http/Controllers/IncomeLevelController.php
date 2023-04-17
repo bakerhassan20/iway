@@ -33,7 +33,7 @@ class IncomeLevelController extends CMSBaseController
         $parentTitle="اضافة مستوى دخل جديد";
         $title="مستوى دخل جديد";
         $linkApp="/CMS/IncomeLevel/";
-        $boxes = Box::where("isdelete",0)->where("active",1)->get();
+        $boxes = Box::where("isdelete",0)->where("active",1)->where('id','!=',1)->where('id','!=',2)->get();
         return view("cms.incomeLevel.add",compact("title","parentTitle","linkApp","boxes"));
     }
 
@@ -133,7 +133,7 @@ class IncomeLevelController extends CMSBaseController
     public function edit($id,FlasherInterface $flasher)
     {
         $parentTitle="تعديل مستوى الدخل ";
-        $boxes = Box::get();
+        $boxes =Box::where("isdelete",0)->where("active",1)->where('id','!=',1)->where('id','!=',2)->get();
         $item=Income_levels::where("id",$id)->where("isdelete",0)->first();
         $in_boxes=Income_box::where("income_id",$id)->get();
         $title="ادارة مستويات الدخل";

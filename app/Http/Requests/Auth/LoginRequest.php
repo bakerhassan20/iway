@@ -45,7 +45,7 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password')+ ['status' => 'مفعل','isdelete' =>0], $this->boolean('remember'))) {
+        if (! Auth::attempt($this->only('email', 'password')+ ['Status' => 'مفعل','isdelete' =>0], $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

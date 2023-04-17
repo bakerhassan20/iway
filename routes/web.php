@@ -8,8 +8,8 @@ use App\Http\Controllers\LogoController;
 use Illuminate\Http\Request;
 
 Route::get('theme',[HomeController::class,'theme'])->name('theme');
-
-Route::prefix('profile')->name('profile.')->middleware('auth')->group(function () {
+Route::get('403',[HomeController::class,'un403'])->name('403');
+Route::prefix('profile')->name('profile.')->middleware(['auth','checkStatus'])->group(function () {
     Route::get('/',[ProfileController::class,'index'])->name('index');
     Route::get('/edit',[ProfileController::class,'edit'])->name('edit');
     Route::put('/update',[ProfileController::class,'update'])->name('update');
@@ -18,7 +18,7 @@ Route::prefix('profile')->name('profile.')->middleware('auth')->group(function (
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth','checkStatus']], function() {
     Route::resource('roles','RoleController');
     Route::resource('users','UserController');
     Route::get('/', [HomeController::class, 'index']);
@@ -28,7 +28,7 @@ Route::group(['middleware' => ['auth']], function() {
 
      //logo
    // Route::resource('Logo', 'LogoController');
-   Route::prefix('logo')->name('logo.')->middleware('auth')->group(function () {
+   Route::prefix('logo')->name('logo.')->middleware(['auth','checkStatus'])->group(function () {
     Route::get('/',[LogoController::class,'index'])->name('index');
     Route::get('/edit',[LogoController::class,'edit'])->name('edit');
     Route::put('/update_image_icon1',[LogoController::class,'update_image_icon1'])->name('update_image_icon1');
@@ -40,13 +40,13 @@ Route::post('/markAs',function(Request $r){
 
     auth()->user()->unreadNotifications->find($r->not_id)->delete();
     return redirect()->back();
-})->name('markAs');
+})->name('markAs')->middleware(['auth','checkStatus']);
 
-    Route::get('/markAsRead', function(){
+Route::get('/markAsRead', function(){
         auth()->user()->unreadNotifications->markAsRead();
         return redirect()->back();
-    })->name('mark');
-Route::prefix('CMS')->middleware('auth')->group(function () {
+    })->name('mark')->middleware(['auth','checkStatus']);
+Route::prefix('CMS')->middleware(['auth','checkStatus'])->group(function () {
 
     //home
     Route::get('datatables/QMoney', 'HomeController@anyQueryMoney');
