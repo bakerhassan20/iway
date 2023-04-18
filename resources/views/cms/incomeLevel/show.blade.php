@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="col">
                                 <label class="control-label">المصاريف المتوقعة:* </label>
-                                    <input type="text" value="{{$item->remaind}}" class="form-control validate[required] text-input" id="remaind"
+                                    <input type="text" value="{{$item->expenses}}" class="form-control validate[required] text-input" id="remaind"
                                            name="remaind" disabled>
                                 </div>
                             </div><br>

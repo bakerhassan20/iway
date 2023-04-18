@@ -3365,7 +3365,19 @@ return $html;
         ->addColumn('remaind', function ($tasks) {
 
             $cDate = Carbon::parse($tasks->in_to);
-            return $cDate->diffInDays();
+            $ldate = date('Y-m-d H:i:s');
+
+            if($cDate >  $ldate){
+                $update=Income_levels::where('id',$tasks->id)->first();
+                $update->remaind=$cDate->diffInDays();
+                $update->save();
+                return $cDate->diffInDays();
+            }else{
+                $update=Income_levels::where('id',$tasks->id)->first();
+                $update->remaind=0;
+                $update->save();
+                return 0;
+            }
 
         })
 
@@ -3446,28 +3458,28 @@ return $html;
 
                 if($bala <= $tasks->level1){
                     $rat = ($bala * 40) / $tasks->level1;
-                    return number_format($rat,2) .'%' . "L1";
+                    return number_format($rat,1) .'%' ." ". "L1";
                 }
                 if($bala <= ($tasks->level2 + $tasks->level1) && $bala > $tasks->level1){
                     $rat = ($bala * 60) / ($tasks->level2 + $tasks->level1);
-                    return number_format($rat,2) .'%' . "L2";
+                    return number_format($rat,1) .'%' ." ". "L2";
                 }
 
                 if($bala <= ($tasks->level3 + $tasks->level2+ $tasks->level1) && $bala > ($tasks->level2 + $tasks->level1)){
                     $rat = ($bala * 80) / ($tasks->level3 + $tasks->level2+ $tasks->level1);
-                    return number_format($rat,2) .'%' . "L3";
+                    return number_format($rat,1) .'%' ." ". "L3";
                 }
 
                 if($bala <= ($tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1) && $bala > ($tasks->level3 +$tasks->level2 + $tasks->level1)){
                     $rat = ($bala * 90) / ($tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1);
-                    return number_format($rat,2) .'%' . "L4";
+                    return number_format($rat,1) .'%' ." ". "L4";
                 }
                 if($bala <= ( $tasks->level5 + $tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1) && $bala > ($tasks->level4 + $tasks->level3 +$tasks->level2 + $tasks->level1)){
                     $rat = ($bala * 100) / ( $tasks->level5 + $tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1);
-                    return number_format($rat,2) .'%' . "L5";
+                    return number_format($rat,1) .'%' ." ". "L5";
                 }
                 if( $bala > ( $tasks->level5 + $tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1)){
-                    return 100 .'%' . "L5";
+                    return 100 .'%' ." ". "L5";
                 }
 
             })

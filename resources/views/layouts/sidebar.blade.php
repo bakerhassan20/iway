@@ -47,6 +47,13 @@ $Campaign=App\Models\Campaign::where('created_by',Auth::user()->id)->whereYear('
 
  $tasks = App\Models\Income_levels::where('isdelete',0)->where('active',1)->first();
 
+   $cDate = Carbon\Carbon::parse($tasks->in_to);
+   $ldate = date('Y-m-d H:i:s');
+   if($cDate >  $ldate){
+    $remaind = $cDate->diffInDays();
+   }else{
+    $remaind = 0;
+   }
   $common_boxes=App\Models\Income_box::where('income_id',$tasks->id)->get();
                 $balance=0;
                 foreach($common_boxes as $common_box){
@@ -250,8 +257,12 @@ $Campaign=App\Models\Campaign::where('created_by',Auth::user()->id)->whereYear('
 							<div class="list-group list-group-flush ">
 
                                    <div class="col-lg-12 col-xl-12">
+@if ($rate > 10.0 )
+<span class="l1"style="position: absolute;top: 143px;right: 160px;font-size: 35px;">{{ $rate  }}%</span>
+@else
+<span class="l1"style="position: absolute;top: 143px;right: 174px;font-size: 35px;">{{ $rate  }}%</span>
+@endif
 
-<span class="l1"style="position: absolute;top: 143px;right: 178px;font-size: 35px;">{{ $rate  }}%</span>
 <span class="l1"style="position: absolute;top: 201px;right: 184px;">نسبه الانجاز</span>
     <div class="progress-bar"
 style="width: 180px;
@@ -274,7 +285,7 @@ style="width: 180px;
        <span class="l5"style="position: absolute;top: 302px;right: 213px;">L5</span>
 							</div>
                             <div class=""style="margin:35px">
-<p> اسم المستوي :<span style="font-weight: bold;"> {{ $tasks->name }}</span></p>
+<p> اسم المستوي :<span style="font-weight: bold;"> {{ $tasks->name }}</span>&ensp;&ensp; متبقي :<span style="font-weight: bold;">{{   $remaind }} يوم</span></p>
 <p>الفتره من : <span style="font-weight: bold;">{{ $from->format('d-m-Y')}}</span> &ensp;&ensp; الي :<span style="font-weight: bold;"> {{ $to->format('d-m-Y') }}</span> </p>
 
 </div>
