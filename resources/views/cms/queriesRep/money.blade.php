@@ -110,10 +110,9 @@
                     { data: 'day60', name: 'day60' },
                     { data: 'day90', name: 'day90' },
                     { data: 'day180', name: 'day180' },
-
-                    { data: 'total'+{{date('Y')-1}}, name: 'total'+{{date('Y')-1}} },
-                    { data: 'total'+{{date('Y')-2}}, name: 'total'+{{date('Y')-2}} },
-                    { data: 'total'+{{date('Y')-3}}, name: 'total'+{{date('Y')-3}} },
+                    { data: 'total1', name: 'total1'},
+                    { data: 'total2', name: 'total2' },
+                    { data: 'total3', name: 'total3' },
 
 
                 ]

@@ -2292,7 +2292,7 @@ return $html;
             ->leftJoin('boxes as b', 'b.id','=','boxes.parent_id')
             ->leftJoin('repositories as rep', 'rep.id','=','boxes.repository_id')
             ->leftJoin('box_per as per', 'per.box_id','=','boxes.id')
-            ->select([ 'boxes.id', 'boxes.m_year', 'boxes.name', 'rep.name as repository_id', 'options.title as type', 'boxes.calculator_first','b.name as parent_id','boxes.income','boxes.expense','boxes.type as btype','boxes.active', 'boxes.created_at', 'boxes.isdelete'])
+            ->select([ 'boxes.id', 'boxes.m_year', 'boxes.name', 'rep.name as repository_id', 'options.title as type','b.name as parent_id','boxes.type as btype','boxes.active', 'boxes.created_at', 'boxes.isdelete'])
             ->where('boxes.isdelete','=','0')
             ->where('per.user_id','=',Auth::user()->id);
         return Datatables::of($tasks)

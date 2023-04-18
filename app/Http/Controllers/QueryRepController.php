@@ -451,7 +451,7 @@ class QueryRepController  extends CMSBaseController
       }
 
     //  foreach($years as $year){
-                $result->addColumn('total'.date('Y')-1, function ($tasks) {
+                $result->addColumn('total1', function ($tasks) {
                 if($tasks->id==1){
                     $boxes=Box::whereNotNull('parent_id')->get();
                     $expenses=0;
@@ -583,7 +583,7 @@ class QueryRepController  extends CMSBaseController
 
 
 
-            $result->addColumn('total'.date('Y')-2, function ($tasks) {
+            $result->addColumn('total2', function ($tasks) {
                 if($tasks->id==1){
                     $boxes=Box::whereNotNull('parent_id')->get();
                     $expenses=0;
@@ -714,7 +714,7 @@ class QueryRepController  extends CMSBaseController
 
 
 
-            $result->addColumn('total'.date('Y')-3, function ($tasks) {
+            $result->addColumn('total3', function ($tasks) {
                 if($tasks->id==1){
                     $boxes=Box::whereNotNull('parent_id')->get();
                     $expenses=0;

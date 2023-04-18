@@ -47,6 +47,7 @@ $Campaign=App\Models\Campaign::where('created_by',Auth::user()->id)->whereYear('
 
  $tasks = App\Models\Income_levels::where('isdelete',0)->where('active',1)->first();
 
+ if($tasks){
    $cDate = Carbon\Carbon::parse($tasks->in_to);
    $ldate = date('Y-m-d H:i:s');
    if($cDate >  $ldate){
@@ -54,7 +55,8 @@ $Campaign=App\Models\Campaign::where('created_by',Auth::user()->id)->whereYear('
    }else{
     $remaind = 0;
    }
-  $common_boxes=App\Models\Income_box::where('income_id',$tasks->id)->get();
+
+    $common_boxes=App\Models\Income_box::where('income_id',$tasks->id)->get();
                 $balance=0;
                 foreach($common_boxes as $common_box){
                 $box= App\Models\Box::find($common_box->box_id);
@@ -113,6 +115,11 @@ $Campaign=App\Models\Campaign::where('created_by',Auth::user()->id)->whereYear('
                 if( $bala > ( $tasks->level5 + $tasks->level4 + $tasks->level3 + $tasks->level2+ $tasks->level1)){
                      $rate = 100;
                 }
+
+ }
+
+
+
 
 
 @endphp
@@ -253,46 +260,45 @@ $Campaign=App\Models\Campaign::where('created_by',Auth::user()->id)->whereYear('
 
 
 
-                       	<div class="tab-pane " id="side1">
-							<div class="list-group list-group-flush ">
-
+                        <div class="tab-pane " id="side1">
+                            @if($tasks)
+                        		<div class="list-group list-group-flush ">
                                    <div class="col-lg-12 col-xl-12">
-@if ($rate > 10.0 )
-<span class="l1"style="position: absolute;top: 143px;right: 160px;font-size: 35px;">{{ $rate  }}%</span>
-@else
-<span class="l1"style="position: absolute;top: 143px;right: 174px;font-size: 35px;">{{ $rate  }}%</span>
-@endif
+                                    @if ($rate > 10.0 )
+                                    <span class="l1"style="position: absolute;top: 143px;right: 160px;font-size: 35px;">{{ $rate  }}%</span>
+                                    @else
+                                    <span class="l1"style="position: absolute;top: 143px;right: 174px;font-size: 35px;">{{ $rate  }}%</span>
+                                    @endif
 
-<span class="l1"style="position: absolute;top: 201px;right: 184px;">نسبه الانجاز</span>
-    <div class="progress-bar"
-style="width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background:
-    radial-gradient(closest-side, white 79%, transparent 80% 100%),
-    conic-gradient(#1101fd {{ $rate  }}%, #9094cd 0);
-    margin-top: 90px;
-    margin-right: 115px;">
-        <progress value="5%" min="0" max="100" style="visibility:hidden;height:0;width:0;"></progress>
+                                    <span class="l1"style="position: absolute;top: 201px;right: 184px;">نسبه الانجاز</span>
+                                        <div class="progress-bar"
+                                    style="width: 180px;
+                                    height: 180px;
+                                    border-radius: 50%;
+                                    background:
+                                        radial-gradient(closest-side, white 79%, transparent 80% 100%),
+                                        conic-gradient(#1101fd {{ $rate  }}%, #9094cd 0);
+                                        margin-top: 90px;
+                                        margin-right: 115px;">
+                                            <progress value="5%" min="0" max="100" style="visibility:hidden;height:0;width:0;"></progress>
 
-    </div>
+                                        </div>
+
+                                                                        </div>
+                                        <span class="l1"style="position: absolute; top: 490px;right: 146px;">L1</span>
+                                        <span class="l2"style="position: absolute;top: 490px;right: 270px;">L2</span>
+                                        <span class="l3"style="position: absolute;top: 374px;right: 310px;">L3</span>
+                                            <span class="l4"style="position: absolute;top: 322px;right: 275px;">L4</span>
+                                        <span class="l5"style="position: absolute;top: 302px;right: 213px;">L5</span>
+                                                                </div>
+                                                                <div class=""style="margin:35px">
+                                    <p> اسم المستوي :<span style="font-weight: bold;"> {{ $tasks->name }}</span>&ensp;&ensp; متبقي :<span style="font-weight: bold;">{{   $remaind }} يوم</span></p>
+                                    <p>الفتره من : <span style="font-weight: bold;">{{ $from->format('d-m-Y')}}</span> &ensp;&ensp; الي :<span style="font-weight: bold;"> {{ $to->format('d-m-Y') }}</span> </p>
 
                                     </div>
-    <span class="l1"style="position: absolute; top: 490px;right: 146px;">L1</span>
-     <span class="l2"style="position: absolute;top: 490px;right: 270px;">L2</span>
-       <span class="l3"style="position: absolute;top: 374px;right: 310px;">L3</span>
-         <span class="l4"style="position: absolute;top: 322px;right: 275px;">L4</span>
-       <span class="l5"style="position: absolute;top: 302px;right: 213px;">L5</span>
-							</div>
-                            <div class=""style="margin:35px">
-<p> اسم المستوي :<span style="font-weight: bold;"> {{ $tasks->name }}</span>&ensp;&ensp; متبقي :<span style="font-weight: bold;">{{   $remaind }} يوم</span></p>
-<p>الفتره من : <span style="font-weight: bold;">{{ $from->format('d-m-Y')}}</span> &ensp;&ensp; الي :<span style="font-weight: bold;"> {{ $to->format('d-m-Y') }}</span> </p>
+                            @endif
 
-</div>
 						</div>
-
-
-
 					</div>
 				</div>
 			</div>
